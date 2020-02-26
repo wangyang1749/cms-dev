@@ -35,9 +35,9 @@ public class DataInit  implements CommandLineRunner {
             user.setPassword("123456");
             userService.save(user);
             List<Template> templates = Arrays.asList(
-                    new Template(1,"DEFAULT INDEX","@index", TemplateType.ARTICLE),
-                    new Template(2,"DEFAULT CATEGORY","@category", TemplateType.CATEGORY),
-                    new Template(3,"REVEAL","@reveal", TemplateType.ARTICLE)
+                    new Template("DEFAULT INDEX","@index", TemplateType.ARTICLE),
+                    new Template("DEFAULT CATEGORY","@category", TemplateType.CATEGORY),
+                    new Template("REVEAL","@reveal", TemplateType.ARTICLE)
                    );
             templateService.saveAll(templates);
 

@@ -18,8 +18,7 @@ public class Template extends BaseTemplate {
 
     public Template(){}
 
-    public Template(int id,String name,String templateValue,TemplateType templateType){
-        super.setId(id);
+    public Template(String name,String templateValue,TemplateType templateType){
         super.setName(name);
         super.setTemplateValue(templateValue);
         this.templateType = templateType;
