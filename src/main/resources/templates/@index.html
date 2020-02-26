@@ -1,0 +1,23 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/test.css">
+</head>
+<body>
+    <h2>Hello Template111</h2>
+    <h1><span th:text="${view.title}"></span></h1>
+    <hr>
+    <div >
+            [(${view.formatContent})]
+            
+    </div>
+    <hr>
+    <div>
+            [[${view.formatContent}]]
+    </div>
+</body>
+</html>
