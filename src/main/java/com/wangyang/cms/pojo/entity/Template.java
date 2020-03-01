@@ -1,15 +1,15 @@
 package com.wangyang.cms.pojo.entity;
 
-import com.wangyang.cms.pojo.entity.base.BaseEntity;
 import com.wangyang.cms.pojo.entity.base.BaseTemplate;
 import com.wangyang.cms.pojo.enums.TemplateType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @Entity
 @DiscriminatorValue(value = "0")
-public class Template extends BaseTemplate {
+public class Template extends BaseTemplate implements Serializable {
 
 
 

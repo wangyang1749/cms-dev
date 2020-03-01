@@ -10,9 +10,11 @@ public class BaseTemplate extends  BaseEntity{
     private int id;
     private String name;
     private String description;
-    private String path;
+
     @Column(name = "template_value", columnDefinition = "longtext ")
     private String templateValue;
+
+
     public int getId() {
         return id;
     }
@@ -37,13 +39,7 @@ public class BaseTemplate extends  BaseEntity{
         this.description = description;
     }
 
-    public String getPath() {
-        return path;
-    }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public String getTemplateValue() {
         return templateValue;

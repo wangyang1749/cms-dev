@@ -28,4 +28,6 @@ public class ArticleVO extends ArticleDto {
     public void setCategories(List<CategoryDto> categories) {
         this.categories = categories;
     }
+
+
 }

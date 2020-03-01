@@ -12,25 +12,34 @@ public class BaseArticle extends BaseEntity{
     private int id;
     private int templateId;
     @Column(name = "status", columnDefinition = "int default 1")
-    private ArticleStatus status ;//=ArticleStatus.PUBLISHED;
-    private int likes;
-    private int visits;
+    private ArticleStatus status =ArticleStatus.PUBLISHED;
     private int userId;
-    private int commentNum;
-    private Boolean haveHtml=true;
-
     private String title;
-
+    private String viewName;
     @Column(name = "original_content", columnDefinition = "longtext not null")
     private String originalContent;
-
-    @Column(name = "format_content", columnDefinition = "longtext not null")
+    @Column(name = "format_content", columnDefinition = "longtext")
     private String formatContent;
-    private String summary;
-    private String viewName;
+
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
 
 
+    public ArticleStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ArticleStatus status) {
+        this.status = status;
+    }
 
     public int getId() {
         return id;
@@ -48,29 +57,12 @@ public class BaseArticle extends BaseEntity{
         this.templateId = templateId;
     }
 
-
-    public ArticleStatus getStatus() {
-        return status;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setStatus(ArticleStatus status) {
-        this.status = status;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
-    public int getVisits() {
-        return visits;
-    }
-
-    public void setVisits(int visits) {
-        this.visits = visits;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -79,6 +71,14 @@ public class BaseArticle extends BaseEntity{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
     }
 
     public String getOriginalContent() {
@@ -95,46 +95,6 @@ public class BaseArticle extends BaseEntity{
 
     public void setFormatContent(String formatContent) {
         this.formatContent = formatContent;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getViewName() {
-        return viewName;
-    }
-
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(int commentNum) {
-        this.commentNum = commentNum;
-    }
-
-    public Boolean getHaveHtml() {
-        return haveHtml;
-    }
-
-    public void setHaveHtml(Boolean haveHtml) {
-        this.haveHtml = haveHtml;
     }
 }
 

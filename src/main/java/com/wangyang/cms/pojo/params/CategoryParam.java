@@ -11,6 +11,24 @@ public class CategoryParam {
     private Integer templateId=2;
     private String viewName;
     private Boolean haveHtml;
+    private String picPath;
+    private String path="articleList";
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
     public Boolean getHaveHtml() {
         return haveHtml;

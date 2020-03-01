@@ -5,10 +5,13 @@ import com.wangyang.cms.pojo.entity.Tags;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ArticleDto {
+public class ArticleDto  implements Serializable {
+
+
     private int id;
     private Date createDate;
     private Date updateDate;
@@ -19,9 +22,27 @@ public class ArticleDto {
     private int userId;
     private int commentNum;
     private Boolean haveHtml=false;
-
+    private String summary;
     private String title;
     private String viewName;
+    private String  path;
+    private String picPath;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
     public int getId() {
         return id;
@@ -119,5 +140,31 @@ public class ArticleDto {
 
     public void setViewName(String viewName) {
         this.viewName = viewName;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleDto{" +
+                "id=" + id +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", templateId=" + templateId +
+                ", status=" + status +
+                ", likes=" + likes +
+                ", visits=" + visits +
+                ", userId=" + userId +
+                ", commentNum=" + commentNum +
+                ", haveHtml=" + haveHtml +
+                ", title='" + title + '\'' +
+                ", viewName='" + viewName + '\'' +
+                '}';
     }
 }

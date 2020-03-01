@@ -3,8 +3,6 @@ package com.wangyang.cms.controller;
 import com.wangyang.cms.core.view.ExcelView;
 import com.wangyang.cms.core.view.PdfView;
 import com.wangyang.cms.pojo.entity.User;
-import com.wangyang.cms.utils.TemplateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

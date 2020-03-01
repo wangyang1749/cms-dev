@@ -21,7 +21,24 @@ public class ArticleParams  implements InputConverter<Article> {
     private Set<Integer> tagIds;
     private Set<Integer> categoryIds;
 
+    private String  path="article";
+    private String picPath;
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
     public Set<Integer> getTagIds() {
         return tagIds;

@@ -8,8 +8,8 @@ import com.wangyang.cms.pojo.dto.TagsDto;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.pojo.support.CmsConst;
+import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
 import com.wangyang.cms.repository.*;
@@ -22,15 +22,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.util.*;
@@ -58,9 +58,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Autowired
     CommentRepository commentRepository;
 
+
+
+
     /**
      * create article
-     * @param article
+     * @param articleParams
      * @param tagsIds
      * @param categoryIds
      * @return
@@ -71,23 +74,20 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         BeanUtils.copyProperties(articleParams,article);
 
         ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds, categoryIds);
-        if(article.getHaveHtml()){
-            covertHtml(articleDetailVO);
-        }
+//        if(article.getHaveHtml()){
+//            producerService.sendMessage(articleDetailVO);
+//            producerService.commonTemplate("AC");
+////            covertHtml(articleDetailVO);
+//        }
         return articleDetailVO;
 
     }
 
     @Override
     public ArticleDetailVO updateArticle(int articleId, ArticleParams articleParams,  Set<Integer> tagsIds, Set<Integer> categoryIds) {
-
         Article article = findArticleById(articleId);
-        if(!articleParams.getViewName().equals(article.getViewName())||!articleParams.getHaveHtml()){
-            File file = new File(workDir+"/"+ CmsConst.STATIC_HTML_PATH+"/"+article.getViewName()+".html");
-            if(file.exists()){
-                file.delete();
-            }
-        }
+        TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
+//        TemplateUtil.deleteOldTemplate(article.getViewName(),articleParams.getViewName(),articleParams.getHaveHtml());
         BeanUtils.copyProperties(articleParams,article);
 
 
@@ -96,15 +96,33 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         articleCategoryRepository.deleteByArticleId(articleId);
 
         ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds, categoryIds);
-        if(article.getHaveHtml()){
-            covertHtml(articleDetailVO);
-        }
+//        if(article.getHaveHtml()){
+//            producerService.sendMessage(articleDetailVO);
+//            producerService.commonTemplate("AU");
+////            covertHtml(articleDetailVO);
+//        }
         return articleDetailVO;
     }
 
-
-
-
+    @Override
+    public Page<ArticleDto> findArticleListByCategoryId(int categoryId,Pageable pageable) {
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+               Subquery<ArticleCategory> subquery = criteriaQuery.subquery(ArticleCategory.class);
+                Root<ArticleCategory> subRoot = subquery.from(ArticleCategory.class);
+                subquery  = subquery.select(subRoot.get("articleId"))
+                        .where(criteriaBuilder.equal(subRoot.get("categoryId"),categoryId));
+                return root.get("id").in(subquery);
+            }
+        };
+        Page<Article> articles = articleRepository.findAll(specification, pageable);
+        return  articles.map(article -> {
+           ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article,articleDto);
+           return articleDto;
+        });
+    }
 
     @Override
     public ModelAndView preview(int articleId) {
@@ -151,7 +169,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             log.debug("!!! view name not found, use "+viewName);
             article.setViewName(viewName);
         }
-        Article saveArticle = articleRepository.save(article);
+        Article saveArticle = articleRepository.saveAndFlush(article);
 
 
         //TODO update delete option
@@ -205,7 +223,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
-
     private ArticleDetailVO convert(Article article) {
         ArticleDetailVO articleDetailVo = new ArticleDetailVO();
         BeanUtils.copyProperties(article,articleDetailVo);
@@ -221,18 +238,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return articleDetailVo;
     }
 
-
-
-
-    private String covertHtml(ArticleDetailVO articleDetailVO) {
-
-        Optional<Template> templateOptional = templateRepository.findById(articleDetailVO.getTemplateId());
-        if(!templateOptional.isPresent()){
-            throw new TemplateException("Template not found!!");
-        }
-        String html = TemplateUtil.convertHtmlAndSave(articleDetailVO, templateOptional.get());
-        return html;
-    }
 
     @Override
     public ArticleDetailVO findArticleAOById(int id) {
@@ -358,10 +363,43 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         };
     }
 
+    @Override
+    public Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable){
+        Page<Article> articles = articleRepository.findAll(specification, pageable);
+        return articles.map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article, articleDto);
+            return articleDto;
+        });
+    }
+    @Override
+    public List<ArticleDto> articleShow(Specification<Article> specification,Sort sort){
+        List<Article> articles = articleRepository.findAll(specification,sort);
+        return articles.stream().map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article,articleDto);
+            return articleDto;
+        }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticle",viewName="newArticle",path = "components",event = "ACAU")
+    public Page<ArticleDto> articleShowLatest(){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path path = root.get("likes");
+                return null;
+            }
+        };
+        return articleShow(specification,PageRequest.of(0,10,Sort.by(Sort.Order.desc("createDate"))));
+    }
 
     @Override
     public void increaseLikes(int id) {
         int affectedRows = articleRepository.updateLikes(id);
-
     }
+
+
 }

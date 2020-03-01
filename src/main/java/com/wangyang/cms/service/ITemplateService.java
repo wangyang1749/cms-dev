@@ -15,5 +15,6 @@ public interface ITemplateService {
     Template findById(int id);
     Page<Template> list(Pageable pageable);
 
+    void deleteAll();
     List<Template> findByTemplateType(TemplateType type);
 }

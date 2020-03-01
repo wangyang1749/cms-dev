@@ -10,6 +10,27 @@ public class CategoryDto {
     private int id;
     private String name;
     private int parentId;
+    private int articleNumber;
+    private Boolean haveHtml;
+    private String viewName;
+    private String picPath;
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
     public int getId() {
         return id;
@@ -33,5 +54,29 @@ public class CategoryDto {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public int getArticleNumber() {
+        return articleNumber;
+    }
+
+    public void setArticleNumber(int articleNumber) {
+        this.articleNumber = articleNumber;
+    }
+
+    public Boolean getHaveHtml() {
+        return haveHtml;
+    }
+
+    public void setHaveHtml(Boolean haveHtml) {
+        this.haveHtml = haveHtml;
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
     }
 }

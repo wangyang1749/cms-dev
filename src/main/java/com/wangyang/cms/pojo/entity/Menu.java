@@ -13,7 +13,7 @@ public class Menu extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int parentId;
-    private int status;
+    private Boolean status=true;
 
     private String icon;
     private String name;
@@ -36,11 +36,11 @@ public class Menu extends BaseEntity {
         this.parentId = parentId;
     }
 
-    public int getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -75,4 +75,6 @@ public class Menu extends BaseEntity {
     public void setUrlName(String urlName) {
         this.urlName = urlName;
     }
+
+
 }

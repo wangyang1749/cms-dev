@@ -2,24 +2,48 @@ package com.wangyang.cms.pojo.entity;
 
 import com.wangyang.cms.pojo.entity.base.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Category  extends BaseEntity {
+public class Category  extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private int parentId;
-
     private String description;
     private int articleNumber;
     private Integer templateId;
     private Boolean haveHtml;
     private String viewName;
+    private Boolean status=true;
+    private String picPath;
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 
     public String getViewName() {
         return viewName;

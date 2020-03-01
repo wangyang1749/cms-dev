@@ -1,0 +1,63 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>文章详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+
+    <!-- https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments -->
+
+
+    <div class="container">
+        <!--#include file="/components/header.html"-->
+        <div th:if="${isSave== null}">
+            <div th:insert="html/components/header :: #header"></div>
+        </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/index.html">首页</a></li>
+                <li class="breadcrumb-item">
+                        <a th:each="item : ${view.categories}" th:href="'/articleList/'+${item.viewName}+'.html'" th:text="${item.name}">文章列表</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${view.title}">文章详情</li>
+            </ol>
+        </nav>
+
+
+        <div class="card mb-3 markdown">
+            
+            <img th:if="${view.picPath}" th:src="${view.picPath}" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1582968886748&di=60caa6e63570668d6e746231413e3531&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F6%2F586c8fdfde1c4.jpg"
+                class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${view.title}">Card title</h5>
+                <p class="card-text" th:text="${view.summary}">This is a wider card with supporting text below as a natural lead-in to additional
+                    content. This content is a little bit longer.</p>
+                <p class="card-text"><small th:text="${view.createDate}" class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+
+        </span>
+        <div class="markdown">
+            [(${view.formatContent})]
+        </div>
+
+        <!--#include file="/components/footer.html"-->
+        <div th:if="${isSave== null}">
+            <div th:insert="html/components/footer :: #footer"></div>
+        </div>
+    </div>
+
+</body>
+
+</html>

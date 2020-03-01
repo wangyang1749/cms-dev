@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OptionService implements IOptionService {
@@ -17,6 +18,11 @@ public class OptionService implements IOptionService {
 
     @Autowired
     StringCacheStore stringCacheStore;
+
+    @Override
+    public Option save(Option option) {
+        return  optionRepository.save(option);
+    }
 
     @Override
     public void save(List<Option> options) {
@@ -31,8 +37,15 @@ public class OptionService implements IOptionService {
         return stringCacheStore.get(key).orElseGet(()->{
             System.out.println("########  no cache");
             Option option = optionRepository.findByKey(key);
+            if (option==null){
+                return null;
+            }
             stringCacheStore.setValue(option.getKey(),option.getValue());
             return option.getValue();
         });
     }
+
+
+
+
 }

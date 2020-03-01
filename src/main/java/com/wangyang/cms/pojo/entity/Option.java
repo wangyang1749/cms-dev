@@ -22,6 +22,13 @@ public class Option extends BaseEntity {
     @Column(name = "option_value", columnDefinition = "varchar(1023) not null")
     private String value;
 
+    public Option(){}
+
+    public Option(String key,String value){
+        this.key=key;
+        this.value=value;
+    }
+
 
     public Integer getId() {
         return id;

@@ -1,87 +1,168 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.expection.ObjectException;
-import com.wangyang.cms.expection.TemplateException;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
-import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Template;
+import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.params.CategoryParam;
-import com.wangyang.cms.pojo.support.TemplateConst;
-import com.wangyang.cms.pojo.vo.CategoryDetailVO;
+import com.wangyang.cms.pojo.support.TemplateOption;
+import com.wangyang.cms.pojo.support.TemplateOptionMethod;
+import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.vo.CategoryVO;
-import com.wangyang.cms.repository.ArticleRepository;
-import com.wangyang.cms.repository.CategoryRepository;
-import com.wangyang.cms.repository.SheetRepository;
-import com.wangyang.cms.repository.TemplateRepository;
+import com.wangyang.cms.repository.*;
+import com.wangyang.cms.service.IArticleService;
 import com.wangyang.cms.service.ICategoryService;
+import com.wangyang.cms.service.IComponentsService;
+import com.wangyang.cms.service.ITemplateService;
 import com.wangyang.cms.utils.CMSUtils;
 import com.wangyang.cms.utils.TemplateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@TemplateOption
+@Transactional
+@Slf4j
 public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
-    TemplateRepository templateRepository;
+    ITemplateService templateService;
     @Autowired
-    SheetRepository sheetRepository;
+    IArticleService articleService;
     @Autowired
-    ArticleRepository articleRepository;
+    ArticleCategoryRepository articleCategoryRepository;
+
+    @Autowired
+    IComponentsService templatePageService;
 
 
     @Override
-    public Category add(Category category) {
-        if(category.getViewName()==null||"".equals(category.getViewName())){
-            category.setViewName(CMSUtils.randomViewName());
-        }
-        if(category.getHaveHtml()){
-            covertHtml(category);
-        }
-        //generate category page
-        return categoryRepository.save(category);
-    }
 
-    private String covertHtml(Category category) {
-        Optional<Template> template = templateRepository.findById(category.getTemplateId());
-        if(!template.isPresent()){
-            throw new TemplateException("Category Template not found !!");
+    public Category add(CategoryParam categoryParam) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryParam,category);
+        if(StringUtils.isEmpty(category.getViewName())){
+           String viewName = CMSUtils.randomViewName();
+           category.setViewName(viewName);
         }
-        return  TemplateUtil.convertHtmlAndSave(category,template.get());
-    }
-
-
-    @Override
-    public void deleteById(int id) {
-        categoryRepository.deleteById(id);
+        Category saveCategory = categoryRepository.save(category);
+        //TODO
+        generateListHtml();
+        if(saveCategory.getHaveHtml()){
+            convertHtml(category);
+        }
+        return saveCategory;
     }
 
     @Override
     public Category update(int id, CategoryParam categoryParam) {
         Category category = findById(id);
+        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
         BeanUtils.copyProperties(categoryParam,category);
-        categoryRepository.save(category);
-        return category;
+        Category updateCategory = categoryRepository.save(category);
+        //TODO
+        generateListHtml();
+        if(updateCategory.getHaveHtml()){
+            convertHtml(updateCategory);
+        }
+        return updateCategory;
     }
+
+
+    @Override
+    public ModelAndView preview(Integer id){
+        ModelAndView modelAndView = new ModelAndView();
+        Category category = findById(id);
+        CategoryArticleListDao articleListVo = getArticleListByCategory(category);
+
+        Template template = templateService.findById(category.getTemplateId());
+        modelAndView.addObject("view",articleListVo);
+        modelAndView.setViewName(template.getTemplateValue());
+        return modelAndView;
+    }
+
+    @Override
+    public ModelAndView getArticleListByCategory(int categoryId, int page){
+        ModelAndView modelAndView =new ModelAndView();
+        Category category = findById(categoryId);
+
+        CategoryArticleListDao articleListByCategory = getArticleListByCategory(category, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id")));
+
+        Template template = templateService.findById(category.getTemplateId());
+
+        modelAndView.setViewName(template.getTemplateValue());
+        modelAndView.addObject("view",articleListByCategory);
+        return modelAndView;
+    }
+
+
+    @Override
+    public CategoryArticleListDao getArticleListByCategory(Category category){
+
+        return getArticleListByCategory(category,PageRequest.of(0, 10,Sort.by(Sort.Direction.DESC,"id")));
+    }
+
+
+
+    private CategoryArticleListDao getArticleListByCategory(Category category,Pageable pageable){
+        CategoryArticleListDao articleListVo = new CategoryArticleListDao();
+        Page<ArticleDto> articleDtoPage = articleService.findArticleListByCategoryId(category.getId(), pageable);
+        articleListVo.setPage(articleDtoPage);
+        articleListVo.setCategory(category);
+        articleListVo.setViewName(category.getViewName());
+        return articleListVo;
+    }
+
+    /**
+     * generate article list title info`
+     * @param category
+     */
+    private void convertHtml(Category category) {
+        CategoryArticleListDao articleListVo = getArticleListByCategory(category);
+
+        Template template = templateService.findById(category.getTemplateId());
+        TemplateUtil.convertHtmlAndSave(articleListVo,template);
+    }
+
+    /**
+     * generate components
+     */
+    private void generateListHtml() {
+        Components templatePage = templatePageService.findByDataName("categoryServiceImpl.listAsTree");
+        TemplateUtil.convertHtmlAndSave(listAsTree(),templatePage);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        Category category = findById(id);
+        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
+        log.info("### delete category"+ category.getName());
+        categoryRepository.deleteById(id);
+
+        //TODO
+        List<ArticleCategory> articleCategories = articleCategoryRepository.deleteByCategoryId(id);
+        log.info("### delete  article category"+articleCategories.size());
+        generateListHtml();
+    }
+
+
 
     @Override
     public Category findById(int id) {
@@ -93,26 +174,16 @@ public class CategoryServiceImpl implements ICategoryService {
         throw new ObjectException("Category not found");
     }
 
-    @Override
-    public List<ArticleDto> findArticleById(int id) {
-        List<Article> articles = articleRepository.findByCategoryId(id);
-        List<ArticleDto> articleDtos = articles.stream().map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article, articleDto);
-            return articleDto;
-        }).collect(Collectors.toList());
-        return articleDtos;
-    }
 
-    @Override
-    public CategoryDetailVO findCategoryDetailVOByID(int id) {
-        Category category = findById(id);
-        CategoryDetailVO categoryDetailVO = new CategoryDetailVO();
-        BeanUtils.copyProperties(category,categoryDetailVO);
-        List<ArticleDto> articleDtos = findArticleById(id);
-        categoryDetailVO.setArticleVOList(articleDtos);
-        return categoryDetailVO;
-    }
+
+//    @Override
+//    public CategoryArticleListDao findCategoryDetailVOByID(int id) {
+//        Category category = findById(id);
+//        return  getArticleListByCategory(category);
+//
+//    }
+
+
 
     @Override
     public Page<CategoryDto> list(Pageable pageable) {
@@ -153,16 +224,11 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ModelAndView preview(Integer id){
-        ModelAndView modelAndView = new ModelAndView();
-        CategoryDetailVO categoryDetailVO = findCategoryDetailVOByID(id);
-        Optional<Template> template = templateRepository.findById(categoryDetailVO.getTemplateId());
-        if(!template.isPresent()){
-            throw new TemplateException("Category Template not found !!");
-        }
-        modelAndView.setViewName(template.get().getTemplateValue());
-        return modelAndView;
+    @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
+    public List<CategoryVO> listAsTree() {
+        return listAsTree(Sort.by("id"));
     }
+
 
     private List<CategoryVO> createTree(int pid,List<CategoryVO> categories){
         List<CategoryVO> treeCategory = new ArrayList<>();
@@ -175,5 +241,19 @@ public class CategoryServiceImpl implements ICategoryService {
         return treeCategory;
     }
 
-
+    @Override
+    public   List<Category> findCategoryByArticleId(int articleId) {
+        Specification<Category> specification = new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Subquery<ArticleCategory> subquery = criteriaQuery.subquery(ArticleCategory.class);
+                Root<ArticleCategory> subRoot = subquery.from(ArticleCategory.class);
+                subquery  = subquery.select(subRoot.get("categoryId"))
+                        .where(criteriaBuilder.equal(subRoot.get("articleId"),articleId));
+                return root.get("id").in(subquery);
+            }
+        };
+        List<Category> categories = categoryRepository.findAll(specification);
+        return categories;
+    }
 }

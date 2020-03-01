@@ -1,5 +1,6 @@
 package com.wangyang.cms.controller.api;
 
+import com.wangyang.cms.core.jms.producer.IProducerService;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.params.ArticleParams;
@@ -30,6 +31,9 @@ public class ArticleController {
     @Autowired
     IArticleService articleService;
 
+    @Autowired
+    IProducerService producerService;
+
     @GetMapping
     public Page<? extends  ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
                                                 @RequestParam(value = "more", defaultValue = "true") Boolean more,
@@ -43,7 +47,25 @@ public class ArticleController {
 
     @PostMapping
     public ArticleDetailVO createArticle(@Valid @RequestBody ArticleParams articleParams){
-        return  articleService.createArticle(articleParams, articleParams.getTagIds(), articleParams.getCategoryIds());
+        ArticleDetailVO article = articleService.createArticle(articleParams, articleParams.getTagIds(), articleParams.getCategoryIds());
+        if(article.getHaveHtml()){
+            producerService.sendMessage(article);
+            producerService.commonTemplate("AC");
+//            covertHtml(articleDetailVO);
+        }
+        return article;
+    }
+
+
+    @PostMapping("/form")
+    public ArticleDetailVO createArticleByForm(@Valid  ArticleParams articleParams){
+        ArticleDetailVO article = articleService.createArticle(articleParams, articleParams.getTagIds(), articleParams.getCategoryIds());
+        if(article.getHaveHtml()){
+            producerService.sendMessage(article);
+            producerService.commonTemplate("AC");
+//            covertHtml(articleDetailVO);
+        }
+        return article;
     }
 
     @GetMapping("/{articleId}/del")
@@ -54,8 +76,14 @@ public class ArticleController {
     @PostMapping("/update/{articleId}")
     public ArticleDetailVO updateArticle(@Valid @RequestBody ArticleParams articleParams,
                                          @PathVariable("articleId") Integer articleId){
+        ArticleDetailVO articleDetailVO = articleService.updateArticle(articleId, articleParams, articleParams.getTagIds(), articleParams.getCategoryIds());
 
-        return articleService.updateArticle(articleId,articleParams,articleParams.getTagIds(),articleParams.getCategoryIds());
+        if(articleDetailVO.getHaveHtml()){
+            producerService.sendMessage(articleDetailVO);
+            producerService.commonTemplate("AU");
+//            covertHtml(articleDetailVO);
+        }
+        return articleDetailVO;
     }
     @GetMapping("/preview/{articleId}")
     public String preview(@PathVariable("articleId")Integer articleId){

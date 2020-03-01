@@ -6,6 +6,8 @@ import com.wangyang.cms.pojo.params.ArticleParams;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -18,8 +20,17 @@ public class TestArticleService
     IArticleService articleService;
 
     @Test
-    public void testCreateArticle(){
+    public void test1(){
+        articleService.articleShowLatest().forEach(articleDto -> System.out.println(articleDto));
+    }
 
+
+    @Test
+    public void test2(){
+
+    }
+    @Test
+    public void testCreateArticle(){
     }
 
     @Test
@@ -39,8 +50,7 @@ public class TestArticleService
     }
 
     @Test
-    @Transactional
-    public void testdelete(){
-
+    public void testPage(){
+        articleService.findArticleListByCategoryId(3, PageRequest.of(0,5));
     }
 }

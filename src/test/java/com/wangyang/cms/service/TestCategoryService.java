@@ -18,4 +18,8 @@ public class TestCategoryService {
         List<CategoryVO> categoryVOS = categoryService.listAsTree(Sort.by("id"));
         System.out.println(categoryVOS);
     }
+    @Test
+    public void test(){
+        categoryService.findCategoryByArticleId(3);
+    }
 }

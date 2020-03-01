@@ -2,18 +2,16 @@ package com.wangyang.cms.utils;
 
 import com.wangyang.cms.expection.FileOperationException;
 import com.wangyang.cms.expection.TemplateException;
-import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Template;
-import com.wangyang.cms.pojo.entity.TemplatePage;
+import com.wangyang.cms.pojo.entity.Components;
 import com.wangyang.cms.pojo.entity.base.BaseTemplate;
 import com.wangyang.cms.pojo.support.CmsConst;
-import com.wangyang.cms.pojo.vo.ArticleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -21,8 +19,8 @@ import org.thymeleaf.context.Context;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,22 +46,44 @@ public class TemplateUtil {
     }
 
 
+    public static void deleteTemplateHtml(String oldName,String path){
+        if(StringUtils.isEmpty(oldName)){
+            return;
+        }
+        String filePath=workDir+"/"+ CmsConst.STATIC_HTML_PATH;
+        if(path!=null){
+            filePath=filePath+"/path";
+        }
+        File file = new File(filePath+"/"+oldName+".html");
+        if(file.exists()){
+            file.delete();
+            log.info("### delete file"+file.getPath());
+        }
+
+    }
+
     public static String convertHtmlAndSave(Object object, BaseTemplate template){
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",object);
+        map.put("template",template);
+        map.put("isSave",true);
         Context context = new Context();
-        context.setVariable("view",object);
-        return  convertHtml(template,context,getViewName(object),true);
+        context.setVariables(map);
+        return  convertHtml(template,context,object,true);
 
     }
     public static String convertHtmlAndPreview(Object object, BaseTemplate template){
         Context context = new Context();
         context.setVariable("view",object);
-        return  convertHtml(template,context,getViewName(object),false);
+        return  convertHtml(template,context,object,false);
     }
 
-    private static String getViewName(Object object){
+    private static String getValue(Object object,String method){
         String viewName = null;
         try {
-            viewName = (String)object.getClass().getMethod("getViewName").invoke(object);
+            Method[] methods = object.getClass().getDeclaredMethods();
+
+            viewName = (String)object.getClass().getMethod(method).invoke(object);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -76,11 +96,11 @@ public class TemplateUtil {
 
 
 
-    public static String convertHtml(BaseTemplate baseTemplate, Context context,String viewName,boolean isSaveFile) {
+    public static String convertHtml(BaseTemplate baseTemplate, Context context,Object object,boolean isSaveFile) {
         Assert.notNull(baseTemplate,"template can't null");
         String  html;
-        if(baseTemplate instanceof TemplatePage){
-            TemplatePage templatePage = (TemplatePage) baseTemplate;
+        if(baseTemplate instanceof Components){
+            Components templatePage = (Components) baseTemplate;
             html = getHtml(templatePage.getTemplateValue(),context);
 
             if(isSaveFile){
@@ -91,7 +111,7 @@ public class TemplateUtil {
             html = getHtml(template.getTemplateValue(),context);
 
             if(isSaveFile){
-                saveFile(template.getPath(),viewName,html);
+                saveFile(getValue(object,"getPath"),getValue(object,"getViewName"),html);
             }
         }
         return html;
@@ -116,13 +136,25 @@ public class TemplateUtil {
     private static String saveFile(String path,String viewName,String html) {
         if(path==null||"".equals(path)){
             path = workDir+"/"+ CmsConst.STATIC_HTML_PATH;
+        }else{
+            path = workDir+"/"+ CmsConst.STATIC_HTML_PATH+"/"+path;
         }
+
         if(viewName==null||"".equals(viewName)){
             throw new TemplateException("Template  view name can't null in template page!!");
+        }
+        Path savePath = Paths.get(path);
+        if (Files.notExists(savePath)){
+            try {
+                Files.createDirectories(savePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         try(FileWriter write = new FileWriter(path+"/"+viewName+".html")) {
             write.write(html);
+            log.info("### Write file["+path+"/"+viewName+".html] success!!");
         } catch (IOException e) {
             throw new FileOperationException("Write html error!!");
         }

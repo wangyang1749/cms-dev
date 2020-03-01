@@ -1,10 +1,9 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.params.CategoryParam;
-import com.wangyang.cms.pojo.vo.CategoryDetailVO;
+import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.vo.CategoryVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +16,14 @@ import java.util.List;
 public interface ICategoryService {
     /**
      * add category
-     * @param category
+     * @param categoryParam
      * @return
      */
-    Category add(Category category);
+    Category add(CategoryParam categoryParam);
+
+    CategoryArticleListDao getArticleListByCategory(Category category);
+
+    ModelAndView getArticleListByCategory(int categoryId,int page);
 
     /**
      * delete by Id
@@ -42,8 +45,7 @@ public interface ICategoryService {
      * @return
      */
     Category findById(int id);
-    List<ArticleDto> findArticleById(int id);
-    CategoryDetailVO findCategoryDetailVOByID(int id);
+//    CategoryArticleListDao findCategoryDetailVOByID(int id);
     /**
      * category page
      * @return
@@ -53,5 +55,8 @@ public interface ICategoryService {
     List<CategoryDto> listAll();
 
     List<CategoryVO> listAsTree(@NonNull Sort sort);
+    List<CategoryVO> listAsTree();
     ModelAndView preview(Integer id);
+
+    List<Category> findCategoryByArticleId(int id);
 }

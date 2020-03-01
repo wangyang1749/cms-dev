@@ -60,4 +60,9 @@ public class TemplateServiceImpl implements ITemplateService {
     public List<Template> findByTemplateType(TemplateType type) {
         return templateRepository.findByTemplateType(type);
     }
+
+    @Override
+    public void deleteAll() {
+        templateRepository.deleteAll();
+    }
 }

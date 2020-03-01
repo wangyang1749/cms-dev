@@ -1,0 +1,10 @@
+<h2>new Article</h2>
+<div>
+
+    <ul>
+        <li th:each="item : ${view}">
+            <a href="#" th:text="${item.title}"></a>
+        </li>
+    </ul>
+
+</div>

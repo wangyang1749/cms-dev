@@ -4,18 +4,18 @@ import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.entity.Tags;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public class ArticleDetailVO extends ArticleDto {
+public class ArticleDetailVO extends ArticleDto implements Serializable {
     private String originalContent;
-
     private Set<Integer> tagIds;
     private Set<Integer> categoryIds;
     private String formatContent;
-    private String summary;
     private List<Tags> tags;
     private List<Category> categories;
+
 
     public String getOriginalContent() {
         return originalContent;
@@ -33,13 +33,7 @@ public class ArticleDetailVO extends ArticleDto {
         this.formatContent = formatContent;
     }
 
-    public String getSummary() {
-        return summary;
-    }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
 
     public List<Tags> getTags() {
         return tags;

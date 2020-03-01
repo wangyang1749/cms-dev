@@ -3,6 +3,7 @@ package com.wangyang.cms.handle;
 import com.wangyang.cms.pojo.enums.AttachmentType;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.UploadResult;
+import com.wangyang.cms.utils.CMSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -66,7 +67,7 @@ public class LocalFileHandler implements FileHandler{
             // Build upload result
             UploadResult uploadResult = new UploadResult();
             uploadResult.setFilename(originalFilename);
-            uploadResult.setFilePath(subFilePath);
+            uploadResult.setFilePath(CMSUtils.getHostAddress() +"/"+subFilePath);
             uploadResult.setKey(subFilePath);
 //            uploadResult.setSuffix(extension);
             uploadResult.setMediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())));

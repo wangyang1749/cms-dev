@@ -38,10 +38,17 @@ public class CmsConfig implements ApplicationContextAware {
 //    }
     @Value("${cms.workDir}")
     private String workDir;
-    private ApplicationContext applicationContext;
+    private static ApplicationContext applicationContext;
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public  void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext=applicationContext;
+    }
+
+    public static <T> T  getBean(Class<T> clazz) {
+        return applicationContext != null?applicationContext.getBean(clazz):null;
+    }
+    public static Object  getBean(String name) {
+        return applicationContext != null?applicationContext.getBean(name):null;
     }
 
     @Bean
@@ -79,14 +86,18 @@ public class CmsConfig implements ApplicationContextAware {
         templateEngine.addDialect(new CmsDialect());
 
         SpringResourceTemplateResolver springResourceTemplateResolver = new SpringResourceTemplateResolver();
-        springResourceTemplateResolver.setPrefix("file:"+workDir+"/"+CmsConst.SYSTEM_TEMPLATE_PATH+"/");
+        springResourceTemplateResolver.setPrefix("file:"+workDir+"/");
         springResourceTemplateResolver.setSuffix(".html");
         //set cache
         springResourceTemplateResolver.setCacheable(false);
         springResourceTemplateResolver.setCharacterEncoding("UTF-8");
         springResourceTemplateResolver.setApplicationContext(this.applicationContext);
         springResourceTemplateResolver.setOrder(Integer.valueOf(1));
-        springResourceTemplateResolver.getResolvablePatternSpec().addPattern("@*");
+        springResourceTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
+        springResourceTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
+
+
+
         templateEngine.addTemplateResolver(springResourceTemplateResolver);
 
         StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
