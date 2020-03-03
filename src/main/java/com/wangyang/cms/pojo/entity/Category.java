@@ -16,10 +16,31 @@ public class Category  extends BaseEntity implements Serializable {
     private int articleNumber;
     private Integer templateId;
     private Boolean haveHtml;
+
+    @Column(name = "have_children", columnDefinition = "bit(1) default 0")
+    private Boolean haveChildren=false;
     private String viewName;
     private Boolean status=true;
     private String picPath;
     private String path;
+    @Column(name = "category_order",columnDefinition = "int default 1")
+    private int order;
+
+    public Boolean getHaveChildren() {
+        return haveChildren;
+    }
+
+    public void setHaveChildren(Boolean haveChildren) {
+        this.haveChildren = haveChildren;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
     public String getPath() {
         return path;

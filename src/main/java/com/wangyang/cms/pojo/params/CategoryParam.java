@@ -13,6 +13,15 @@ public class CategoryParam {
     private Boolean haveHtml;
     private String picPath;
     private String path="articleList";
+    private int order;
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
     public String getPath() {
         return path;

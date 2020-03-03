@@ -21,7 +21,33 @@ public class Attachment extends BaseEntity {
     private Long size;
     private AttachmentType type;
     private String mediaType;
+    private Integer width;
+    private Integer height;
+    private String thumbPath;
 
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public String getThumbPath() {
+        return thumbPath;
+    }
+
+    public void setThumbPath(String thumbPath) {
+        this.thumbPath = thumbPath;
+    }
 
     public int getId() {
         return id;

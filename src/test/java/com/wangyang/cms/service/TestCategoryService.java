@@ -15,11 +15,13 @@ public class TestCategoryService {
 
     @Test
     public void testTree(){
-        List<CategoryVO> categoryVOS = categoryService.listAsTree(Sort.by("id"));
+        List<CategoryVO> categoryVOS = categoryService.listAsTree();
         System.out.println(categoryVOS);
     }
     @Test
     public void test(){
         categoryService.findCategoryByArticleId(3);
     }
+
+    public void test2(){}
 }

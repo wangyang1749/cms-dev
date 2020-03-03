@@ -1,7 +1,6 @@
 package com.wangyang.cms.controller;
 
 import com.wangyang.cms.core.view.ExcelView;
-import com.wangyang.cms.core.view.PdfView;
 import com.wangyang.cms.pojo.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,8 +75,8 @@ public class TestController {
         list.add(user);
         ModelAndView mv = new ModelAndView();
         mv.addObject("list", list);
-        View view = new PdfView();
-        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
+//        View view = new PdfView();
+//        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
         return mv;
     }
 

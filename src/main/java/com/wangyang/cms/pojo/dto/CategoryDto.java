@@ -15,6 +15,15 @@ public class CategoryDto {
     private String viewName;
     private String picPath;
     private String path;
+    private int order;
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
     public String getPath() {
         return path;

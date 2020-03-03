@@ -393,7 +393,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
                 return null;
             }
         };
-        return articleShow(specification,PageRequest.of(0,10,Sort.by(Sort.Order.desc("createDate"))));
+        return articleShow(specification,PageRequest.of(0,5,Sort.by(Sort.Order.desc("createDate"))));
     }
 
     @Override

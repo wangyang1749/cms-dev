@@ -1,6 +1,7 @@
 package com.wangyang.cms.handle;
 
 import com.wangyang.cms.expection.FileOperationException;
+import com.wangyang.cms.pojo.entity.Attachment;
 import com.wangyang.cms.pojo.enums.AttachmentType;
 import com.wangyang.cms.pojo.support.UploadResult;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +39,24 @@ public class FileHandlers {
         }
 
         throw new FileOperationException("No available file handler to upload the file").setErrorData(attachmentType);
+    }
+
+    public void delete(@NonNull Attachment attachment) {
+        Assert.notNull(attachment, "Attachment must not be null");
+        delete(attachment.getType(), attachment.getFileKey());
+    }
+
+
+    public void delete(@Nullable AttachmentType type, @NonNull String key) {
+        for (FileHandler fileHandler : fileHandlers) {
+            if (fileHandler.supportType(type)) {
+                // Delete the file
+                fileHandler.delete(key);
+                return;
+            }
+        }
+
+        throw new FileOperationException("No available file handlers to delete the file").setErrorData(type);
     }
 
     /**

@@ -4,12 +4,25 @@ import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Category;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public class CategoryArticleListDao {
 
     private String viewName;
     private Page<ArticleDto> page;
     private Category category;
+    private List<Category> children;
+    private Category parent;
     private String path;
+
+
+    public Category getParent() {
+        return parent;
+    }
+
+    public void setParent(Category parent) {
+        this.parent = parent;
+    }
 
     public String getPath() {
         return category.getPath();
@@ -19,7 +32,13 @@ public class CategoryArticleListDao {
         this.path = path;
     }
 
+    public List<Category> getChildren() {
+        return children;
+    }
 
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
 
     public String getViewName() {
         return viewName;

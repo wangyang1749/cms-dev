@@ -11,12 +11,14 @@ public class CMSUtils {
     }
 
     public static String getHostAddress(){
+        /**
         try {
             InetAddress address = InetAddress.getLocalHost();
             return String.format("http://%s:%s",address.getHostAddress(),"8080");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+         **/
         return String.format("http://%s:%s", "127.0.0.1", "8080");
     }
 }

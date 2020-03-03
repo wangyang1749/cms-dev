@@ -62,6 +62,11 @@ public class CategoryServiceImpl implements ICategoryService {
            String viewName = CMSUtils.randomViewName();
            category.setViewName(viewName);
         }
+        if(category.getParentId()!=0){
+            Category parentCategory = findById(category.getTemplateId());
+            parentCategory.setHaveChildren(true);
+            categoryRepository.save(parentCategory);
+        }
         Category saveCategory = categoryRepository.save(category);
         //TODO
         generateListHtml();
@@ -115,8 +120,32 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryArticleListDao getArticleListByCategory(Category category){
+        CategoryArticleListDao categoryArticleListDao = getArticleListByCategory(category, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id")));
+        if(category.getHaveChildren()){
+            List<Category> categoryList = categoryRepository.findAll(new Specification<Category>() {
+                @Override
+                public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-        return getArticleListByCategory(category,PageRequest.of(0, 10,Sort.by(Sort.Direction.DESC,"id")));
+                    return criteriaBuilder.equal(root.get("parentId"), category.getId());
+                }
+            });
+            categoryArticleListDao.setChildren(categoryList);
+            log.debug("##这个category有子节点!!");
+        }
+        if(category.getParentId()!=0){
+            List<Category> categoryList = categoryRepository.findAll(new Specification<Category>() {
+                @Override
+                public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                    return criteriaBuilder.equal(root.get("id"), category.getParentId());
+                }
+            });
+
+            categoryArticleListDao.setParent(categoryList.get(0));
+            log.debug("##这个category有父节点!!");
+        }
+
+        return categoryArticleListDao;
     }
 
 
@@ -198,7 +227,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public List<CategoryDto> listAll() {
 
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
         return categories.stream().map(category -> {
             CategoryDto categoryDto = new CategoryDto();
             BeanUtils.copyProperties(category, categoryDto);
@@ -226,7 +255,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
     public List<CategoryVO> listAsTree() {
-        return listAsTree(Sort.by("id"));
+        return listAsTree(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
     }
 
 
