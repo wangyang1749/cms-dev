@@ -33,6 +33,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LocalFileHandler implements FileHandler{
     @Value("${cms.workDir}")
     private String workDir;
+    @Value("${cms.uploadPrefix}")
+    private String uploadPrefix;
     private final static String UPLOAD_SUB_DIR = "/upload/";
     private final static String THUMBNAIL_SUFFIX = "-thumbnail";
     private final static int THUMB_WIDTH = 256;
@@ -90,7 +92,12 @@ public class LocalFileHandler implements FileHandler{
             //Screenshot from 2020-02-28 15-43-32
             uploadResult.setFilename(originalBasename);
             ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
-            uploadResult.setFilePath(subFilePath);
+            if(uploadPrefix!=null){
+                uploadResult.setFilePath(uploadPrefix+subFilePath); //
+            }else {
+                uploadResult.setFilePath(subFilePath); //
+
+            }
             ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
             uploadResult.setKey(subFilePath);
             //png

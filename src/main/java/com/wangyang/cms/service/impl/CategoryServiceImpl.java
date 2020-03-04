@@ -62,23 +62,30 @@ public class CategoryServiceImpl implements ICategoryService {
            String viewName = CMSUtils.randomViewName();
            category.setViewName(viewName);
         }
-        if(category.getParentId()!=0){
-            Category parentCategory = findById(category.getTemplateId());
-            parentCategory.setHaveChildren(true);
-            categoryRepository.save(parentCategory);
-        }
+        //保存子Category
         Category saveCategory = categoryRepository.save(category);
         //TODO
         generateListHtml();
         if(saveCategory.getHaveHtml()){
+            //生成子 节点的静态页面
             convertHtml(category);
+            //判断是否存在父节点
+            if(category.getParentId()!=0){
+                Category parentCategory = findById(category.getParentId());
+                parentCategory.setHaveChildren(true);
+                Category saveCategoryParent = categoryRepository.save(parentCategory);
+                //重新生成父节点的静态页面
+                convertHtml(saveCategoryParent);
+            }
         }
+
         return saveCategory;
     }
 
     @Override
     public Category update(int id, CategoryParam categoryParam) {
         Category category = findById(id);
+
         TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
         BeanUtils.copyProperties(categoryParam,category);
         Category updateCategory = categoryRepository.save(category);
@@ -86,10 +93,32 @@ public class CategoryServiceImpl implements ICategoryService {
         generateListHtml();
         if(updateCategory.getHaveHtml()){
             convertHtml(updateCategory);
+        }else{
+            TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
+        }
+        if(category.getParentId()!=0){
+            Category parentCategory = findById(category.getParentId());
+            convertHtml(parentCategory);
         }
         return updateCategory;
     }
 
+
+    @Override
+    public void deleteById(int id) {
+        Category category = findById(id);
+        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
+        log.info("### delete category"+ category.getName());
+        categoryRepository.deleteById(id);
+        if(category.getParentId()!=0){
+            Category parentCategory = findById(category.getParentId());
+            convertHtml(parentCategory);
+        }
+        //TODO
+        List<ArticleCategory> articleCategories = articleCategoryRepository.deleteByCategoryId(id);
+        log.info("### delete  article category"+articleCategories.size());
+        generateListHtml();
+    }
 
     @Override
     public ModelAndView preview(Integer id){
@@ -125,8 +154,9 @@ public class CategoryServiceImpl implements ICategoryService {
             List<Category> categoryList = categoryRepository.findAll(new Specification<Category>() {
                 @Override
                 public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                    return criteriaQuery.where(criteriaBuilder.equal(root.get("parentId"), category.getId())
+                            ,criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
 
-                    return criteriaBuilder.equal(root.get("parentId"), category.getId());
                 }
             });
             categoryArticleListDao.setChildren(categoryList);
@@ -178,18 +208,7 @@ public class CategoryServiceImpl implements ICategoryService {
         TemplateUtil.convertHtmlAndSave(listAsTree(),templatePage);
     }
 
-    @Override
-    public void deleteById(int id) {
-        Category category = findById(id);
-        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-        log.info("### delete category"+ category.getName());
-        categoryRepository.deleteById(id);
 
-        //TODO
-        List<ArticleCategory> articleCategories = articleCategoryRepository.deleteByCategoryId(id);
-        log.info("### delete  article category"+articleCategories.size());
-        generateListHtml();
-    }
 
 
 

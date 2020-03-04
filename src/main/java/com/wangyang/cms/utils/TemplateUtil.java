@@ -52,7 +52,7 @@ public class TemplateUtil {
         }
         String filePath=workDir+"/"+ CmsConst.STATIC_HTML_PATH;
         if(path!=null){
-            filePath=filePath+"/path";
+            filePath=filePath+"/"+path;
         }
         File file = new File(filePath+"/"+oldName+".html");
         if(file.exists()){
