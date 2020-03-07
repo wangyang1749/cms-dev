@@ -5,12 +5,13 @@
     <packaging>pom</packaging>
     <modules>
         <module>cms-Authorize</module>
-        <module>flexmark-ext-gitlab</module>
         <module>cms-web</module>
-        <module>flexmark</module>
-        <module>flexmark-ext-tables</module>
-        <module>flexmark-ext-media-tags</module>
-        <module>flexmark-ext-toc</module>
+<!--        <module>flexmark</module>-->
+
+<!--        <module>flexmark-ext-gitlab</module>-->
+<!--        <module>flexmark-ext-tables</module>-->
+<!--        <module>flexmark-ext-media-tags</module>-->
+<!--        <module>flexmark-ext-toc</module>-->
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -211,6 +212,15 @@
             <version>3.8.0</version>
         </dependency>
 
+
+
+<!--        <dependency>-->
+<!--            <groupId>com.wangyang.flexmark</groupId>-->
+<!--            <artifactId>flexmark</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--            <systemPath>${project.basedir}/libs/flexmark-1.0-SNAPSHOT.jar</systemPath>-->
+<!--        </dependency>-->
+
         <!--		<dependency>-->
         <!--			<groupId>commons-fileupload</groupId>-->
         <!--			<artifactId>commons-fileupload</artifactId>-->
@@ -244,6 +254,68 @@
             <version>2.36.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-test-util</artifactId>
+            <version>${flexmark.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-test-specs</artifactId>
+            <version>${flexmark.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-ast</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-builder</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-collection</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-data</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-dependency</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-format</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-html</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-misc</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-sequence</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-visitor</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
 
     </dependencies>
 

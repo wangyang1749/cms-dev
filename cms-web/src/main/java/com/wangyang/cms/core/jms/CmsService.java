@@ -68,8 +68,9 @@ public class CmsService {
         Map<Integer, Category> categoryMap = ServiceUtil.convertToMap(categories, Category::getId);
 
         //得到新分类没有的集合
-        oldIdsNotExists.removeAll(categoryIds);
-        if(!CollectionUtils.isEmpty(oldIdsNotExists)){
+
+        if(!CollectionUtils.isEmpty(oldIdsNotExists)&&!CollectionUtils.isEmpty(categoryIds)){
+            oldIdsNotExists.removeAll(categoryIds);
             oldIdsNotExists.forEach(id->{
                 System.out.println(categoryMap.get(id));
                 generateCategoryArticleListByCategory(categoryMap.get(id));

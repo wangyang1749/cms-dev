@@ -12,32 +12,136 @@
     <artifactId>cms-web</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark</artifactId>
+            <version>0.60.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/flexmark-0.60.2.jar</systemPath>
+        </dependency>
 
         <dependency>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <artifactId>flexmark</artifactId>
-        </dependency>
-        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-gitlab</artifactId>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.60.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/flexmark-ext-gitlab-0.60.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-test-util</artifactId>
+            <version>${flexmark.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-test-specs</artifactId>
+            <version>${flexmark.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-ast</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-builder</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-collection</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-data</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-dependency</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-format</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-html</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-misc</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-sequence</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util-visitor</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+
+<!--        扩展的依赖-->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-tables</artifactId>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${flexmark.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-media-tags</artifactId>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${flexmark.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-toc</artifactId>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${flexmark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-emoji</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+
+
+
+
+        <!--        <dependency>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <artifactId>flexmark</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <artifactId>flexmark-ext-gitlab</artifactId>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <artifactId>flexmark-ext-tables</artifactId>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <artifactId>flexmark-ext-media-tags</artifactId>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <artifactId>flexmark-ext-toc</artifactId>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -45,6 +149,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
