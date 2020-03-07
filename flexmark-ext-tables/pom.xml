@@ -31,12 +31,12 @@
             <version>${flexmark.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-typographic</artifactId>
-            <version>${flexmark.version}</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-typographic</artifactId>-->
+<!--            <version>${flexmark.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-core-test</artifactId>
