@@ -134,28 +134,28 @@ public class TestFlexmark {
 
     @Test
     public void test5() throws  Exception{
-        try (OutputStream os = new FileOutputStream("/home/wy/Documents/cms/test/flexmark-java.pdf")) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.useFastMode();
-            builder.useSVGDrawer(new BatikSVGDrawer());
-            builder.addDOMMutator(LaTeXDOMMutator.INSTANCE); // Converts Latex to XHTML and MathML
-            builder.useMathMLDrawer(new MathMLDrawer());  // Renders MathML, not needed if you don't use math.
-            builder.useFont(new FSSupplier<InputStream>() {
-                @Override
-                public InputStream supply() {
-                    try {
-                        return new FileInputStream("/home/wy/Documents/cms/test/YaHei.Consolas.1.12.ttf");
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }, "ya-hei", 400, BaseRendererBuilder.FontStyle.NORMAL, true);
-//            builder.withW3cDocument(html5ParseDocument("",2),"");
-            builder.withUri("file:///home/wy/Documents/cms/cms-web/src/test/resources/index.html");
-            builder.toStream(os);
-            builder.run();
-        }
+//        try (OutputStream os = new FileOutputStream("/home/wy/Documents/cms/test/flexmark-java.pdf")) {
+//            PdfRendererBuilder builder = new PdfRendererBuilder();
+//            builder.useFastMode();
+//            builder.useSVGDrawer(new BatikSVGDrawer());
+//            builder.addDOMMutator(LaTeXDOMMutator.INSTANCE); // Converts Latex to XHTML and MathML
+//            builder.useMathMLDrawer(new MathMLDrawer());  // Renders MathML, not needed if you don't use math.
+//            builder.useFont(new FSSupplier<InputStream>() {
+//                @Override
+//                public InputStream supply() {
+//                    try {
+//                        return new FileInputStream("/home/wy/Documents/cms/test/YaHei.Consolas.1.12.ttf");
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return null;
+//                }
+//            }, "ya-hei", 400, BaseRendererBuilder.FontStyle.NORMAL, true);
+////            builder.withW3cDocument(html5ParseDocument("",2),"");
+//            builder.withUri("file:///home/wy/Documents/cms/cms-web/src/test/resources/index.html");
+//            builder.toStream(os);
+//            builder.run();
+//        }
     }
 
     @Test
