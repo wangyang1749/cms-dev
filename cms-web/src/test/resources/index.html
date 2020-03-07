@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <!--    <link rel="stylesheet" href="./fontawesome/css/fa-brands.css">-->
+    <!--    <link rel="stylesheet" href="./fontawesome/css/fa-regular.css">-->
+    <!--    <link rel="stylesheet" href="./fontawesome/css/fa-solid.css">-->
+    <!--    <link rel="stylesheet" href="./fontawesome/css/fontawesome.css">-->
+</head>
+<body>
+<div id="container">
+
+</div>
+<script src="./mermaid.min.js" charset="utf-8"></script>
+<script>
+    mermaid.mermaidAPI.initialize({
+        startOnLoad:false
+    });
+
+        // Example of using the API
+        var element = document.querySelector("#container");
+
+        var insertSvg = function(svgCode, bindFunctions){
+            element.innerHTML = svgCode;
+        };
+
+        var graphDefinition = 'graph TB\na-->b';
+        var graph = mermaid.mermaidAPI.render('graphDiv', graphDefinition, insertSvg);
+
+</script>
+</body>
+</html>

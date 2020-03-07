@@ -2,6 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>cms-Authorize</module>
+        <module>flexmark-ext-gitlab</module>
+        <module>cms-web</module>
+        <module>flexmark</module>
+        <module>flexmark-ext-tables</module>
+        <module>flexmark-ext-media-tags</module>
+        <module>flexmark-ext-toc</module>
+    </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -9,13 +19,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.wangyang.cms</groupId>
-    <artifactId>cms</artifactId>
+    <artifactId>cms-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cms</name>
     <description>cms project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
+        <!-- Define the version of OPEN HTML TO PDF in the properties section of your POM. -->
+        <openhtml.version>1.0.2</openhtml.version>
+        <flexmark.version>0.60.0</flexmark.version>
     </properties>
 
     <dependencies>
@@ -24,6 +37,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!--spring boot thymeleaf-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -78,12 +97,63 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <!--markdown-->
+
         <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark</artifactId>
-            <version>0.60.0</version>
+            <!-- ALWAYS required. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-core</artifactId>
+            <version>${openhtml.version}</version>
         </dependency>
+
+        <dependency>
+            <!-- Required for PDF output. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Required for image output only. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-java2d</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Optional, leave out if you do not need right-to-left or bi-directional text support. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-rtl-support</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Optional, leave out if you do not need logging via slf4j. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-slf4j</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Optional, leave out if you do not need SVG support. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-svg-support</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Optional, leave out if you do not need MathML support. -->
+            <!-- Introduced in RC-13. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-mathml-support</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Latex support plugin - also pulls in MathML support plugin. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-latex-support</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
 
         <!--activeMQ-->
         <dependency>
@@ -166,15 +236,17 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
         </dependency>
+        <!--执行Js-->
+
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>2.36.0</version>
+        </dependency>
+
+
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 
 </project>
