@@ -25,23 +25,6 @@
             <artifactId>flexmark-util</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-core-test</artifactId>
-            <version>${flexmark.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-test-util</artifactId>
-            <version>${flexmark.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-typographic</artifactId>
-            <version>${flexmark.version}</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 </project>
