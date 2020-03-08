@@ -3,7 +3,6 @@ package com.wangyang.cms.listener;
 import com.wangyang.cms.pojo.entity.Option;
 import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.entity.Components;
-import com.wangyang.cms.pojo.entity.User;
 import com.wangyang.cms.pojo.enums.TemplateType;
 import com.wangyang.cms.pojo.params.SheetParam;
 import com.wangyang.cms.pojo.support.CmsConst;
@@ -46,8 +45,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     @Autowired
     IOptionService optionService;
-    @Autowired
-    IUserService userService;
+//    @Autowired
+//    IUserService userService;
 
     @Autowired
     ISheetService sheetService;
@@ -77,11 +76,11 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     private void initDatabase(ApplicationStartedEvent applicationStartedEvent) {
 
-        log.info(">>> init user wangyang");
-        User user = new User();
-        user.setUsername("wangyang");
-        user.setPassword("123456");
-        userService.save(user);
+//        log.info(">>> init user wangyang");
+//        User user = new User();
+//        user.setUsername("wangyang");
+//        user.setPassword("123456");
+//        userService.save(user);
 
         List<Template> templates = Arrays.asList(
                 new Template("DEFAULT INDEX","templates/@article", TemplateType.ARTICLE),

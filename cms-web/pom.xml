@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>Cms-Authorize</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark</artifactId>
             <version>0.60.2</version>

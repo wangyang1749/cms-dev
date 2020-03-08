@@ -1,6 +1,5 @@
 package com.wangyang.cms.core.view;
 
-import com.wangyang.cms.pojo.entity.User;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
@@ -29,16 +28,16 @@ public class ExcelView extends AbstractXlsxView {
         row.createCell(2).setCellValue("password");
 
         if (model == null) return;
-        List<User> list = (List<User>) model.get("list");
-
-        for (int i = 0; i < list.size(); i++) {
-            User student = list.get(i);
-
-            Row tempRow = sheet.createRow(i+1);
-            tempRow.createCell(0).setCellValue(student.getId());
-            tempRow.createCell(1).setCellValue(student.getUsername());
-            tempRow.createCell(2).setCellValue(student.getPassword());
-        }
+//        List<User> list = (List<User>) model.get("list");
+//
+//        for (int i = 0; i < list.size(); i++) {
+//            User student = list.get(i);
+//
+//            Row tempRow = sheet.createRow(i+1);
+//            tempRow.createCell(0).setCellValue(student.getId());
+//            tempRow.createCell(1).setCellValue(student.getUsername());
+//            tempRow.createCell(2).setCellValue(student.getPassword());
+//        }
 
         OutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);

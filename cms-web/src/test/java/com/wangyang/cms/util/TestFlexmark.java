@@ -58,8 +58,8 @@ public class TestFlexmark {
 //            .set(TablesExtension.APPEND_MISSING_COLUMNS, true)
 //            .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
 //            .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
-//            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
-//            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY)
+    //            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
+    //            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY)
 //            .set(HtmlRenderer.SOFT_BREAK, "<br />\n");
 
 //    static final DataHolder OPTIONS = new MutableDataSet()

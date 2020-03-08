@@ -1,30 +1,20 @@
-package com.wangyang.cms.pojo.entity;
+package com.wangyang.authorize.pojo.entity;
 
-import com.wangyang.cms.pojo.entity.base.BaseEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "t_user")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int status;
-
     private String username;
     private String password;
+    private String phone;
     private String email;
-
-
+    //用户头像
+    private String avatar;
 
     public int getId() {
         return id;
@@ -32,14 +22,6 @@ public class User extends BaseEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getUsername() {
@@ -58,11 +40,27 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

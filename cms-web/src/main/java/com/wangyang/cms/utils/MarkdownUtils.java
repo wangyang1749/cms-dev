@@ -4,6 +4,8 @@ package com.wangyang.cms.utils;
 //import com.vladsch.flexmark.ext.tables.TablesExtension;
 //import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiImageType;
+import com.vladsch.flexmark.ext.emoji.EmojiShortcutType;
 import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -32,7 +34,9 @@ public class MarkdownUtils {
 
             )).set(TocExtension.LEVELS, 255)
             .set(GitLabExtension.INLINE_MATH_PARSER, true)
-            .set(GitLabExtension.RENDER_BLOCK_MATH, true);
+            .set(GitLabExtension.RENDER_BLOCK_MATH, true)
+            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
+                .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();

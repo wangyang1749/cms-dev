@@ -1,7 +1,6 @@
 package com.wangyang.cms.controller;
 
 import com.wangyang.cms.core.view.ExcelView;
-import com.wangyang.cms.pojo.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,31 +52,32 @@ public class TestController {
     }
     @RequestMapping("/hello4")
     public ModelAndView hello4(){
-        System.out.println("准备下载学生列表");
-        User user = new User();
-        user.setUsername("zhangsan");
-        user.setPassword("123456");
-        ArrayList<User> list = new ArrayList<>();
-        list.add(user);
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("list", list);
-        View view = new ExcelView();
-        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
-        return mv;
+//        System.out.println("准备下载学生列表");
+//        User user = new User();
+//        user.setUsername("zhangsan");
+//        user.setPassword("123456");
+//        ArrayList<User> list = new ArrayList<>();
+//        list.add(user);
+//        ModelAndView mv = new ModelAndView();
+//        mv.addObject("list", list);
+//        View view = new ExcelView();
+//        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
+//        return mv;
+        return null;
     }
     @RequestMapping("/hello5")
     public ModelAndView hello5(){
-        System.out.println("准备下载学生列表");
-        User user = new User();
-        user.setUsername("zhangsan");
-        user.setPassword("123456");
-        ArrayList<User> list = new ArrayList<>();
-        list.add(user);
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("list", list);
-//        View view = new PdfView();
-//        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
-        return mv;
+//        System.out.println("准备下载学生列表");
+//        User user = new User();
+//        user.setUsername("zhangsan");
+//        user.setPassword("123456");
+//        ArrayList<User> list = new ArrayList<>();
+//        list.add(user);
+//        ModelAndView mv = new ModelAndView();
+//        mv.addObject("list", list);
+////        View view = new PdfView();
+////        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
+        return null;
     }
 
 }

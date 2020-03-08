@@ -1,9 +1,8 @@
-package com.wangyang.cms.repository;
+package com.wangyang.authorize.repository;
 
-import com.wangyang.cms.pojo.entity.User;
+import com.wangyang.authorize.pojo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
 
-    User findByUsername(String  username);
 }
