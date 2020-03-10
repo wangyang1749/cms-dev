@@ -51,6 +51,8 @@ public class CmsConfig implements ApplicationContextAware {
         return applicationContext != null?applicationContext.getBean(name):null;
     }
 
+    
+
     @Bean
     public WebMvcConfigurer corsConfigurer()
     {

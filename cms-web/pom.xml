@@ -17,6 +17,7 @@
             <version>0.0.1-SNAPSHOT</version>
             <artifactId>Cms-Authorize</artifactId>
         </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>com.wangyang.cms</groupId>-->
 <!--            <artifactId>cms-oAuth2</artifactId>-->

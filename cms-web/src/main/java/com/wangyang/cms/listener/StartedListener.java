@@ -1,5 +1,7 @@
 package com.wangyang.cms.listener;
 
+import com.wangyang.authorize.pojo.entity.Permission;
+import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.cms.cache.StringCacheStore;
 import com.wangyang.cms.pojo.entity.Option;
 import com.wangyang.cms.pojo.entity.Template;
@@ -58,6 +60,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         initCms();
         stringCacheStore.setValue("workDir",workDir);
+
         if(!isInit()){
             log.info("### init database!!!");
             initDatabase(applicationStartedEvent);

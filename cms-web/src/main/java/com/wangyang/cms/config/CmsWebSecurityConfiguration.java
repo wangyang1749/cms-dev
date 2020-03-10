@@ -1,12 +1,16 @@
 package com.wangyang.cms.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wangyang.authorize.pojo.support.BaseResponse;
-import com.wangyang.cms.config.service.CmsUserDetailServiceImpl;
+import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
+import com.wangyang.authorize.config.CustomUrlDecisionManager;
+import com.wangyang.authorize.config.service.UserDetailServiceImpl;
+import com.wangyang.cms.pojo.support.BaseResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -15,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import java.io.PrintWriter;
 
@@ -27,11 +32,15 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    CustomUrlDecisionManager customUrlDecisionManager;
+
+    @Autowired
+    CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
     @Bean
     @Override
     public UserDetailsService userDetailsService(){
-
-        return new CmsUserDetailServiceImpl();
+        return new UserDetailServiceImpl();
     }
 
     @Override
@@ -42,16 +51,25 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/index.html","/hello","hello6");
+        web.ignoring().antMatchers("/admin/**","/hello","/templates/**","/403.html");
     }
 
     //    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().
-                and().authorizeRequests()
-                .antMatchers("/api/**")
-                .hasRole("ADMIN")
+        http.authorizeRequests()
+//                .antMatchers("/api/**")
+//                .hasRole("ADMIN")
+                .anyRequest().authenticated()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                        o.setAccessDecisionManager(customUrlDecisionManager);
+                        o.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        return o;
+                    }
+                })
                 .and()
+
                 .formLogin()
                 .usernameParameter("username")
                 .passwordParameter("password")
@@ -102,8 +120,8 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 });
-
-        http.csrf().disable().exceptionHandling();
+        http.cors();
+        http.csrf().disable();
     }
 
 }

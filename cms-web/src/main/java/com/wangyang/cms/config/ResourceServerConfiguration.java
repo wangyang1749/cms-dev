@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 //@Configuration
 //@EnableResourceServer
+
+//在使用oauth2时使用
 public class ResourceServerConfiguration{//} extends ResourceServerConfigurerAdapter {
 
 //    @Override

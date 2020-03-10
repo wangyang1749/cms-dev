@@ -6,6 +6,7 @@ import com.wangyang.authorize.repository.UserRepository;
 import com.wangyang.authorize.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,8 +18,8 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    static  PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Override
     public User findByUsername(String username) {
         User user = new User();
@@ -28,5 +29,12 @@ public class UserServiceImpl implements IUserService {
             throw new UserException("用户名不存在!!!");
         }
         return userList.get(0);
+    }
+
+
+    @Override
+    public User add(User user){
+        User saveUser = userRepository.save(user);
+        return saveUser;
     }
 }

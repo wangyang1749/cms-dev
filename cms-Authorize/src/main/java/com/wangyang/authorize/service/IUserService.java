@@ -5,4 +5,6 @@ import com.wangyang.authorize.pojo.entity.User;
 public interface IUserService {
 
     User findByUsername(String username);
+
+    User add(User user);
 }

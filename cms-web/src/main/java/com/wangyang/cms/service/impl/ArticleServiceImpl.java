@@ -322,6 +322,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         Set<Integer> articleIds = ServiceUtil.fetchProperty(articles, Article::getId);
 
         List<ArticleTags> articleTags = articleTagsRepository.findAllByArticleIdIn(articleIds);
+
         Set<Integer> tagIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getTagsId);
         List<Tags> tags = tagsRepository.findAllById(tagIds);
         Map<Integer, Tags> tagsMap = ServiceUtil.convertToMap(tags, Tags::getId);

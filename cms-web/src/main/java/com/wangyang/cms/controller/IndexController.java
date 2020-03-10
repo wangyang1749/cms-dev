@@ -10,4 +10,9 @@ public class IndexController {
     public String index(){
         return "redirect:admin/index.html";
     }
+
+//    @RequestMapping("/error")
+    public String error(){
+        return "=555";
+    }
 }
