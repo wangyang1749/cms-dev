@@ -1,12 +1,14 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.core.jms.CmsService;
+import com.wangyang.cms.expection.ArticleException;
 import com.wangyang.cms.expection.ObjectException;
 import com.wangyang.cms.expection.TemplateException;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.dto.TagsDto;
 import com.wangyang.cms.pojo.entity.*;
+import com.wangyang.cms.pojo.enums.ArticleStatus;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.BaseResponse;
@@ -77,31 +79,53 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public ArticleDetailVO createArticle(ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds) {
         Article article = new Article();
+        article.setStatus(ArticleStatus.PUBLISHED);
         BeanUtils.copyProperties(articleParams,article);
-        ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds, categoryIds);
+        ArticleDetailVO articleDetailVO = createOrUpdateArticleVo(article, tagsIds, categoryIds);
         return articleDetailVO;
 
     }
 
     @Override
+    public Article saveArticle(Integer articleId, ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds){
+        Article article;
+        if(articleId!=null){
+            article = findArticleById(articleId);
+            BeanUtils.copyProperties(articleParams,article);
+            articleTagsRepository.deleteByArticleId(articleId);
+            articleCategoryRepository.deleteByArticleId(articleId);
+        }else{
+            article = new Article();
+            BeanUtils.copyProperties(articleParams,article);
+        }
+        article.setStatus(ArticleStatus.DRAFT);
+        return createOrUpdateArticle(article,tagsIds,categoryIds);
+    }
+
+
+    @Override
     public ArticleDetailVO updateArticle(int articleId, ArticleParams articleParams,  Set<Integer> tagsIds, Set<Integer> categoryIds) {
         Article article = findArticleById(articleId);
         article.setPdfPath(null);
+        article.setStatus(ArticleStatus.PUBLISHED);
         TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
         BeanUtils.copyProperties(articleParams,article);
 
         //TODO temp delete all tags and category before update
         articleTagsRepository.deleteByArticleId(articleId);
         articleCategoryRepository.deleteByArticleId(articleId);
-        ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds, categoryIds);
+        ArticleDetailVO articleDetailVO = createOrUpdateArticleVo(article, tagsIds, categoryIds);
         return articleDetailVO;
     }
 
 
     @Override
     public String  generatePdf(Integer articleId) {
-        Article article = findArticleById(articleId);
 
+        Article article = findArticleById(articleId);
+        if(article.getStatus()!=ArticleStatus.PUBLISHED){
+            throw new ArticleException("文章没有发布不能生成PDF!!");
+        }
         String pdfPath= article.getPath()+"/"+article.getViewName()+".pdf";
         String absolutePath = workDir+"/html/"+pdfPath;
         File file = new File(absolutePath);
@@ -113,7 +137,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             }
             return article.getPdfPath();
         }else {
-            String url = "http://localhost:8080/article/previewPdf/"+articleId;
+            String url = "http://localhost:8080/preview/pdf/"+articleId;
             String result = NodeJsUtil.execNodeJs("node", workDir+"/templates/nodejs/generatePdf.js", url, workDir + "/html/" + pdfPath);
             System.out.println(result);
             article.setPdfPath(pdfPath);
@@ -187,7 +211,14 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
     @Override
-    public ArticleDetailVO createOrUpdateArticle(Article article, Set<Integer> tagsIds,Set<Integer> categoryIds) {
+    public ArticleDetailVO createOrUpdateArticleVo(Article article, Set<Integer> tagsIds,Set<Integer> categoryIds) {
+        Article saveArticle = createOrUpdateArticle(article, tagsIds, categoryIds);
+        // crate value object
+        ArticleDetailVO articleVO = convert(saveArticle,tagsIds,categoryIds);
+        return articleVO;
+    }
+
+    private Article createOrUpdateArticle(Article article, Set<Integer> tagsIds,Set<Integer> categoryIds) {
         article = super.createOrUpdate(article);
         String viewName = article.getViewName();
         if(viewName==null||"".equals(viewName)){
@@ -223,11 +254,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             //save article category
             articleCategoryRepository.saveAll(articleCategoryList);
         }
-
-        // crate value object
-        ArticleDetailVO articleVO = convert(saveArticle,tagsIds,categoryIds);
-        return articleVO;
+        return article;
     }
+
 
     private ArticleDetailVO convert(Article saveArticle, Set<Integer> tagsIds, Set<Integer> categoryIds) {
         ArticleDetailVO articleDetailVO = new ArticleDetailVO();
@@ -275,7 +304,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         List<Integer> allId = articleRepository.findAllId();
         allId.forEach(id->{
             ArticleDetailVO articleDetailVO = findArticleAOById(id);
-
             Optional<Template> optionalTemplate = templateRepository.findById(articleDetailVO.getTemplateId());
             if(optionalTemplate.isPresent()){
                     TemplateUtil.convertHtmlAndSave(articleDetailVO,optionalTemplate.get());

@@ -38,8 +38,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
                 return SecurityConfig.createList(str);
             }
         }
-//        return SecurityConfig.createList("ROLE_LOGIN");
-        throw new AccessDeniedException("页面不存在");
+        return SecurityConfig.createList("ROLE_LOGIN");
 
     }
 

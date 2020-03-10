@@ -25,11 +25,16 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
                 return;
             }
         }
-        if (authentication instanceof AnonymousAuthenticationToken) {
-            throw new AccessDeniedException("尚未登录，请登录!");
-        }
+
         for (ConfigAttribute configAttribute : configAttributes) {
             String needRole = configAttribute.getAttribute();
+            if(needRole.equals("ROLE_LOGIN")){
+                if (authentication instanceof AnonymousAuthenticationToken) {
+                    throw new AccessDeniedException("尚未登录，请登录!");
+                }else {
+                    return;
+                }
+            }
             //获取用户权限, 与当前权限进行比较
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             for (GrantedAuthority authority : authorities) {

@@ -11,8 +11,4 @@ public class IndexController {
         return "redirect:admin/index.html";
     }
 
-//    @RequestMapping("/error")
-    public String error(){
-        return "=555";
-    }
 }

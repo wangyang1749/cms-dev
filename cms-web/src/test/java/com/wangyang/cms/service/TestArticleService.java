@@ -1,62 +1,46 @@
 package com.wangyang.cms.service;
 
+
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
-import com.wangyang.cms.pojo.params.ArticleParams;
-import com.wangyang.cms.repository.ArticleRepository;
+import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+@Transactional
+public class TestArticleService extends AbstractServiceTest{
 
-@SpringBootTest
-public class TestArticleService
-{
-    @Autowired
-    IArticleService articleService;
 
-    @Autowired
-    ArticleRepository articleRepository;
-
+    public void save(){
+        Article article = articleService.saveArticle(null, addArticle(), tagIds(), categoryIds());
+        Assert.assertEquals(ArticleStatus.DRAFT,article.getStatus());
+    }
     @Test
-    public void test1(){
-        articleService.articleShowLatest().forEach(articleDto -> System.out.println(articleDto));
+    public void testSave(){
+        Article article = articleService.saveArticle(null, addArticle(), tagIds(), categoryIds());
+        Assert.assertEquals("Title",article.getTitle());
+        Assert.assertEquals(ArticleStatus.DRAFT,article.getStatus());
+        Article updateArticle = articleService.saveArticle(article.getId(), updateArticle(), tagIds(), categoryIds());
+        Assert.assertEquals("updateTitle",updateArticle.getTitle());
+        Assert.assertEquals(ArticleStatus.DRAFT,updateArticle.getStatus());
+    }
+    @Test
+    public void testCreate(){
+        ArticleDetailVO article = articleService.createArticle(addArticle(), tagIds(), categoryIds());
+        Assert.assertEquals(ArticleStatus.PUBLISHED,article.getStatus());
     }
 
 
     @Test
-    public void test2(){
-        List<Integer> list = articleRepository.findAllId();
-//        Assert.assertNotNull(list);
-    }
-    @Test
-    public void testCreateArticle(){
-    }
-
-    @Test
-    public void testCreateArticleAndHtml(){
-
+    public void test(){
+        int beforeSize = articleRepository.findAllId().size();
+        testCreate();
+        save();
+        int afterSize = articleRepository.findAllId().size();
+        Assert.assertEquals(beforeSize+1,afterSize);
+        
     }
 
-    @Test
-    public void testMarkDown(){
-
-    }
-
-    @Test
-    @Transactional
-    public void testUpdateLikes(){
-
-    }
-
-    @Test
-    public void testPage(){
-    }
 }

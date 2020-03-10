@@ -23,13 +23,15 @@ import java.util.Set;
 @TemplateOption
 public interface IArticleService extends IBaseArticleService<Article> {
 
-    ArticleDetailVO  updateArticle(int articleId, ArticleParams updateArticle,  Set<Integer> tagsIds, Set<Integer> categoryIds);
+    Article saveArticle(Integer articleId, ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds);
+
+    ArticleDetailVO  updateArticle(int articleId, ArticleParams updateArticle, Set<Integer> tagsIds, Set<Integer> categoryIds);
     ArticleDetailVO createArticle(ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds);
 
 
     Article deleteByArticleId(int id);
 
-    ArticleDetailVO createOrUpdateArticle(Article article, Set<Integer> tagsIds, Set<Integer> categoryIds);
+    ArticleDetailVO createOrUpdateArticleVo(Article article, Set<Integer> tagsIds, Set<Integer> categoryIds);
 
 
     /**

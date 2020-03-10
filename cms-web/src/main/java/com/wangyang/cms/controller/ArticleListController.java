@@ -27,6 +27,4 @@ public class ArticleListController {
         page = page-1;
         return categoryService.getArticleListByCategory(categoryId,page);
     }
-
-
 }

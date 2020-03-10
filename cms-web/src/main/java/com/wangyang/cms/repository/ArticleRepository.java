@@ -1,6 +1,7 @@
 package com.wangyang.cms.repository;
 
 import com.wangyang.cms.pojo.entity.Article;
+import com.wangyang.cms.pojo.enums.ArticleStatus;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.vo.ArticleVO;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public interface ArticleRepository extends JpaRepository<Article,Integer>
     @Modifying
     int updateLikes(@Param("aid") int id);
 
-    @Query(value = "select o.id from Article o")
+    @Query(value = "select o.id from Article o where status='PUBLISH'")
     List<Integer> findAllId();
 
 //    @Query("select o from Article o where o.id in (select a.articleId from ArticleCategory a where a.categoryId=?1)")

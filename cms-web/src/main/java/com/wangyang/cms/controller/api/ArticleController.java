@@ -56,7 +56,7 @@ public class ArticleController {
     }
 
     @PostMapping
-    public ArticleDetailVO createArticle(@Valid @RequestBody ArticleParams articleParams){
+    public ArticleDetailVO createArticle(@RequestBody @Valid ArticleParams articleParams){
         ArticleDetailVO article = articleService.createArticle(articleParams, articleParams.getTagIds(), articleParams.getCategoryIds());
         if(article.getHaveHtml()){
             //使用JMS生成文章,文章列表
@@ -66,6 +66,9 @@ public class ArticleController {
         }
         return article;
     }
+
+
+
 
     @RequestMapping("/delete/{id}")
     public Article delete(@PathVariable("id") Integer id){

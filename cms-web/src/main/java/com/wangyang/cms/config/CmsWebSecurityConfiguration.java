@@ -51,15 +51,15 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/admin/**","/hello","/templates/**","/403.html");
+        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**");
     }
 
-    //    @Override
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
 //                .antMatchers("/api/**")
 //                .hasRole("ADMIN")
-                .antMatchers("/api/**").authenticated()
+//                .anyRequest().authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -101,6 +101,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 })
+                .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
@@ -111,6 +112,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 })
+                .permitAll()
                 .and().exceptionHandling()
                 .authenticationEntryPoint((req, resp, authException) -> {
                     resp.setContentType("application/json;charset=utf-8");

@@ -5,6 +5,7 @@ import com.wangyang.cms.core.jms.producer.DestinationConst;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.entity.Template;
+import com.wangyang.cms.pojo.enums.ArticleStatus;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.service.IArticleService;
@@ -36,15 +37,16 @@ public class ArticleConsumerServiceImpl {
 
     @JmsListener(destination = DestinationConst.ARTICLE_HTML_STRING)
     public void receiveArticleDetailVO(ArticleDetailVO articleVO){
-        log.debug("start article  covertHtml(articleVO) start");
-        covertHtml(articleVO);
-        log.debug("end article covertHtml(articleVO) end");
-        log.info("!!### generate "+articleVO.getViewName()+" html success!!");
-        log.debug("start article  addArticleToCategoryList(articleVO.getId()) start");
-        addArticleToCategoryList(articleVO.getId());
-        log.debug("end  article  addArticleToCategoryList(articleVO.getId())  end");
+        if(articleVO.getStatus()==ArticleStatus.PUBLISHED){
+            log.debug("start article  covertHtml(articleVO) start");
+            covertHtml(articleVO);
+            log.debug("end article covertHtml(articleVO) end");
+            log.info("!!### generate "+articleVO.getViewName()+" html success!!");
+            log.debug("start article  addArticleToCategoryList(articleVO.getId()) start");
+            addArticleToCategoryList(articleVO.getId());
+            log.debug("end  article  addArticleToCategoryList(articleVO.getId())  end");
 
-
+        }
     }
 
 
@@ -52,13 +54,6 @@ public class ArticleConsumerServiceImpl {
     private void addArticleToCategoryList(int id) {
         List<Category> categories = categoryService.findCategoryByArticleId(id);
         categories.forEach(category -> {
-//            CategoryArticleListDao articleListVo = new CategoryArticleListDao();
-
-//            Page<ArticleDto> articleDtoPage = articleService.findArticleListByCategoryId(category.getId(), PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC,"id")));//.getContent();
-//            articleListVo.setViewName(category.getViewName());
-//            articleListVo.setPage(articleDtoPage);
-//            articleListVo.setCategory(category);
-
             CategoryArticleListDao articleListByCategory = cmsService.getArticleListByCategory(category);
             Template template = templateService.findById(category.getTemplateId());
             TemplateUtil.convertHtmlAndSave(articleListByCategory,template);
@@ -68,8 +63,10 @@ public class ArticleConsumerServiceImpl {
 
 
     private String covertHtml(ArticleDetailVO articleDetailVO) {
+
         Template template = templateService.findById(articleDetailVO.getTemplateId());
         String html = TemplateUtil.convertHtmlAndSave(articleDetailVO, template);
         return html;
+
     }
 }
