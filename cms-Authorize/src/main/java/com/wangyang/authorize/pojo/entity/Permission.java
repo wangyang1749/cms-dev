@@ -7,26 +7,27 @@ import javax.persistence.*;
 public class Permission extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int parentId;
+    private Integer id;
+    @Column(columnDefinition = "int default 0")
+    private Integer parentId;
     private String name;
-    private  String enName;
+    private String enName;
     private String url;
     private String description;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 

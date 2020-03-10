@@ -9,6 +9,7 @@ import com.wangyang.cms.pojo.dto.TagsDto;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
+import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
@@ -17,6 +18,7 @@ import com.wangyang.cms.repository.*;
 import com.wangyang.cms.service.IArticleService;
 import com.wangyang.cms.service.ICategoryService;
 import com.wangyang.cms.utils.CMSUtils;
+import com.wangyang.cms.utils.NodeJsUtil;
 import com.wangyang.cms.utils.ServiceUtil;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.criteria.*;
@@ -83,6 +86,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public ArticleDetailVO updateArticle(int articleId, ArticleParams articleParams,  Set<Integer> tagsIds, Set<Integer> categoryIds) {
         Article article = findArticleById(articleId);
+        article.setPdfPath(null);
         TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
         BeanUtils.copyProperties(articleParams,article);
 
@@ -93,6 +97,44 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return articleDetailVO;
     }
 
+
+    @Override
+    public String  generatePdf(Integer articleId) {
+        Article article = findArticleById(articleId);
+
+        String pdfPath= article.getPath()+"/"+article.getViewName()+".pdf";
+        String absolutePath = workDir+"/html/"+pdfPath;
+        File file = new File(absolutePath);
+        if(file.exists()){
+            if(!pdfPath.equals(article.getPdfPath())){
+                article.setPdfPath(pdfPath);
+                Article updateArticle = articleRepository.save(article);
+                return updateArticle.getPdfPath();
+            }
+            return article.getPdfPath();
+        }else {
+            String url = "http://localhost:8080/article/previewPdf/"+articleId;
+            String result = NodeJsUtil.execNodeJs("node", workDir+"/templates/nodejs/generatePdf.js", url, workDir + "/html/" + pdfPath);
+            System.out.println(result);
+            article.setPdfPath(pdfPath);
+            Article saveArticle = articleRepository.save(article);
+            return  saveArticle.getPdfPath();
+        }
+    }
+
+    @Override
+    public ModelAndView previewPdf(int articleId){
+        ArticleDetailVO articleDetailVo = findArticleAOById(articleId);
+        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());
+        if(!templateOptional.isPresent()){
+            throw new TemplateException("Template not found in preview !!");
+        }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("view",articleDetailVo);
+        modelAndView.addObject("notPdf",true);
+        modelAndView.setViewName(templateOptional.get().getTemplateValue());
+        return modelAndView;
+    }
 
 
     @Override
@@ -107,6 +149,10 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         modelAndView.setViewName(templateOptional.get().getTemplateValue());
         return modelAndView;
     }
+
+
+
+
 
     @Override
     public Article deleteByArticleId(int id) {

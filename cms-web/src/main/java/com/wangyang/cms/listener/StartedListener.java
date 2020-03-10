@@ -1,5 +1,6 @@
 package com.wangyang.cms.listener;
 
+import com.wangyang.cms.cache.StringCacheStore;
 import com.wangyang.cms.pojo.entity.Option;
 import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.entity.Components;
@@ -50,11 +51,13 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     @Autowired
     ISheetService sheetService;
-
+    @Autowired
+    StringCacheStore stringCacheStore;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         initCms();
+        stringCacheStore.setValue("workDir",workDir);
         if(!isInit()){
             log.info("### init database!!!");
             initDatabase(applicationStartedEvent);

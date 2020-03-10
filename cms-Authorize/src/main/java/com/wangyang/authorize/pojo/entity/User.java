@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private String phone;
@@ -16,11 +16,12 @@ public class User extends BaseEntity {
     //用户头像
     private String avatar;
 
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

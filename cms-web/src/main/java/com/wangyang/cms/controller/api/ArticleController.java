@@ -12,6 +12,7 @@ import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
 import com.wangyang.cms.repository.CategoryRepository;
 import com.wangyang.cms.service.IArticleService;
+import com.wangyang.cms.utils.NodeJsUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -118,4 +119,20 @@ public class ArticleController {
         List<Integer> list = articleService.updateAllArticleHtml();
         return list;
     }
+    @GetMapping("/generatePdf/{articleId}")
+    public BaseResponse generatePdf(@PathVariable("articleId") Integer articleId) {
+        Article article = articleService.findArticleById(articleId);
+        String url = "http://localhost:8080/article/previewPdf/"+articleId;
+        String generatePath = article.getPath()+"/"+article.getViewName()+".pdf";
+        NodeJsUtil.execNodeJs("node","templates/nodejs/generatePdf.js",url,generatePath);
+        return BaseResponse.ok("生成成功");
+    }
+    @GetMapping("/download/{id}")
+    public String downloadPdf(@PathVariable("id") Integer id){
+        String generatePdf = articleService.generatePdf(id);
+        return generatePdf;
+    }
+
+
+
 }

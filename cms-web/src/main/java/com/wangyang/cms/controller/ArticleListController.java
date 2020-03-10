@@ -1,6 +1,7 @@
 package com.wangyang.cms.controller;
 
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
+import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +27,6 @@ public class ArticleListController {
         page = page-1;
         return categoryService.getArticleListByCategory(categoryId,page);
     }
+
+
 }

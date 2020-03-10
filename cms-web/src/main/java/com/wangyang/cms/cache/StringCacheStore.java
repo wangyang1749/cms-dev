@@ -22,5 +22,8 @@ public class StringCacheStore {
         CACHE_CONTAINER.clear();
     }
 
+    public static String getValue(String key){
+        return CACHE_CONTAINER.get(key);
+    }
 
 }

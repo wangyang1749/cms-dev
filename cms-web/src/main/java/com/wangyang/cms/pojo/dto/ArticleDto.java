@@ -27,6 +27,16 @@ public class ArticleDto  implements Serializable {
     private String viewName;
     private String  path;
     private String picPath;
+    private String pdfPath;
+
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
 
     public String getPath() {
         return path;

@@ -17,13 +17,20 @@ import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
+import com.wangyang.cms.cache.StringCacheStore;
 import com.wangyang.cms.pojo.support.CmsConst;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.Arrays;
 
 
+
 public class MarkdownUtils {
+
+
     private static final DataHolder OPTIONS = new MutableDataSet()
             .set(Parser.EXTENSIONS,Arrays.asList(
                     EmojiExtension.create(),
@@ -33,8 +40,10 @@ public class MarkdownUtils {
                     MediaTagsExtension.create()
 
             )).set(TocExtension.LEVELS, 255)
-            .set(GitLabExtension.INLINE_MATH_PARSER, true)
-            .set(GitLabExtension.RENDER_BLOCK_MATH, true)
+            .set(GitLabExtension.USE_NODEJS,true)
+            .set(GitLabExtension.KATEX_NODEJS_FILEMAME, StringCacheStore.getValue("workDir") +"/templates/nodejs/katex.js")
+            .set(GitLabExtension.MERAID_NODEJS_FILEMAME, StringCacheStore.getValue("workDir")+"/templates/nodejs/mermaid.js")
+
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
@@ -48,13 +57,6 @@ public class MarkdownUtils {
         Node document = PARSER.parse(markdown);
 
         String render = RENDERER.render(document);
-
-        if (render.contains(CmsConst.MARKDOWN_REVEAL_START)) {
-            render = render.replaceAll(CmsConst.MARKDOWN_REVEAL_START, CmsConst.LABEL_SECTION_START);
-        }
-        if (render.contains(CmsConst.MARKDOWN_REVEAL_END)) {
-            render = render.replaceAll(CmsConst.MARKDOWN_REVEAL_END, CmsConst.LABEL_SECTION_END);
-        }
 
         return render;
     }

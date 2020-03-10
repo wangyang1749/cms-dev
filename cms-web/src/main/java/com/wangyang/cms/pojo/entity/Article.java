@@ -23,7 +23,17 @@ public class Article extends BaseArticle {
     private Boolean haveHtml=true;
     private String summary;
     private String picPath;
+    private String pdfPath;
 
+
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
 
     public String getSummary() {
         return summary;

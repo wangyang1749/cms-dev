@@ -46,6 +46,9 @@ public class TemplateUtil {
     }
 
 
+
+
+
     public static void deleteTemplateHtml(String oldName,String path){
         if(StringUtils.isEmpty(oldName)){
             return;
@@ -57,9 +60,13 @@ public class TemplateUtil {
         File file = new File(filePath+"/"+oldName+".html");
         if(file.exists()){
             file.delete();
-            log.info("### delete file"+file.getPath());
+            log.info("### delete html file"+file.getPath());
         }
-
+        File pdfFile = new File(filePath+"/"+oldName+".pdf");
+        if(pdfFile.exists()){
+            pdfFile.delete();
+            log.info("### delete pdf file"+pdfFile.getPath());
+        }
     }
 
     public static String convertHtmlAndSave(Object object, BaseTemplate template){

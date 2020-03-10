@@ -1,8 +1,8 @@
-package com.wangyang.authorize.config;
+package com.wangyang.cms.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.authorize.pojo.support.BaseResponse;
+import com.wangyang.cms.config.service.CmsUserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ import java.io.PrintWriter;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Bean
+    @Bean("cmsPasswordEncoder")
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -30,7 +30,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     public UserDetailsService userDetailsService(){
-        return new UserDetailServiceImpl();
+
+        return new CmsUserDetailServiceImpl();
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -62,6 +63,10 @@ public interface IArticleService extends IBaseArticleService<Article> {
      */
     void increaseLikes(int id);
 
+
+    String  generatePdf(@PathVariable("articleId") Integer articleId);
+
+    ModelAndView previewPdf(int articleId);
 
     ModelAndView preview(int articleId);
 
