@@ -8,6 +8,7 @@ import com.wangyang.authorize.repository.PermissionRepository;
 import com.wangyang.authorize.repository.RolePermissionRepository;
 import com.wangyang.authorize.repository.RoleRepository;
 import com.wangyang.authorize.service.IPermissionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @CacheConfig(cacheNames = "permission_cache")
+@Slf4j
 public class PermissionServiceImpl implements IPermissionService {
 
     @Autowired
@@ -42,7 +44,7 @@ public class PermissionServiceImpl implements IPermissionService {
     @Override
     @Cacheable
     public List<PermissionDto> listAll() {
-        List<PermissionDto> list = new ArrayList<>();
+        log.info("start 查找permission的role");
         List<Permission> permissions = permissionRepository.findAll();
         List<RolePermission> rolePermissionList = rolePermissionRepository.findAll();
         List<Role> roles = roleRepository.findAll();
@@ -59,6 +61,7 @@ public class PermissionServiceImpl implements IPermissionService {
             permissionDto.setRoles(roleMap.get(permission.getId()));
             return permissionDto;
         }).collect(Collectors.toList());
+        log.info("end 查找permission的role");
         return permissionDtoList;
     }
 

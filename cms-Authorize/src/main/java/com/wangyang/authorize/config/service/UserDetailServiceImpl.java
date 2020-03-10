@@ -5,6 +5,7 @@ import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.authorize.service.IRoleService;
 import com.wangyang.authorize.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -34,7 +36,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User("admin","123456",
                     Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
         }
+
         User user = userService.findByUsername(username);
+        log.info("用户名:"+user.getUsername());
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if(user!=null){
             List<Role> roles = roleService.findByUserId(user.getId());
@@ -42,6 +46,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 return null;
             }
             roles.forEach(role -> {
+                log.info("用户名:"+user.getUsername()+", 具有角色"+role.getEnName());
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getEnName());
                 grantedAuthorities.add(grantedAuthority);
             });
