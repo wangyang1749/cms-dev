@@ -59,7 +59,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 //                .antMatchers("/api/**")
 //                .hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .antMatchers("/api/**").authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
