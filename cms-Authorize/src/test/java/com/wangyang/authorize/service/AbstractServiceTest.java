@@ -1,5 +1,6 @@
 package com.wangyang.authorize.service;
 
+import com.wangyang.authorize.Application;
 import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.authorize.repository.UserRoleRepository;
@@ -11,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 @TestPropertySource (locations = {"classpath:application.properties"})
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 //@RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractServiceTest {
     @Autowired
