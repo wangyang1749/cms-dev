@@ -1,4 +1,4 @@
-package com.wangyang.cms.config;
+package com.wangyang.authorize.config;
 
 import com.wangyang.authorize.exception.NotFoundPageException;
 import com.wangyang.authorize.pojo.dto.PermissionDto;

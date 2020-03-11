@@ -1,4 +1,4 @@
-package com.wangyang.cms.config;
+package com.wangyang.authorize.config;
 
 import com.wangyang.authorize.exception.UserException;
 import lombok.extern.slf4j.Slf4j;

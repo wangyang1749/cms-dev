@@ -1,4 +1,4 @@
-package com.wangyang.cms.config.service;
+package com.wangyang.authorize.config.service;
 
 
 import com.wangyang.authorize.pojo.entity.Role;

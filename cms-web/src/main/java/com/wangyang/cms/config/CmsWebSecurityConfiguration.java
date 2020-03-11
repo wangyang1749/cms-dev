@@ -1,7 +1,9 @@
 package com.wangyang.cms.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wangyang.cms.config.service.UserDetailServiceImpl;
+import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
+import com.wangyang.authorize.config.CustomUrlDecisionManager;
+import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.cms.pojo.support.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
