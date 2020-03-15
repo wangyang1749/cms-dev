@@ -9,6 +9,7 @@ import com.wangyang.cms.pojo.support.TemplateOption;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
+import com.wangyang.cms.pojo.vo.TagsCategoryArticleVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,9 @@ public interface IArticleService extends IBaseArticleService<Article> {
     Article saveArticle(Integer articleId, ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds);
 
     ArticleDetailVO  updateArticle(int articleId, ArticleParams updateArticle, Set<Integer> tagsIds, Set<Integer> categoryIds);
+
+
+
     ArticleDetailVO createArticle(ArticleParams articleParams, Set<Integer> tagsIds, Set<Integer> categoryIds);
 
 

@@ -51,7 +51,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**");
+        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**","/article/**");
     }
 
     @Override
@@ -82,6 +82,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     out.close();
                 })
                 .failureHandler((req, resp, exception)->{
+                    resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                     resp.setContentType("application/json;charset=utf-8");
                     PrintWriter out = resp.getWriter();
                     BaseResponse baseResponse = new BaseResponse();

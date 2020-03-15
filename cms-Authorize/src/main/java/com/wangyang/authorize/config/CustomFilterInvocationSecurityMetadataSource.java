@@ -1,12 +1,10 @@
 package com.wangyang.authorize.config;
 
-import com.wangyang.authorize.exception.NotFoundPageException;
 import com.wangyang.authorize.pojo.dto.PermissionDto;
 import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.authorize.service.IPermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;

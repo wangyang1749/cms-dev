@@ -12,7 +12,11 @@ public abstract class BaseArticleServiceImpl<ARTICLE extends BaseArticle> implem
     public ARTICLE createOrUpdate(ARTICLE article) {
 
         if(article.getStatus()== ArticleStatus.PUBLISHED){
-            article.setFormatContent(MarkdownUtils.renderHtml(article.getOriginalContent()));
+            String[] renderHtml = MarkdownUtils.renderHtml(article.getOriginalContent());
+
+            article.setFormatContent(renderHtml[1]);
+
+            article.setToc(renderHtml[0]);
         }
         return article;
     }

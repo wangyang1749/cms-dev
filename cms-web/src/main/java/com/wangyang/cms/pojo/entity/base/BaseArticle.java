@@ -20,8 +20,18 @@ public class BaseArticle extends BaseEntity{
     private String originalContent;
     @Column(name = "format_content", columnDefinition = "longtext")
     private String formatContent;
+    @Column(name = "toc_content", columnDefinition = "longtext")
+    private String toc;
 
     private String path;
+
+    public String getToc() {
+        return toc;
+    }
+
+    public void setToc(String toc) {
+        this.toc = toc;
+    }
 
     public String getPath() {
         return path;

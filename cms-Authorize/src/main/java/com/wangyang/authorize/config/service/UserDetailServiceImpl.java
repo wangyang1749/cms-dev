@@ -38,6 +38,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         User user = userService.findByUsername(username);
+        if(user==null){
+            throw  new UsernameNotFoundException("用户名不存在!!");
+        }
         log.info("用户名:"+user.getUsername());
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if(user!=null){

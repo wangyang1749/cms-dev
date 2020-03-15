@@ -22,4 +22,6 @@ public class CommonServiceImpl implements ICommonService {
     public Map<String, String> footer() {
         return null;
     }
+
+
 }

@@ -43,21 +43,23 @@ public class MarkdownUtils {
             .set(GitLabExtension.USE_NODEJS,true)
             .set(GitLabExtension.KATEX_NODEJS_FILEMAME, StringCacheStore.getValue("workDir") +"/templates/nodejs/katex.js")
             .set(GitLabExtension.MERAID_NODEJS_FILEMAME, StringCacheStore.getValue("workDir")+"/templates/nodejs/mermaid.js")
-
+            .set(TocExtension.LIST_CLASS,"toc")
+            .set(TocExtension.IS_NUMBERED,true)
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
-    public static String renderHtml(String markdown) {
+    public static String[] renderHtml(String markdown) {
         if(StringUtils.isBlank(markdown)){
-            return StringUtils.EMPTY;
+            return null;
         }
-        Node document = PARSER.parse(markdown);
+        Node document = PARSER.parse("[TOC]\n @@@ \n\n"+markdown);
 
         String render = RENDERER.render(document);
+        String[] split = render.split("<p>@@@</p>");
 
-        return render;
+        return split;
     }
 }

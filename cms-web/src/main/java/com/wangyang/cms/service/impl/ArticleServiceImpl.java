@@ -16,6 +16,7 @@ import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
+import com.wangyang.cms.pojo.vo.TagsCategoryArticleVo;
 import com.wangyang.cms.repository.*;
 import com.wangyang.cms.service.IArticleService;
 import com.wangyang.cms.service.ICategoryService;
@@ -101,6 +102,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         article.setStatus(ArticleStatus.DRAFT);
         return createOrUpdateArticle(article,tagsIds,categoryIds);
     }
+
+
+
 
 
     @Override

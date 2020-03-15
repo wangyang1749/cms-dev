@@ -3,6 +3,7 @@ package com.wangyang.authorize.service;
 import com.wangyang.authorize.Application;
 import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.authorize.repository.UserRepository;
 import com.wangyang.authorize.repository.UserRoleRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public abstract class AbstractServiceTest {
     IRoleService roleService;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     UserRoleRepository userRoleRepository;
 
     @Autowired
@@ -29,7 +33,7 @@ public abstract class AbstractServiceTest {
 
     public User addUser(){
         User user = new User();
-        user.setUsername("wangyang");
+        user.setUsername("wangyang1749748955555");
         user.setPassword("123456");
         return user;
     }
