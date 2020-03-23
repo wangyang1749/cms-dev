@@ -104,6 +104,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public ArticleDetailVO updateArticleDetailVo(Article article,  Set<Integer> tagsIds) {
         article.setPdfPath(null);
         article.setStatus(ArticleStatus.PUBLISHED);
+        article.setUpdateDate(new Date());
         // 文章发布默认生成HTML
         if(article.getHaveHtml()==null){
             article.setHaveHtml(true);
@@ -637,6 +638,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             //草稿文章要生成Html,将文章状态改为发布
             article.setStatus(ArticleStatus.PUBLISHED);
             article =super.createOrUpdate(article);
+            article.setUpdateDate(new Date());
             // 生成摘要
             generateSummary(article);
         }
