@@ -144,6 +144,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      */
     @Override
     public Article saveOrUpdateArticleDraft(Article article){
+        if(article.getUserId()==null){
+            throw new ArticleException("文章用户不能为空!!");
+        }
+        if(article.getCategoryId()==null){
+            throw new ArticleException("文章类别不能为空!!");
+        }
         article.setHaveHtml(false);
         // 获取默认文章模板Id
         if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
@@ -282,6 +288,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //    }
 
     private ArticleDetailVO createOrUpdateArticle(Article article, Set<Integer> tagsIds) {
+        if(article.getUserId()==null){
+            throw new ArticleException("文章用户不能为空!!");
+        }
+        if(article.getCategoryId()==null){
+            throw new ArticleException("文章类别不能为空!!");
+        }
         ArticleDetailVO articleDetailVO = new ArticleDetailVO();
 
         String viewName = article.getViewName();
@@ -290,6 +302,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             log.debug("!!! view name not found, use "+viewName);
             article.setViewName(viewName);
         }
+
         Optional<BaseCategory> baseCategory = baseCategoryRepository.findById(article.getCategoryId());
         if(baseCategory.isPresent()){
             if(baseCategory.get() instanceof Category){

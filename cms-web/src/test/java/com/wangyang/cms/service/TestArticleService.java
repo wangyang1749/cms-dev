@@ -36,6 +36,13 @@ public class TestArticleService extends AbstractServiceTest{
 //        Assert.assertEquals("updateTitle",updateArticle.getTitle());
 //        Assert.assertEquals(ArticleStatus.DRAFT,updateArticle.getStatus());
     }
+
+    @Test
+    public void testAddCategory(){
+        Category category = categoryService.save(addCategory());
+
+    }
+
     @Test
     public void testCreate(){
         ArticleDetailVO article = articleService.createArticleDetailVo(addArticle(), null);
@@ -123,6 +130,7 @@ public class TestArticleService extends AbstractServiceTest{
     @Test
     public void testAddArticleAndCategoryHtml(){
         Category category = categoryService.addOrUpdate(addCategory());
+        category.setPath("articleList");
         Article articleParams = addArticle();
         articleParams.setCategoryId(category.getId());
         ArticleDetailVO article = articleService.createArticleDetailVo(articleParams, null);

@@ -1,5 +1,7 @@
 package com.wangyang.cms.service;
 
+import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.authorize.service.IUserService;
 import com.wangyang.cms.controller.api.ArticleController;
 import com.wangyang.cms.core.jms.consumer.ArticleConsumerServiceImpl;
 import com.wangyang.cms.pojo.entity.Article;
@@ -46,6 +48,9 @@ public abstract class AbstractServiceTest {
     IHtmlService htmlService;
 
     @Autowired
+    IUserService userService;
+
+    @Autowired
     ArticleController articleController;
 
     public Category addCategory(){
@@ -60,9 +65,21 @@ public abstract class AbstractServiceTest {
 
         return categoryParam;
     }
+    public User addUser(){
+        User user = new User();
+        user.setUsername("wangyang");
+        return user;
+    }
     public Article addArticle(){
+        Category category = categoryService.save(addCategory());
+        User user = userService.add(addUser());
         Article articleParams = new Article();
         articleParams.setTitle("Title");
+        articleParams.setPath("article");
+        //类别不能为空
+        articleParams.setCategoryId(category.getId());
+        //用户不能为空
+        articleParams.setUserId(user.getId());
         articleParams.setOriginalContent("test_test");
         return articleParams;
     }
