@@ -396,6 +396,10 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             articleDetailVo.setTags(tags);
             articleDetailVo.setTagIds( ServiceUtil.fetchProperty(tags, Tags::getId));
         }
+        //添加用户
+        User user = userService.findById(article.getUserId());
+        articleDetailVo.setUser(user);
+
         return articleDetailVo;
     }
 
@@ -668,7 +672,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
     @Override
     public ArticleDetailVO updateCategory(Article article, int categoryId){
-
+        if(article.getUserId()==null){
+            throw new ArticleException("文章用户不能为空!!");
+        }
+        if(article.getCategoryId()==null){
+            throw new ArticleException("文章类别不能为空!!");
+        }
         if(article.getStatus()!=ArticleStatus.PUBLISHED){
             throw new ArticleException("文章没有发布不能更改类别!!");
         }
