@@ -7,53 +7,15 @@ public class CategoryParam {
     private String description;
     @NotBlank(message = "Category name can't empty!!")
     private String name;
-    private int parentId;
-    private Integer templateId=2;
+    private Integer parentId;
+    private String templateName;
     private String viewName;
     private Boolean haveHtml;
     private String picPath;
     private String path="articleList";
-    private int order;
+    private Integer order;
+    private Boolean recommend=false;
 
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getPicPath() {
-        return picPath;
-    }
-
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
-    }
-
-    public Boolean getHaveHtml() {
-        return haveHtml;
-    }
-
-    public void setHaveHtml(Boolean haveHtml) {
-        this.haveHtml = haveHtml;
-    }
-
-    public String getViewName() {
-        return viewName;
-    }
-
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
-    }
 
     public String getDescription() {
         return description;
@@ -71,21 +33,67 @@ public class CategoryParam {
         this.name = name;
     }
 
-    public int getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 
-
-
-    public Integer getTemplateId() {
-        return templateId;
+    public String getTemplateName() {
+        return templateName;
     }
 
-    public void setTemplateId(Integer templateId) {
-        this.templateId = templateId;
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
+
+    public Boolean getHaveHtml() {
+        return haveHtml;
+    }
+
+    public void setHaveHtml(Boolean haveHtml) {
+        this.haveHtml = haveHtml;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public Boolean getRecommend() {
+        return recommend;
+    }
+
+    public void setRecommend(Boolean recommend) {
+        this.recommend = recommend;
     }
 }

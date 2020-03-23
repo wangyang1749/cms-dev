@@ -9,11 +9,20 @@ public class BaseTemplate extends  BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String enName;
     private String description;
 
     @Column(name = "template_value", columnDefinition = "longtext ")
     private String templateValue;
 
+
+    public String getEnName() {
+        return enName;
+    }
+
+    public void setEnName(String enName) {
+        this.enName = enName;
+    }
 
     public int getId() {
         return id;

@@ -4,7 +4,7 @@ import com.wangyang.cms.config.CmsConfig;
 import com.wangyang.cms.expection.TemplateException;
 import com.wangyang.cms.pojo.entity.Components;
 import com.wangyang.cms.pojo.params.ComponentsParam;
-import com.wangyang.cms.repository.TemplatePageRepository;
+import com.wangyang.cms.repository.ComponentsRepository;
 import com.wangyang.cms.service.IComponentsService;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import java.util.Optional;
 public class ComponentsServiceImpl implements IComponentsService {
 
     @Autowired
-    TemplatePageRepository templatePageRepository;
+    ComponentsRepository componentsRepository;
 
 
 
@@ -40,13 +40,13 @@ public class ComponentsServiceImpl implements IComponentsService {
 
     @Override
     public Page<Components> list(Pageable pageable){
-        return templatePageRepository.findAll(pageable);
+        return componentsRepository.findAll(pageable);
     }
 
 
     @Override
     public Components add(Components templatePage){
-        Components components = templatePageRepository.save(templatePage);
+        Components components = componentsRepository.save(templatePage);
         Object o = getModel(components.getDataName());
         TemplateUtil.convertHtmlAndSave(o,components);
         log.info("Generate html in "+components.getPath()+"/"+components.getViewName());
@@ -58,17 +58,17 @@ public class ComponentsServiceImpl implements IComponentsService {
     public Components update(int id, ComponentsParam templatePageParam){
         Components templatePage = findById(id);
         BeanUtils.copyProperties(templatePageParam,templatePage);
-        return templatePageRepository.save(templatePage);
+        return componentsRepository.save(templatePage);
     }
 
     @Override
     public List<Components> addAll(List<Components> templatePages) {
-        return templatePageRepository.saveAll(templatePages);
+        return componentsRepository.saveAll(templatePages);
     }
 
     @Override
     public Components findById(int id){
-        Optional<Components> templatePageOptional = templatePageRepository.findById(id);
+        Optional<Components> templatePageOptional = componentsRepository.findById(id);
         if(!templatePageOptional.isPresent()){
             throw new TemplateException("add template did't exist!!");
         }
@@ -77,12 +77,12 @@ public class ComponentsServiceImpl implements IComponentsService {
 
     @Override
     public void delete(int id){
-        templatePageRepository.deleteById(id);
+        componentsRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-        templatePageRepository.deleteAll();
+        componentsRepository.deleteAll();
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ComponentsServiceImpl implements IComponentsService {
 
     @Override
     public Components findByDataName(String dataName){
-        List<Components> templatePages = templatePageRepository.findAll(new Specification<Components>() {
+        List<Components> templatePages = componentsRepository.findAll(new Specification<Components>() {
             @Override
             public Predicate toPredicate(Root<Components> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 return criteriaQuery.where(criteriaBuilder.equal(root.get("dataName"), dataName)

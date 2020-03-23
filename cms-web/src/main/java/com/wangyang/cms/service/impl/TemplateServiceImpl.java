@@ -24,6 +24,11 @@ public class TemplateServiceImpl implements ITemplateService {
         return templateRepository.save(template);
     }
 
+
+    @Override
+    public Optional<Template> findOptionalById(int id){
+        return templateRepository.findById(id);
+    }
     @Override
     public List<Template> saveAll(List<Template> templates) {
         return templateRepository.saveAll(templates);
@@ -34,6 +39,11 @@ public class TemplateServiceImpl implements ITemplateService {
         Template template = findById(id);
         BeanUtils.copyProperties(updateTemplate,template,"id");
         return templateRepository.save(template);
+    }
+
+    @Override
+    public List<Template> findAll(){
+        return templateRepository.findAll();
     }
 
     @Override
@@ -59,6 +69,22 @@ public class TemplateServiceImpl implements ITemplateService {
     @Override
     public List<Template> findByTemplateType(TemplateType type) {
         return templateRepository.findByTemplateType(type);
+    }
+
+
+    @Override
+    public Template findByEnName(String enName){
+        Template template = templateRepository.findByEnName(enName);
+        if(template==null){
+            throw new ObjectException("Template模板没有找到!!!");
+        }
+        return template;
+    }
+
+    @Override
+    public Optional<Template> findOptionalByEnName(String enName){
+        Template template = templateRepository.findByEnName(enName);
+        return Optional.ofNullable(template);
     }
 
     @Override

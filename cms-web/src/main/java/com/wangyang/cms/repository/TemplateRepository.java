@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface TemplateRepository  extends JpaRepository<Template,Integer> {
     List<Template> findByTemplateType(TemplateType type);
+
+    Template findByEnName(String enName);
+
 }

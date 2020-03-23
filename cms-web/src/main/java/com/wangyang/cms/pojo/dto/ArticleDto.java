@@ -1,5 +1,6 @@
 package com.wangyang.cms.pojo.dto;
 
+import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.entity.Tags;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
@@ -12,15 +13,16 @@ import java.util.List;
 public class ArticleDto  implements Serializable {
 
 
-    private int id;
+    private Integer id;
     private Date createDate;
     private Date updateDate;
-    private int templateId;
+//    private Integer templateId;
+    private String templateName;
     private ArticleStatus status;
-    private int likes;
-    private int visits;
-    private int userId;
-    private int commentNum;
+    private Integer likes;
+    private Integer visits;
+    private Integer userId;
+    private Integer commentNum;
     private Boolean haveHtml=false;
     private String summary;
     private String title;
@@ -29,44 +31,14 @@ public class ArticleDto  implements Serializable {
     private String picPath;
     private String pdfPath;
     private String toc;
+    private User user;
+    private Integer categoryId;
 
-    public String getToc() {
-        return toc;
-    }
-
-    public void setToc(String toc) {
-        this.toc = toc;
-    }
-
-    public String getPdfPath() {
-        return pdfPath;
-    }
-
-    public void setPdfPath(String pdfPath) {
-        this.pdfPath = pdfPath;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getPicPath() {
-        return picPath;
-    }
-
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -86,12 +58,12 @@ public class ArticleDto  implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public int getTemplateId() {
-        return templateId;
+    public String getTemplateName() {
+        return templateName;
     }
 
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     public ArticleStatus getStatus() {
@@ -102,35 +74,35 @@ public class ArticleDto  implements Serializable {
         this.status = status;
     }
 
-    public int getLikes() {
+    public Integer getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    public void setLikes(Integer likes) {
         this.likes = likes;
     }
 
-    public int getVisits() {
+    public Integer getVisits() {
         return visits;
     }
 
-    public void setVisits(int visits) {
+    public void setVisits(Integer visits) {
         this.visits = visits;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public int getCommentNum() {
+    public Integer getCommentNum() {
         return commentNum;
     }
 
-    public void setCommentNum(int commentNum) {
+    public void setCommentNum(Integer commentNum) {
         this.commentNum = commentNum;
     }
 
@@ -142,7 +114,13 @@ public class ArticleDto  implements Serializable {
         this.haveHtml = haveHtml;
     }
 
+    public String getSummary() {
+        return summary;
+    }
 
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
 
     public String getTitle() {
         return title;
@@ -160,29 +138,51 @@ public class ArticleDto  implements Serializable {
         this.viewName = viewName;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getPath() {
+        return path;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    @Override
-    public String toString() {
-        return "ArticleDto{" +
-                "id=" + id +
-                ", createDate=" + createDate +
-                ", updateDate=" + updateDate +
-                ", templateId=" + templateId +
-                ", status=" + status +
-                ", likes=" + likes +
-                ", visits=" + visits +
-                ", userId=" + userId +
-                ", commentNum=" + commentNum +
-                ", haveHtml=" + haveHtml +
-                ", title='" + title + '\'' +
-                ", viewName='" + viewName + '\'' +
-                '}';
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
+
+    public String getToc() {
+        return toc;
+    }
+
+    public void setToc(String toc) {
+        this.toc = toc;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 }

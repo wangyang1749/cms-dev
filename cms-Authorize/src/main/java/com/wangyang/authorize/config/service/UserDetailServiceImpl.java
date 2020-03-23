@@ -37,23 +37,17 @@ public class UserDetailServiceImpl implements UserDetailsService {
                     Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
         }
 
-        User user = userService.findByUsername(username);
-        if(user==null){
-            throw  new UsernameNotFoundException("用户名不存在!!");
-        }
-        log.info("用户名:"+user.getUsername());
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        if(user!=null){
-            List<Role> roles = roleService.findByUserId(user.getId());
-            if(CollectionUtils.isEmpty(roles)){
-                return null;
-            }
-            roles.forEach(role -> {
-                log.info("用户名:"+user.getUsername()+", 具有角色"+role.getEnName());
-                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getEnName());
-                grantedAuthorities.add(grantedAuthority);
-            });
-        }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),grantedAuthorities);
+//        User user = userService.findByUsername(username);
+//        if(user==null){
+//            throw  new UsernameNotFoundException("用户名不存在!!");
+//        }
+//        if(user!=null){
+//            List<Role> roles = roleService.findByUserId(user.getId());
+//            if(CollectionUtils.isEmpty(roles)){
+//                return null;
+//            }
+//            user.setRoles(roles);
+//        }
+        return userService.findByUsername(username);
     }
 }

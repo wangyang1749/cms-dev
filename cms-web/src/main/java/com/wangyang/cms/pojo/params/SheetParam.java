@@ -6,7 +6,6 @@ import javax.persistence.Column;
 
 public class SheetParam {
 
-    private int templateId;
     private ArticleStatus status ;//=ArticleStatus.PUBLISHED;
     private int userId;
     private String title;
@@ -14,22 +13,27 @@ public class SheetParam {
     private String originalContent;
     private String formatContent;
     private String path;
+    private Integer channelId;
+    private String templateName;
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public Integer getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
 
     public SheetParam(){}
-    public SheetParam(int templateId,String title,String viewName,String originalContent){
-        this.templateId=templateId;
-        this.title =title;
-        this.viewName = viewName;
-        this.originalContent =originalContent;
-    }
 
-    public int getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
-    }
 
     public ArticleStatus getStatus() {
         return status;

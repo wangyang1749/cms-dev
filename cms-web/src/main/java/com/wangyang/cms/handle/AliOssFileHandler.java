@@ -39,14 +39,14 @@ public class AliOssFileHandler implements FileHandler {
     public UploadResult upload(MultipartFile file) {
 
         // Get config
-        String endPoint = optionService.getPropertyValue(PropertyEnum.END_POINT);
-        String accessKey = optionService.getPropertyValue(PropertyEnum.ACCESS_KEY);
-        String accessSecret = optionService.getPropertyValue(PropertyEnum.ACCESS_SECRET);
-        String bucketName = optionService.getPropertyValue(PropertyEnum.BUCKET_NAME);
-        String domain = optionService.getPropertyValue(PropertyEnum.OSS_DOMAIN);
-        String source = optionService.getPropertyValue(PropertyEnum.OSS_SOURCE);
-        String styleRule = optionService.getPropertyValue(PropertyEnum.OSS_STYLE_RULE);
-        String thumbnailStyleRule = optionService.getPropertyValue(PropertyEnum.OSS_THUMBNAIL_STYLE_RULE);
+        String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
+        String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
+        String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
+        String domain = optionService.getPropertyStringValue(PropertyEnum.OSS_DOMAIN);
+        String source = optionService.getPropertyStringValue(PropertyEnum.OSS_SOURCE);
+        String styleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_STYLE_RULE);
+        String thumbnailStyleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_THUMBNAIL_STYLE_RULE);
 
         StringBuilder basePath = new StringBuilder(domain);
         basePath.append(bucketName)
@@ -113,10 +113,10 @@ public class AliOssFileHandler implements FileHandler {
         Assert.notNull(key, "File key must not be blank");
 
         // Get config
-        String endPoint = optionService.getPropertyValue(PropertyEnum.END_POINT);
-        String accessKey = optionService.getPropertyValue(PropertyEnum.ACCESS_KEY);
-        String accessSecret = optionService.getPropertyValue(PropertyEnum.ACCESS_SECRET);
-        String bucketName = optionService.getPropertyValue(PropertyEnum.BUCKET_NAME);
+        String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
+        String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
+        String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
 
         // Init OSS client
         OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);

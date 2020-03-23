@@ -215,6 +215,13 @@
             <artifactId>flexmark-ext-emoji</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-footnotes</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
         <dependency>

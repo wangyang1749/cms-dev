@@ -13,13 +13,14 @@ public class Template extends BaseTemplate implements Serializable {
 
 
 
-    @Column(name = "template_type", columnDefinition = "int")
+//    @Column(name = "template_type", columnDefinition = "int")
     private TemplateType templateType;
 
     public Template(){}
 
-    public Template(String name,String templateValue,TemplateType templateType){
+    public Template(String name,String enName,String templateValue,TemplateType templateType){
         super.setName(name);
+        super.setEnName(enName);
         super.setTemplateValue(templateValue);
         this.templateType = templateType;
 

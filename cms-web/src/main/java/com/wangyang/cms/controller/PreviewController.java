@@ -1,9 +1,6 @@
 package com.wangyang.cms.controller;
 
-import com.wangyang.cms.service.IArticleService;
-import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.service.IComponentsService;
-import com.wangyang.cms.service.ISheetService;
+import com.wangyang.cms.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +19,19 @@ public class PreviewController {
     ISheetService sheetService;
     @Autowired
     IComponentsService componentsService;
+
+    @Autowired
+    IChannelService channelService;
     @GetMapping("/article/{articleId}")
     public ModelAndView previewArticle(@PathVariable("articleId")Integer articleId){
         return articleService.preview(articleId);
     }
+
+    @GetMapping("/save/{articleId}")
+    public ModelAndView previewSaveArticle(@PathVariable("articleId")Integer articleId){
+        return articleService.previewForSave(articleId);
+    }
+
     @GetMapping("/category/{id}")
     public ModelAndView previewCategory(@PathVariable("id") Integer id){
         return categoryService.preview(id);
@@ -43,6 +49,10 @@ public class PreviewController {
     @GetMapping("/pdf/{articleId}")
     public ModelAndView previewPdf(@PathVariable("articleId")Integer articleId){
         return articleService.previewPdf(articleId);
+    }
+    @GetMapping("/channel/{id}")
+    public ModelAndView previewChannel(@PathVariable("id") Integer id){
+        return channelService.preview(id);
     }
 
 

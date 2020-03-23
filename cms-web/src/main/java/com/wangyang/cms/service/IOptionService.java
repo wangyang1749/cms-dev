@@ -9,11 +9,18 @@ import java.util.List;
 public interface IOptionService {
     Option save(Option option);
 
-    String getPropertyValue(PropertyEnum propertyEnum);
+
+    String getPropertyStringValue(PropertyEnum propertyEnum);
+
+    Integer getPropertyIntegerValue(PropertyEnum propertyEnum);
+
+//    <T> T getPropertyValue(String key, Class<T> clz);
 
     String getValue(String key);
 
     List<Option> saveUpdateOptionList(Collection<Option> options);
+
+    List<Option> saveAll(List<Option> options);
 
     Option saveUpdateOption(Option updateOption);
 

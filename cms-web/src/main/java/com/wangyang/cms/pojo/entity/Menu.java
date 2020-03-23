@@ -14,11 +14,28 @@ public class Menu extends BaseEntity {
     private int id;
     private int parentId;
     private Boolean status=true;
-
+    private Integer categoryId;
+    private Integer sheetId;
     private String icon;
     private String name;
     private String target;
     private String urlName;
+
+    public Integer getSheetId() {
+        return sheetId;
+    }
+
+    public void setSheetId(Integer sheetId) {
+        this.sheetId = sheetId;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public int getId() {
         return id;

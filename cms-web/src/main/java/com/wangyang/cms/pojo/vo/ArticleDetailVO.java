@@ -3,6 +3,7 @@ package com.wangyang.cms.pojo.vo;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.entity.Tags;
+import com.wangyang.cms.pojo.entity.base.BaseCategory;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,12 +11,20 @@ import java.util.Set;
 
 public class ArticleDetailVO extends ArticleDto implements Serializable {
     private String originalContent;
-    private Set<Integer> tagIds;
-    private Set<Integer> categoryIds;
     private String formatContent;
+    private BaseCategory category;
+    private Set<Integer> tagIds;
     private List<Tags> tags;
-    private List<Category> categories;
+    //更新channel的文章视图名称,将html的更新从service转移controller
+    private Boolean isUpdateChannelFirstName=false;
 
+    public Boolean getUpdateChannelFirstName() {
+        return isUpdateChannelFirstName;
+    }
+
+    public void setUpdateChannelFirstName(Boolean updateChannelFirstName) {
+        isUpdateChannelFirstName = updateChannelFirstName;
+    }
 
     public String getOriginalContent() {
         return originalContent;
@@ -33,22 +42,12 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
         this.formatContent = formatContent;
     }
 
-
-
-    public List<Tags> getTags() {
-        return tags;
+    public BaseCategory getCategory() {
+        return category;
     }
 
-    public void setTags(List<Tags> tags) {
-        this.tags = tags;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategory(BaseCategory category) {
+        this.category = category;
     }
 
     public Set<Integer> getTagIds() {
@@ -59,11 +58,11 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
         this.tagIds = tagIds;
     }
 
-    public Set<Integer> getCategoryIds() {
-        return categoryIds;
+    public List<Tags> getTags() {
+        return tags;
     }
 
-    public void setCategoryIds(Set<Integer> categoryIds) {
-        this.categoryIds = categoryIds;
+    public void setTags(List<Tags> tags) {
+        this.tags = tags;
     }
 }

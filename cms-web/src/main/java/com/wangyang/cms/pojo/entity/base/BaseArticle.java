@@ -9,11 +9,11 @@ import javax.persistence.*;
 public class BaseArticle extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int templateId;
+    private Integer id;
+
     @Column(name = "status", columnDefinition = "int default 1")
     private ArticleStatus status =ArticleStatus.PUBLISHED;
-    private int userId;
+    private Integer userId;
     private String title;
     private String viewName;
     @Column(name = "original_content", columnDefinition = "longtext not null")
@@ -22,8 +22,17 @@ public class BaseArticle extends BaseEntity{
     private String formatContent;
     @Column(name = "toc_content", columnDefinition = "longtext")
     private String toc;
+    private String templateName;
 
     private String path;
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
 
     public String getToc() {
         return toc;
@@ -51,27 +60,22 @@ public class BaseArticle extends BaseEntity{
         this.status = status;
     }
 
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getTemplateId() {
-        return templateId;
-    }
 
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
-    }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

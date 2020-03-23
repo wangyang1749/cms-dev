@@ -26,7 +26,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
     IPermissionService permissionService;
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
-        log.info("开始获取请求地址需要的权限");
+//        log.info("开始获取请求地址需要的权限");
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
         List<PermissionDto> permissionDtos = permissionService.listAll();
         for (PermissionDto permissionDto : permissionDtos){
@@ -36,7 +36,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
                 for (int i = 0; i < roles.size(); i++) {
                     str[i] = roles.get(i).getEnName();
                 }
-                log.info("请求需要"+str);
+//                log.info("请求需要"+str);
                 return SecurityConfig.createList(str);
             }
         }

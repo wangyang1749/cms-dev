@@ -11,7 +11,7 @@ import java.util.List;
 public class ArticleVO extends ArticleDto {
 
     private List<TagsDto> tags;
-    private List<CategoryDto> categories;
+    private CategoryDto category;
 
     public List<TagsDto> getTags() {
         return tags;
@@ -21,13 +21,11 @@ public class ArticleVO extends ArticleDto {
         this.tags = tags;
     }
 
-    public List<CategoryDto> getCategories() {
-        return categories;
+    public CategoryDto getCategory() {
+        return category;
     }
 
-    public void setCategories(List<CategoryDto> categories) {
-        this.categories = categories;
+    public void setCategory(CategoryDto category) {
+        this.category = category;
     }
-
-
 }

@@ -90,7 +90,7 @@ public class AttachmentServiceImpl implements IAttachmentService {
     }
 
     public AttachmentType getAttachmentType(){
-        String propertyValue = optionService.getPropertyValue(PropertyEnum.ATTACHMENT_TYPE);
+        String propertyValue = optionService.getPropertyStringValue(PropertyEnum.ATTACHMENT_TYPE);
         if(propertyValue==null){
             return AttachmentType.LOCAL;
         }

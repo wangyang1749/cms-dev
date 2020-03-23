@@ -27,7 +27,9 @@ public class TemplateController {
 
     @GetMapping
     public Page<Template> list(@PageableDefault(sort = {"id"},direction = DESC)Pageable pageable){
-        return templateService.list(pageable);
+        Page<Template> templatePage = templateService.list(pageable);
+
+        return templatePage;
     }
 
     @PostMapping

@@ -1,7 +1,7 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.entity.Components;
-import com.wangyang.cms.repository.TemplatePageRepository;
+import com.wangyang.cms.repository.ComponentsRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import java.util.List;
 public class TestTemplatePageService {
 
     @Autowired
-    TemplatePageRepository templatePageRepository;
+    ComponentsRepository componentsRepository;
     @Autowired
     IComponentsService templatePageService;
 
@@ -24,7 +24,7 @@ public class TestTemplatePageService {
     public void test1(){
         Components templatePage = new Components();
         templatePage.setStatus(true);
-        List<Components> templatePages = templatePageRepository.findAll(new Specification<Components>() {
+        List<Components> templatePages = componentsRepository.findAll(new Specification<Components>() {
             @Override
             public Predicate toPredicate(Root<Components> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
@@ -48,7 +48,7 @@ public class TestTemplatePageService {
 
     @Test
     public void test3(){
-        List<Components> templatePages = templatePageRepository.findAll((Specification<Components>) (root, criteriaQuery, criteriaBuilder) ->
+        List<Components> templatePages = componentsRepository.findAll((Specification<Components>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaQuery.where(
                         criteriaBuilder.like(root.get("event"), "%AC%"),
                         criteriaBuilder.isTrue(root.get("status"))

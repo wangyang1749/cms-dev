@@ -1,6 +1,5 @@
 package com.wangyang.cms.repository;
 
-import com.wangyang.cms.pojo.entity.ArticleCategory;
 import com.wangyang.cms.pojo.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 

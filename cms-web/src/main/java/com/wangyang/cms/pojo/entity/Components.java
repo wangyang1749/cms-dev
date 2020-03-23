@@ -12,7 +12,8 @@ public class Components extends BaseTemplate {
 
     private String viewName;
     private String dataName;
-    private boolean status;
+    @Column(columnDefinition = "bit(1) default true")
+    private Boolean status=true;
     @Column(name = "template_event")
     private String event;
     private String path;
@@ -22,7 +23,7 @@ public class Components extends BaseTemplate {
     public Components(){
     }
 
-    public Components(String name, String path , String templateValue, String viewName, String dataName, String event, boolean status){
+    public Components(String name, String path , String templateValue, String viewName, String dataName, String event, Boolean status){
         this.path=path;
         super.setName(name);
         super.setTemplateValue(templateValue);
@@ -48,11 +49,11 @@ public class Components extends BaseTemplate {
         this.event = event;
     }
 
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

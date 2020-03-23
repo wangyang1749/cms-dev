@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
 import com.wangyang.authorize.config.CustomUrlDecisionManager;
 import com.wangyang.authorize.config.service.UserDetailServiceImpl;
+import com.wangyang.authorize.pojo.dto.UserDto;
+import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.cms.pojo.support.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +53,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**","/article/**");
+        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**","/article/**","/articleList/**");
     }
 
     @Override
@@ -77,7 +79,9 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler((req, resp, authentication) -> {
                     resp.setContentType("application/json;charset=utf-8");
                     PrintWriter out = resp.getWriter();
-                    out.write(new ObjectMapper().writeValueAsString(BaseResponse.ok("Login success!!")));
+                    UserDto user = (UserDto)authentication.getPrincipal();
+                    user.setPassword(null);
+                    out.write(new ObjectMapper().writeValueAsString(BaseResponse.ok("Login success!!",user)));
                     out.flush();
                     out.close();
                 })

@@ -1,19 +1,30 @@
 package com.wangyang.cms.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangyang.cms.core.thymeleaf.CmsDialect;
+import com.wangyang.cms.pojo.enums.PropertyEnum;
 import com.wangyang.cms.pojo.support.CmsConst;
+import com.wangyang.cms.service.IOptionService;
+import com.wangyang.cms.service.impl.OptionService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -23,6 +34,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -38,6 +50,7 @@ public class CmsConfig implements ApplicationContextAware {
 //    }
     @Value("${cms.workDir}")
     private String workDir;
+
     private static ApplicationContext applicationContext;
     @Override
     public  void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -51,7 +64,8 @@ public class CmsConfig implements ApplicationContextAware {
         return applicationContext != null?applicationContext.getBean(name):null;
     }
 
-    
+
+
 
     @Bean
     public WebMvcConfigurer corsConfigurer()
@@ -59,12 +73,12 @@ public class CmsConfig implements ApplicationContextAware {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").
-                        allowedOrigins("*"). //允许跨域的域名，可以用*表示允许任何域名使用
-                        allowedMethods("*"). //允许任何方法（post、get等）
-                        allowedHeaders("*"). //允许任何请求头
-                        allowCredentials(true). //带上cookie信息
-                        exposedHeaders(HttpHeaders.SET_COOKIE).maxAge(3600L); //maxAge(3600)表明在3600秒内，不需要再发送预检验请求，可以缓存该结果
+ registry.addMapping("/**").
+                allowedOrigins("*"). //允许跨域的域名，可以用*表示允许任何域名使用
+                allowedMethods("*"). //允许任何方法（post、get等）
+                allowedHeaders("*"). //允许任何请求头
+                allowCredentials(true). //带上cookie信息
+                exposedHeaders(HttpHeaders.SET_COOKIE).maxAge(3600L);
             }
         };
     }

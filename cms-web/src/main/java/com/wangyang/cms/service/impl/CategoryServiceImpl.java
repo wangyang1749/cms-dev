@@ -1,32 +1,26 @@
 package com.wangyang.cms.service.impl;
 
-import com.wangyang.cms.core.jms.CmsService;
 import com.wangyang.cms.expection.ObjectException;
-import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.*;
+import com.wangyang.cms.pojo.enums.PropertyEnum;
 import com.wangyang.cms.pojo.params.CategoryParam;
+import com.wangyang.cms.pojo.params.CategoryQuery;
+import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.TemplateOption;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
-import com.wangyang.cms.pojo.vo.CategoryVO;
 import com.wangyang.cms.repository.*;
-import com.wangyang.cms.service.IArticleService;
-import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.service.IComponentsService;
-import com.wangyang.cms.service.ITemplateService;
+import com.wangyang.cms.service.*;
 import com.wangyang.cms.utils.CMSUtils;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -39,7 +33,7 @@ import java.util.stream.Collectors;
 @TemplateOption
 @Transactional
 @Slf4j
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> implements ICategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -47,179 +41,112 @@ public class CategoryServiceImpl implements ICategoryService {
     ITemplateService templateService;
     @Autowired
     IArticleService articleService;
-    @Autowired
-    ArticleCategoryRepository articleCategoryRepository;
+//    @Autowired
+//    ArticleCategoryRepository articleCategoryRepository;
 
+
+    @Autowired
+    IOptionService optionService;
+    @Autowired
+    MenuRepository menuRepository;
     @Autowired
     IComponentsService templatePageService;
 
-    @Autowired
-    CmsService cmsService;
+
+
+
 
     @Override
-
-    public Category add(CategoryParam categoryParam) {
-        Category category = new Category();
-        BeanUtils.copyProperties(categoryParam,category);
-        if(StringUtils.isEmpty(category.getViewName())){
-           String viewName = CMSUtils.randomViewName();
-           category.setViewName(viewName);
+    public Category save(Category category){
+        return categoryRepository.save(category);
+    }
+    @Override
+    public Category addOrUpdate(Category category) {
+//        Category category = new Category();
+//        BeanUtils.copyProperties(categoryParam, category);
+        if(category.getHaveHtml()==null){
+            category.setHaveHtml(true);
         }
-        //保存子Category
+        if (StringUtils.isEmpty(category.getViewName())) {
+            String viewName = CMSUtils.randomViewName();
+            category.setViewName(viewName);
+        }
+        if(category.getTemplateName()==null||"".equals(category.getTemplateName())){
+            category.setTemplateName(CmsConst.DEFAULT_CATEGORY_TEMPLATE);
+        }
         Category saveCategory = categoryRepository.save(category);
-        //TODO
-        generateListHtml();
-        cmsService.generateCategoryArticleListByCategory(saveCategory);
-//        if(saveCategory.getHaveHtml()){
-//            //生成子 节点的静态页面
-//            convertHtml(category);
-//            //判断是否存在父节点
-//            if(category.getParentId()!=0){
-//                Category parentCategory = findById(category.getParentId());
-//                parentCategory.setHaveChildren(true);
-//                Category saveCategoryParent = categoryRepository.save(parentCategory);
-//                //重新生成父节点的静态页面
-//                convertHtml(saveCategoryParent);
-//            }
-//        }
-
         return saveCategory;
     }
 
-    @Override
-    public Category update(int id, CategoryParam categoryParam) {
-        Category category = findById(id);
 
-        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-        BeanUtils.copyProperties(categoryParam,category);
-        Category updateCategory = categoryRepository.save(category);
-        //TODO
-        generateListHtml();
-        //判断是否生成Html
-        if(updateCategory.getHaveHtml()){
-            //生成
-            cmsService.generateCategoryArticleListByCategory(updateCategory);
-        }else{
-            //删除之前生成的
-            TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-        }
-//        if(category.getParentId()!=0){
-//            Category parentCategory = findById(category.getParentId());
-//            convertHtml(parentCategory);
-//        }
-        return updateCategory;
+
+    @Override
+    public List<Category> findAllById(Iterable<Integer> ids){
+        return categoryRepository.findAllById(ids);
     }
 
+    /**
+     * 重新生成所有Category的Html
+     *
+     * @return
+     */
+//    @Override
+//    public List<Integer> updateAllCategoryHtml() {
+//        List<Category> categories = categoryRepository.findAll();
+//        categories.forEach(category -> {
+//            cmsService.generateCategoryArticleListByCategory(category);
+//        });
+//        return ids;
+//    }
+
+
 
     @Override
-    public void deleteById(int id) {
+    public Category deleteById(int id) {
         Category category = findById(id);
-        TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-        log.info("### delete category"+ category.getName());
         categoryRepository.deleteById(id);
-        //如果当前Category是子分类, 需要重新生成父的Category
-        if(category.getParentId()!=0){
-            Category parentCategory = findById(category.getParentId());
-            cmsService.generateCategoryArticleListByCategory(parentCategory);
-        }
-        //TODO
-        List<ArticleCategory> articleCategories = articleCategoryRepository.deleteByCategoryId(id);
-        log.info("### delete  article category"+articleCategories.size());
-        generateListHtml();
+        return category;
     }
 
     @Override
-    public ModelAndView preview(Integer id){
+    public ModelAndView preview(Integer id) {
         ModelAndView modelAndView = new ModelAndView();
         Category category = findById(id);
         //预览
-        CategoryArticleListDao articleListVo = cmsService.getArticleListByCategory(category);
+        CategoryArticleListDao articleListVo = articleService.getArticleListByCategory(category);
 
-        Template template = templateService.findById(category.getTemplateId());
-        modelAndView.addObject("view",articleListVo);
+//        Template template = templateService.findById(category.getTemplateId());
+        Template template = templateService.findByEnName(category.getTemplateName());
+        modelAndView.addObject("view", articleListVo);
         modelAndView.setViewName(template.getTemplateValue());
         return modelAndView;
     }
-
-    @Override
-    public ModelAndView getArticleListByCategory(int categoryId, int page){
-        ModelAndView modelAndView =new ModelAndView();
-        Category category = findById(categoryId);
-        // 分页
-        CategoryArticleListDao articleListByCategory = cmsService.getArticleListByCategory(category, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id")));
-
-        Template template = templateService.findById(category.getTemplateId());
-
-        modelAndView.setViewName(template.getTemplateValue());
-        modelAndView.addObject("view",articleListByCategory);
-        return modelAndView;
-    }
-
-
-//    @Override
-//    public CategoryArticleListDao getArticleListByCategory(Category category){
-//        CategoryArticleListDao categoryArticleListDao = getArticleListByCategory(category, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id")));
-//        if(category.getHaveChildren()){
-//            List<Category> categoryList = categoryRepository.findAll(new Specification<Category>() {
-//                @Override
-//                public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-//                    return criteriaQuery.where(criteriaBuilder.equal(root.get("parentId"), category.getId())
-//                            ,criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
-//
-//                }
-//            });
-//            categoryArticleListDao.setChildren(categoryList);
-//            log.debug("##这个category有子节点!!");
-//        }
-//        if(category.getParentId()!=0){
-//            List<Category> categoryList = categoryRepository.findAll(new Specification<Category>() {
-//                @Override
-//                public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-//
-//                    return criteriaBuilder.equal(root.get("id"), category.getParentId());
-//                }
-//            });
-//
-//            categoryArticleListDao.setParent(categoryList.get(0));
-//            log.debug("##这个category有父节点!!");
-//        }
-//
-//        return categoryArticleListDao;
-//    }
-//
-
-
-//    private CategoryArticleListDao getArticleListByCategory(Category category,Pageable pageable){
-//        CategoryArticleListDao articleListVo = new CategoryArticleListDao();
-//        Page<ArticleDto> articleDtoPage = articleService.findArticleListByCategoryId(category.getId(), pageable);
-//        articleListVo.setPage(articleDtoPage);
-//        articleListVo.setCategory(category);
-//        articleListVo.setViewName(category.getViewName());
-//        return articleListVo;
-//    }
 
 
 
     /**
      * generate components
      */
-    private void generateListHtml() {
+    @Override
+    public void generateListHtml() {
         Components templatePage = templatePageService.findByDataName("categoryServiceImpl.listAsTree");
-        TemplateUtil.convertHtmlAndSave(listAsTree(),templatePage);
+        TemplateUtil.convertHtmlAndSave(list(), templatePage);
     }
-
-
-
 
 
     @Override
     public Category findById(int id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if(optionalCategory.isPresent()){
+        if (optionalCategory.isPresent()) {
             return optionalCategory.get();
         }
 
         throw new ObjectException("Category not found");
+    }
+
+    @Override
+    public Optional<Category> findOptionalById(int id){
+        return categoryRepository.findById(id);
     }
 
 
@@ -231,22 +158,66 @@ public class CategoryServiceImpl implements ICategoryService {
 //
 //    }
 
+    //未使用
+//    @Override
+//    public Page<CategoryVO> list(Pageable pageable) {
+//        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+//        return categoryPage.map(category -> {
+//            CategoryVO categoryVO = new CategoryVO();
+//            BeanUtils.copyProperties(category, categoryVO);
+//            return categoryVO;
+//        });
+//    }
+
+
+
 
 
     @Override
-    public Page<CategoryDto> list(Pageable pageable) {
-        Page<Category> categoryPage = categoryRepository.findAll(pageable);
-        return categoryPage.map(category -> {
-            CategoryDto categoryDto = new CategoryDto();
-            BeanUtils.copyProperties(category,categoryDto);
-            return categoryDto;
-        });
+    public List<Category> list(CategoryQuery categoryQuery,Sort sort) {
+        Specification<Category> specification = new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+               if(categoryQuery!=null){
+                   List<Predicate> predicates = new LinkedList<>();
+                   if (categoryQuery.getRecommend() != null) {
+                       predicates.add( criteriaBuilder.isTrue(root.get("recommend")));
+                   }
+                   if(categoryQuery.getHaveHtml()!=null){
+                       predicates.add( criteriaBuilder.isTrue(root.get("haveHtml")));
+                   }
+                   return  criteriaQuery.where(predicates.toArray(new Predicate[0])).getRestriction();
+               }
+               return null;
+            }
+        };
+        List<Category> categories = categoryRepository.findAll(specification,sort);
+        return categories;
     }
 
+    /**
+     * 显示推荐的首页并且是生成html的
+     * @return
+     */
+    @Override
+    public List<CategoryDto> listRecommend(){
+        CategoryQuery categoryQuery = new CategoryQuery();
+        categoryQuery.setHaveHtml(true);
+        categoryQuery.setRecommend(true);
+        List<Category> categories = list(categoryQuery, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+        return categories.stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
+    }
+    /**
+     * 显示所有Category, 转化为Dto
+     * @return
+     */
     @Override
     public List<CategoryDto> listAll() {
-
-        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+        List<Category> categories = list(null, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
         return categories.stream().map(category -> {
             CategoryDto categoryDto = new CategoryDto();
             BeanUtils.copyProperties(category, categoryDto);
@@ -254,54 +225,77 @@ public class CategoryServiceImpl implements ICategoryService {
         }).collect(Collectors.toList());
 
     }
-
+    /**
+     * 不显示没有生成Html的category
+     * @return
+     */
     @Override
-    public List<CategoryVO> listAsTree(Sort sort) {
-        List<Category> categories = categoryRepository.findAll(sort);
-        // generate tree
-        if (CollectionUtils.isEmpty(categories)) {
-            return Collections.emptyList();
+    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
+    public List<Category> list() {
+        CategoryQuery categoryQuery = new CategoryQuery();
+        categoryQuery.setHaveHtml(true);
+        return list(categoryQuery,Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+    }
+
+
+    /**
+     * 推荐分类到首页
+     * @param id
+     * @return
+     */
+    @Override
+    public Category recommendOrCancelHome(int id){
+        Category category = findById(id);
+        if(category.getRecommend()){
+            category.setRecommend(false);
+        }else{
+            category.setRecommend(true);
         }
-
-        List<CategoryVO> categoryVOS = categories.stream().map(category -> {
-            CategoryVO categoryVO = new CategoryVO();
-            BeanUtils.copyProperties(category,categoryVO);
-            return categoryVO;
-        }).collect(Collectors.toList());
-        return createTree(0,categoryVOS) ;
+        return categoryRepository.save(category);
     }
 
     @Override
-    @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
-    public List<CategoryVO> listAsTree() {
-        return listAsTree(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
-    }
-
-
-    private List<CategoryVO> createTree(int pid,List<CategoryVO> categories){
-        List<CategoryVO> treeCategory = new ArrayList<>();
-        for(CategoryVO categoryVO: categories){
-            if(pid == categoryVO.getParentId()){
-                treeCategory.add(categoryVO);
-                categoryVO.setChildren(createTree(categoryVO.getId(),categories));
-            }
+    public Category haveHtml(int id){
+        Category category = findById(id);
+        if(category.getHaveHtml()){
+            category.setHaveHtml(false);
+        }else{
+            category.setHaveHtml(true);
         }
-        return treeCategory;
+        return categoryRepository.save(category);
     }
 
     @Override
-    public   List<Category> findCategoryByArticleId(int articleId) {
-        Specification<Category> specification = new Specification<Category>() {
-            @Override
-            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Subquery<ArticleCategory> subquery = criteriaQuery.subquery(ArticleCategory.class);
-                Root<ArticleCategory> subRoot = subquery.from(ArticleCategory.class);
-                subquery  = subquery.select(subRoot.get("categoryId"))
-                        .where(criteriaBuilder.equal(subRoot.get("articleId"),articleId));
-                return root.get("id").in(subquery);
+    public Category addOrRemoveToMenu(int id){
+        Category category = findById(id);
+        Menu menu = menuRepository.findByCategoryId(category.getId());
+        if(category.getExistNav()){
+            category.setExistNav(false);
+            if(menu!=null){
+                menuRepository.deleteById(menu.getId());
             }
-        };
-        List<Category> categories = categoryRepository.findAll(specification);
-        return categories;
+        }else{
+            category.setExistNav(true);
+            if(menu==null){
+                menu = new Menu();
+            }
+
+            menu.setName(category.getName());
+            menu.setCategoryId(category.getId());
+            menu.setUrlName(category.getPath()+"/"+category.getViewName()+".html");
+            menuRepository.save(menu);
+
+        }
+        return  categoryRepository.save(category);
     }
+
+//    private List<CategoryVO> createTree(int pid, List<CategoryVO> categories) {
+//        List<CategoryVO> treeCategory = new ArrayList<>();
+//        for (CategoryVO categoryVO : categories) {
+//            if (pid == categoryVO.getParentId()) {
+//                treeCategory.add(categoryVO);
+//            }
+//        }
+//        return treeCategory;
+//    }
 }

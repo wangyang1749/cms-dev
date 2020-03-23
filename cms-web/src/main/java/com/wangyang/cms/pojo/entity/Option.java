@@ -22,13 +22,35 @@ public class Option extends BaseEntity {
     @Column(name = "option_value", columnDefinition = "varchar(1023) not null")
     private String value;
 
+    private String name;
+    private Integer groupId;
+
+
     public Option(){}
 
-    public Option(String key,String value){
+    public Option(String key,String value,String name,Integer groupId){
         this.key=key;
         this.value=value;
+        this.name=name;
+        this.groupId=groupId;
     }
 
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

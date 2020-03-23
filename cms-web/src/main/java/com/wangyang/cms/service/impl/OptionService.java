@@ -2,6 +2,7 @@ package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.cache.StringCacheStore;
 import com.wangyang.cms.expection.ObjectException;
+import com.wangyang.cms.expection.OptionException;
 import com.wangyang.cms.pojo.entity.Option;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
 import com.wangyang.cms.repository.OptionRepository;
@@ -28,11 +29,24 @@ public class OptionService implements IOptionService {
         return  optionRepository.save(option);
     }
 
-
     @Override
-    public String getPropertyValue(PropertyEnum propertyEnum){
-        return getValue(propertyEnum.getValue());
+    public String getPropertyStringValue(PropertyEnum propertyEnum) {
+        String value = getValue(propertyEnum.name());
+        if((value==null||"".equals(value))&&!propertyEnum.getNull()){
+            throw  new OptionException("系统变量不能为空!!");
+        }
+        return value;
     }
+    @Override
+    public Integer getPropertyIntegerValue(PropertyEnum propertyEnum) {
+        return Integer.parseInt(getValue(propertyEnum.name()));
+    }
+
+//    @Override
+//    public <T> T getPropertyValue(String key){
+////        return getValue(propertyEnum.name());
+//        return clz.cast(getValue(key));
+//    }
 
     @Override
     public String getValue(String key) {
@@ -53,13 +67,20 @@ public class OptionService implements IOptionService {
     }
 
     @Override
+    public List<Option> saveAll(List<Option> options){
+        return  optionRepository.saveAll(options);
+    }
+
+
+
+    @Override
     public Option saveUpdateOption(Option updateOption){
         Option option = optionRepository.findByKey(updateOption.getKey());
         if(option!=null){
             option.setValue(updateOption.getValue());
             option = optionRepository.save(option);
         }else {
-            option = optionRepository.save(updateOption);
+            option = optionRepository.saveAndFlush(updateOption);
         }
         stringCacheStore.setValue(option.getKey(),option.getValue());
         return option;

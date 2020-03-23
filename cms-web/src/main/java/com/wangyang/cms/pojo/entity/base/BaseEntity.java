@@ -7,13 +7,13 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 @MappedSuperclass
 public class BaseEntity {
-    @Column(name = "create_time", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    @Column(name = "create_time", columnDefinition = "timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    private Date createDate=new Date();
 
-    @Column(name = "update_time", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    @Column(name = "update_time", columnDefinition = "timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDate;
+    private Date updateDate=new Date();
 
     public Date getCreateDate() {
         return createDate;

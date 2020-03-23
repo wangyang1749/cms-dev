@@ -2,8 +2,11 @@ package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Category;
+import com.wangyang.cms.pojo.entity.Menu;
 import com.wangyang.cms.pojo.params.CategoryParam;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
+import com.wangyang.cms.pojo.params.CategoryQuery;
+import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.CategoryVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,14 +15,17 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ICategoryService {
+public interface ICategoryService extends IBaseCategoryService<Category> {
+    Category save(Category category);
+
     /**
      * add category
-     * @param categoryParam
+     * @param category
      * @return
      */
-    Category add(CategoryParam categoryParam);
+    Category addOrUpdate(Category category);
 
 //    CategoryArticleListDao getArticleListByCategory(Category category);
 
@@ -29,21 +35,22 @@ public interface ICategoryService {
      * @param page
      * @return
      */
-    ModelAndView getArticleListByCategory(int categoryId,int page);
+//    ModelAndView getArticleListByCategory(int categoryId,int page);
+
+//    List<Integer> updateAllCategoryHtml();
+
+    List<Category> findAllById(Iterable<Integer> ids);
 
     /**
      * delete by Id
      * @param id
      */
-    void deleteById(int id);
+    Category deleteById(int id);
 
-    /**
-     * update category by id
-     * @param id
-     * @param categoryParam
-     * @return
-     */
-    Category update(int id, CategoryParam categoryParam);
+
+//    Category update(Category category);
+
+    void generateListHtml();
 
     /**
      * find category by id
@@ -56,13 +63,26 @@ public interface ICategoryService {
      * category page
      * @return
      */
-    Page<CategoryDto> list(Pageable pageable);
+//    Page<CategoryVO> list(Pageable pageable);
 
     List<CategoryDto> listAll();
 
-    List<CategoryVO> listAsTree(@NonNull Sort sort);
-    List<CategoryVO> listAsTree();
+//    List<CategoryVO> listAsTree(@NonNull Sort sort);
+//    List<CategoryVO> listAsTree();
     ModelAndView preview(Integer id);
 
-    List<Category> findCategoryByArticleId(int id);
+    List<CategoryDto> listRecommend();
+
+    Optional<Category> findOptionalById(int id);
+
+    List<Category> list(CategoryQuery categoryQuery, Sort sort);
+
+    @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
+    List<Category> list();
+
+    Category recommendOrCancelHome(int id);
+
+    Category haveHtml(int id);
+
+    Category addOrRemoveToMenu(int id);
 }

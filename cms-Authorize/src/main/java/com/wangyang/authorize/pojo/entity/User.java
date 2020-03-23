@@ -1,11 +1,21 @@
 package com.wangyang.authorize.pojo.entity;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "t_user")
-public class User extends BaseEntity {
+@Slf4j
+public class User extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,6 +34,7 @@ public class User extends BaseEntity {
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getUsername() {
         return username;
