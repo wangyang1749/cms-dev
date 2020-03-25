@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
 import com.wangyang.authorize.config.CustomUrlDecisionManager;
 import com.wangyang.authorize.config.service.UserDetailServiceImpl;
+import com.wangyang.authorize.jwt.JWTConfigurer;
+import com.wangyang.authorize.jwt.TokenProvider;
 import com.wangyang.authorize.pojo.dto.UserDto;
 import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.cms.pojo.support.BaseResponse;
@@ -14,22 +16,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 import java.io.PrintWriter;
 
-@Configuration
+//@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+
 public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Bean("cmsPasswordEncoder")
+    @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -39,29 +47,62 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService(){
-        return new UserDetailServiceImpl();
+
+
+
+    private  TokenProvider tokenProvider;
+//    private  CorsFilter corsFilter;
+//    private final JwtAuthenticationEntryPoint authenticationErrorHandler;
+//    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    public CmsWebSecurityConfiguration(
+            TokenProvider tokenProvider
+//            CorsFilter corsFilter
+//            JwtAuthenticationEntryPoint authenticationErrorHandler,
+//            JwtAccessDeniedHandler jwtAccessDeniedHandler
+    ) {
+        this.tokenProvider = tokenProvider;
+//        this.corsFilter = corsFilter;
+//        this.authenticationErrorHandler = authenticationErrorHandler;
+//        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
-        auth.inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("123456")).roles("ADMIN");
-    }
+    /**
+     * 问题:这里创建UserDetailsService, controller不能获取AuthenticationManager
+     * @param web
+     * @throws Exception
+     */
+//    @Bean
+//    public UserDetailsService myUserDetailsService(){
+//        return new UserDetailServiceImpl();
+//    }
+//
+//
+//
+//
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(myUserDetailsService());
+//        auth.inMemoryAuthentication()
+//                .withUser("admin").password(passwordEncoder().encode("123456")).roles("ADMIN");
+//    }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/admin/**","/templates/**","/download/**","/preview/**","/article/**","/articleList/**");
+        web.ignoring().antMatchers("/user/authenticate","/admin/**","/templates/**","/download/**","/preview/**","/article/**","/articleList/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+//                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
 //                .antMatchers("/api/**")
 //                .hasRole("ADMIN")
+//                .antMatchers("/user/authenticate").permitAll()
+
 //                .anyRequest().authenticated()
+
+
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -70,6 +111,8 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         return o;
                     }
                 })
+                .and()
+                .apply(securityConfigurerAdapter())
                 .and()
 
                 .formLogin()
@@ -129,6 +172,15 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 });
         http.cors();
         http.csrf().disable();
+
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+    }
+
+    private JWTConfigurer securityConfigurerAdapter() {
+        return new JWTConfigurer(tokenProvider);
     }
 
 }

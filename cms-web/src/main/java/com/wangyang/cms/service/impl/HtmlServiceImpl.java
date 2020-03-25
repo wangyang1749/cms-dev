@@ -76,9 +76,9 @@ public class HtmlServiceImpl implements IHtmlService {
             }else {
                 //如果是内容类型的栏目
                 Channel channel = (Channel)baseCategory;
-
+                //生成栏目列表
                 ChannelVo channelVo = conventHtml(channel);
-
+                //生成文章模板
                 Template articleTemplate = templateService.findByEnName(channelVo.getArticleTemplateName());
                 TemplateUtil.convertHtmlAndSave(articleVO,articleTemplate);
             }

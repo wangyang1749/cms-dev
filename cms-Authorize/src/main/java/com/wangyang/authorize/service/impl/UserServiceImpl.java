@@ -6,6 +6,7 @@ import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.authorize.repository.UserRepository;
 import com.wangyang.authorize.service.IRoleService;
 import com.wangyang.authorize.service.IUserService;
+import com.wangyang.authorize.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -59,6 +61,12 @@ public class UserServiceImpl implements IUserService {
             return user.get();
         }
         return  null;
+    }
+
+    @Override
+    public UserDto getCurrentUser() {
+        Optional<String> username = SecurityUtils.getCurrentUsername();
+        return findByUsername(username.get());
     }
 
     @Override

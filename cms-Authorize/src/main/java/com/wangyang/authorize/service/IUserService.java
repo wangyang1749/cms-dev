@@ -15,5 +15,7 @@ public interface IUserService {
     User findById(int id);
 
 
+    UserDto getCurrentUser();
+
     List<User> findAllById(Collection<Integer> ids);
 }

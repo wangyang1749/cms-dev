@@ -1,12 +1,14 @@
 package com.wangyang.authorize.config.service;
 
 
+import com.wangyang.authorize.jwt.TokenProvider;
 import com.wangyang.authorize.pojo.entity.Role;
 import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.authorize.service.IRoleService;
 import com.wangyang.authorize.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +31,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 //    private IPermissionService permissionService;
     @Autowired
     private IRoleService roleService;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

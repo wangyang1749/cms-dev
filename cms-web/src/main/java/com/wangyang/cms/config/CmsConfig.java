@@ -22,6 +22,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -65,23 +68,33 @@ public class CmsConfig implements ApplicationContextAware {
     }
 
 
-
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer()
-    {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
- registry.addMapping("/**").
-                allowedOrigins("*"). //允许跨域的域名，可以用*表示允许任何域名使用
-                allowedMethods("*"). //允许任何方法（post、get等）
-                allowedHeaders("*"). //允许任何请求头
-                allowCredentials(true). //带上cookie信息
-                exposedHeaders(HttpHeaders.SET_COOKIE).maxAge(3600L);
-            }
-        };
-    }
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.addAllowedOrigin("*"); // e.g. http://domain1.com
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("*");
+//
+//        source.registerCorsConfiguration("/api/**", config);
+//        return new CorsFilter(source);
+//    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer()
+//    {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").
+//                allowedOrigins("*"). //允许跨域的域名，可以用*表示允许任何域名使用
+//                allowedMethods("*"). //允许任何方法（post、get等）
+//                allowedHeaders("*"). //允许任何请求头
+//                allowCredentials(true). //带上cookie信息
+//                exposedHeaders(HttpHeaders.SET_COOKIE).maxAge(3600L);
+//            }
+//        };
+//    }
     @Bean
     public ViewResolver thymeleafViewResolver(){
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();

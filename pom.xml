@@ -27,6 +27,8 @@
         <openhtml.version>1.0.2</openhtml.version>
         <flexmark.version>0.60.0</flexmark.version>
         <selenium.version>3.141.59</selenium.version>
+        <jjwt.version>0.10.6</jjwt.version>
+
     </properties>
 
 <dependencyManagement>
@@ -127,6 +129,23 @@
             <groupId>com.wangyang.cms</groupId>
             <version>0.0.1-SNAPSHOT</version>
             <artifactId>Cms-Authorize</artifactId>
+        </dependency>
+
+    <!--jwt-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
 
 <!--        flexmark-->
