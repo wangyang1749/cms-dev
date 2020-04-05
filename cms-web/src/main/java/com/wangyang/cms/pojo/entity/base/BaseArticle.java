@@ -23,8 +23,30 @@ public class BaseArticle extends BaseEntity{
     @Column(name = "toc_content", columnDefinition = "longtext")
     private String toc;
     private String templateName;
+    private String commentTemplateName;
+    //是否开启评论
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean openComment=false;
+
 
     private String path;
+
+
+    public String getCommentTemplateName() {
+        return commentTemplateName;
+    }
+
+    public void setCommentTemplateName(String commentTemplateName) {
+        this.commentTemplateName = commentTemplateName;
+    }
+
+    public Boolean getOpenComment() {
+        return openComment;
+    }
+
+    public void setOpenComment(Boolean openComment) {
+        this.openComment = openComment;
+    }
 
     public String getTemplateName() {
         return templateName;

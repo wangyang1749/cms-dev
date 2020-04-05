@@ -2,8 +2,7 @@ package com.wangyang.cms.handle;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.*;
 import com.wangyang.cms.expection.FileOperationException;
 import com.wangyang.cms.pojo.enums.AttachmentType;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
@@ -20,7 +19,10 @@ import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Objects;
 
 @Component
@@ -108,6 +110,81 @@ public class AliOssFileHandler implements FileHandler {
 
     }
 
+
+    /**
+     * 通过网络url上传文件
+     * @param url
+     * @return
+     */
+    @Override
+    public UploadResult upload(String url, String name){
+        // Get config
+        String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
+        String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
+        String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
+        String domain = optionService.getPropertyStringValue(PropertyEnum.OSS_DOMAIN);
+        String source = optionService.getPropertyStringValue(PropertyEnum.OSS_SOURCE);
+        String styleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_STYLE_RULE);
+        String thumbnailStyleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_THUMBNAIL_STYLE_RULE);
+
+        StringBuilder basePath = new StringBuilder(domain);
+        basePath.append(bucketName)
+                .append(".")
+                .append(endPoint)
+                .append("/");
+
+        OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);
+        try {
+            InputStream inputStream = new URL(url).openStream();
+
+//            ObjectMetadata meta = new ObjectMetadata();
+//            // 指定上传的内容类型。
+//            meta.setContentType("text/plain");
+            byte[] bytes = new byte[1024*10];
+            boolean flag = true;
+//            AppendObjectRequest appendObjectRequest=null;
+            Long position=0L;
+            AppendObjectResult appendObjectResult=null;
+            while (inputStream.read(bytes)!=-1){
+                if(flag){
+                     appendObjectResult = ossClient.appendObject(
+                            new AppendObjectRequest(bucketName, name, new ByteArrayInputStream(bytes)).withPosition(0L));
+//                    appendObjectRequest = new AppendObjectRequest(bucketName, name, new ByteArrayInputStream(bytes));
+//                    appendObjectRequest.setPosition(0L);
+//                    AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
+//                    position=appendObjectRequest.getPosition();
+                    flag=false;
+                }else {
+                    Long nextPosition = appendObjectResult.getNextPosition();
+                    appendObjectResult = ossClient.appendObject(
+                            new AppendObjectRequest(bucketName, name,  new ByteArrayInputStream(bytes))
+                                    .withPosition(nextPosition));
+                    System.out.println("上传.....");
+//                    appendObjectRequest.setInputStream(new ByteArrayInputStream(bytes));
+//                    AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
+//                    position = appendObjectRequest.getPosition();
+                }
+            }
+            // 通过AppendObjectRequest设置多个参数。
+
+            // 第一次追加。
+            // 设置文件的追加位置。
+
+
+//            PutObjectResult putObjectResult = ossClient.putObject(bucketName, name, inputStream);
+//            if(putObjectResult==null){
+//                throw  new FileOperationException("File upload failed!!");
+//            }
+            UploadResult uploadResult = new UploadResult();
+            return uploadResult;
+        } catch (IOException e) {
+            throw  new FileOperationException("通过url上传文件失败");
+        }finally {
+            ossClient.shutdown();
+        }
+    }
+
     @Override
     public void delete(String key) {
         Assert.notNull(key, "File key must not be blank");
@@ -130,3 +207,5 @@ public class AliOssFileHandler implements FileHandler {
         }
     }
 }
+
+

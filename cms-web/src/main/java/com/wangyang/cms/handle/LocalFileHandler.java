@@ -16,10 +16,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -145,6 +143,44 @@ public class LocalFileHandler implements FileHandler{
         } catch (IOException e) {
             throw new FileOperationException("上传附件失败").setErrorData(uploadPath);
         }
+    }
+
+    @Override
+    public UploadResult upload(String url, String name) {
+        Calendar date = Calendar.getInstance();
+        int year = date.get(Calendar.YEAR);
+        int month =date.get(Calendar.MONTH);
+
+        // Build directory /upload/2020/2/
+        String subDir = UPLOAD_SUB_DIR + year + File.separator + month + File.separator;
+
+        String subFilePath = subDir + name;
+        Path uploadPath = Paths.get(workDir, subFilePath);
+        try {
+            Files.createDirectories(uploadPath.getParent());
+            //创建文件
+//            Files.createFile(uploadPath);
+            FileOutputStream fileOutputStream = new FileOutputStream(uploadPath.toFile());
+
+
+            InputStream inputStream = new URL(url).openStream();
+//            DataInputStream dis = new DataInputStream(inputStream);
+//            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024*10];
+            int len = 0 ;
+            while ((len=inputStream.read(bytes))!=-1){
+                fileOutputStream.write(bytes,0,len);
+            }
+//            fileOutputStream.write(output.toByteArray());
+            fileOutputStream.close();
+            inputStream.close();
+//            dis.close();
+//            output.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

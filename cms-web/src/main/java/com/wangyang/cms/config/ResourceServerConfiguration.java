@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 //@EnableResourceServer
 
 //在使用oauth2时使用
+@Deprecated
 public class ResourceServerConfiguration{//} extends ResourceServerConfigurerAdapter {
 
 //    @Override

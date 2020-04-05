@@ -94,10 +94,11 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         List<Template> templates = Arrays.asList(
                 new Template("默认的文章模板",CmsConst.DEFAULT_ARTICLE_TEMPLATE,"templates/@article", TemplateType.ARTICLE),
                 new Template("默认的文章栏目模板",CmsConst.DEFAULT_ARTICLE_CHANNEL_TEMPLATE, "templates/@articleChannel", TemplateType.ARTICLE_CHANNEL),
-                new Template("默认的分类模板(AJAX)",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"templates/@category", TemplateType.CATEGORY),
+                new Template("默认的分类模板",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"templates/@category", TemplateType.CATEGORY),
                 new Template("默认的栏目模板",CmsConst.DEFAULT_CHANNEL_TEMPLATE, "templates/@channelSheetList", TemplateType.CHANNEL),
                 new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET),
-                new Template("基于分页的分类模板","CATEGORY_PAGE","templates/@categoryPage", TemplateType.CATEGORY),
+                new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT),
+                new Template("基于AJAX分页的分类模板","CATEGORY_PAGE","templates/@categoryPage", TemplateType.CATEGORY),
                 new Template("文章幻灯片模板","REVEAL","templates/@reveal", TemplateType.ARTICLE)
 
         );

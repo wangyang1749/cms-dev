@@ -69,6 +69,30 @@ public class TemplateUtil {
         }
     }
 
+
+    /**
+     * 直接输入路径和视图名称生成对应的Html
+     * @param path
+     * @param viewName
+     * @param object
+     * @param template
+     * @return
+     */
+    public static String convertHtmlAndSave(String path,String viewName,Object object, Template template){
+        Assert.notNull(template,"template can't null");
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",object);
+        map.put("template",template);
+        map.put("isSave",true);
+        Context context = new Context();
+        context.setVariables(map);
+//        convertHtml(template,context,object,true);
+
+        String html = getHtml(template.getTemplateValue(),context);
+        saveFile(path,viewName,html);
+        return html;
+    }
+
     public static String convertHtmlAndSave(Object object, BaseTemplate template){
         Map<String,Object> map = new HashMap<>();
         map.put("view",object);

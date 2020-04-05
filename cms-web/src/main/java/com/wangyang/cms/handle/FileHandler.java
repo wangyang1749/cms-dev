@@ -15,6 +15,8 @@ public interface FileHandler {
     @NonNull
     UploadResult upload(@NonNull MultipartFile file);
 
+    UploadResult upload(String url, String name);
+
     void delete(@NonNull String key);
 
     static boolean isImageType(@Nullable MediaType mediaType) {

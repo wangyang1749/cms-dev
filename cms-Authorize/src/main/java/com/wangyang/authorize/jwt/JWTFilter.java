@@ -11,6 +11,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -46,6 +47,20 @@ public class JWTFilter extends GenericFilterBean {
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        String requestURI = request.getRequestURI();
+        if(requestURI.startsWith("/user")){
+            Cookie[] cookies = request.getCookies();
+            if(cookies!=null){
+                for (int i = 0;i<cookies.length;i++){
+                    Cookie cookie = cookies[i];
+                    if(cookie.getName().equals("Authorization")){
+                        return cookie.getValue();
+                    }
+                }
+            }
+        }
+
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }

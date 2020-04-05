@@ -112,6 +112,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Article haveHtml(int id);
 
+    Article openComment(int id);
+
     void generateSummary(Article article);
 
     ArticleDetailVO updateCategory(Article article, int categoryId);

@@ -272,7 +272,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public Article deleteByArticleId(int id) {
         Article article = findArticleById(id);
         log.debug(">>> delete comment");
-        commentRepository.deleteByArticleId(id);
+//        commentRepository.deleteByArticleId(id);
         log.debug(">>> delete article tags");
         articleTagsRepository.deleteByArticleId(id);
         log.debug("delete article");
@@ -656,6 +656,30 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
+    /**
+     * 打开或者关闭评论
+     * @param id
+     * @return
+     */
+    @Override
+    public Article openComment(int id){
+        Article article = findArticleById(id);
+        if(article.getOpenComment()==null|| article.getCommentTemplateName()==null){
+            article.setOpenComment(true);
+            article.setCommentTemplateName(CmsConst.DEFAULT_COMMENT_TEMPLATE);
+            return  articleRepository.save(article);
+        }
+
+        if(article.getOpenComment()){
+            article.setOpenComment(false);
+        }else {
+            article.setOpenComment(true);
+        }
+        articleRepository.save(article);
+        return article;
+    }
+
+
     @Override
     public void generateSummary(Article article){
         if(article.getSummary()==null||"".equals(article.getSummary())){
@@ -670,6 +694,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }
     }
 
+    /**
+     * 更改文章类别
+     * @param article
+     * @param categoryId
+     * @return
+     */
     @Override
     public ArticleDetailVO updateCategory(Article article, int categoryId){
         if(article.getUserId()==null){
@@ -700,6 +730,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
         return articleDetailVO;
     }
+
+
 
     /**
      * 动态的获取第二页

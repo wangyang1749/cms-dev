@@ -1,9 +1,11 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.entity.Comment;
+import com.wangyang.cms.pojo.enums.CommentType;
+import com.wangyang.cms.pojo.vo.CommentVo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 
 public interface ICommentService {
     /**
@@ -13,7 +15,7 @@ public interface ICommentService {
      * @param comment
      * @return
      */
-    Comment add(int uid,int aid,Comment comment);
+    Comment add(Comment comment);
 
     /**
      *
@@ -27,7 +29,13 @@ public interface ICommentService {
      * @param updateComment
      * @return
      */
-    Comment update(int id,Comment updateComment);
+    Comment update(int id, Comment updateComment);
+
+    Page<Comment> listByResourceId(int id, CommentType commentType);
+
+    Page<Comment> listByResourceId(int id, CommentType commentType, Pageable pageable);
+
+    Page<CommentVo> convertCommentVo(Page<Comment> commentPage);
 
     /**
      *
@@ -36,13 +44,7 @@ public interface ICommentService {
      */
     Comment findById(int id);
 
-    /**
-     *
-     * @param id article id
-     * @param pageable
-     * @return
-     */
-    Page<Comment> listByArticleId(int id,Pageable pageable);
 
     Page<Comment> list(Pageable pageable);
+
 }

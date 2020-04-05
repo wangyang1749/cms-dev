@@ -41,6 +41,15 @@ public class FileHandlers {
         throw new FileOperationException("No available file handler to upload the file").setErrorData(attachmentType);
     }
 
+    public UploadResult upload(@NonNull String url,@NonNull String name,@NonNull AttachmentType attachmentType){
+        for (FileHandler fileHandler : fileHandlers) {
+            if (fileHandler.supportType(attachmentType)) {
+                return fileHandler.upload(url,name);
+            }
+        }
+        throw new FileOperationException("通过url上传文件失败!!").setErrorData(attachmentType);
+    }
+
     public void delete(@NonNull Attachment attachment) {
         Assert.notNull(attachment, "Attachment must not be null");
         delete(attachment.getType(), attachment.getFileKey());

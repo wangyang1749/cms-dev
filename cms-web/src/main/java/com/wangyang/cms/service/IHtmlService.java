@@ -1,13 +1,12 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Channel;
-import com.wangyang.cms.pojo.entity.Components;
-import com.wangyang.cms.pojo.entity.Sheet;
+import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ChannelVo;
+import com.wangyang.cms.pojo.vo.CommentVo;
 import com.wangyang.cms.pojo.vo.SheetDetailVo;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface IHtmlService {
@@ -63,4 +62,8 @@ public interface IHtmlService {
 
 
     void generateSheetListByChannelId(int id);
+
+    void generateCommentHtmlByComment(Comment comment);
+
+    void generateCommentHtmlByArticleId(int articleId);
 }

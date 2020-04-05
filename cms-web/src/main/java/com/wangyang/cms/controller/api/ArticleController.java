@@ -64,6 +64,14 @@ public class ArticleController {
     }
 
 
+    @GetMapping("/findArticleDetail/{id}")
+    public ArticleDetailVO findDetailArticleById(@PathVariable("id") Integer id){
+        ArticleDetailVO articleDetailVO = articleService.findArticleAOById(id);
+        return articleDetailVO;
+    }
+
+
+
 
     @PostMapping
     public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams){
@@ -250,6 +258,12 @@ public class ArticleController {
         return article;
     }
 
+    /**
+     * 更新文章分类
+     * @param articleId
+     * @param baseCategoryId
+     * @return
+     */
     @GetMapping("/updateCategory/{articleId}")
     public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId,Integer baseCategoryId){
         Article article = articleService.findArticleById(articleId);
@@ -287,6 +301,17 @@ public class ArticleController {
         return articleDetailVO;
     }
 
+
+    @GetMapping("/openOrCloseComment/{id}")
+    public ArticleDetailVO openOrCloseComment(@PathVariable("id")Integer id){
+        Article article = articleService.openComment(id);
+        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        //生成该文章之下的评论
+        htmlService.generateCommentHtmlByArticleId(articleDetailVO.getId());
+        //生成文章
+        htmlService.conventHtml(articleDetailVO);
+        return articleDetailVO;
+    }
 
 
 }

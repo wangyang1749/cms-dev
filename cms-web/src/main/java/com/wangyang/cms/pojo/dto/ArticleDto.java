@@ -34,6 +34,27 @@ public class ArticleDto  implements Serializable {
     private User user;
     private Integer categoryId;
 
+    private String commentTemplateName;
+    //是否开启评论
+    private Boolean openComment;
+
+
+    public String getCommentTemplateName() {
+        return commentTemplateName;
+    }
+
+    public void setCommentTemplateName(String commentTemplateName) {
+        this.commentTemplateName = commentTemplateName;
+    }
+
+    public Boolean getOpenComment() {
+        return openComment;
+    }
+
+    public void setOpenComment(Boolean openComment) {
+        this.openComment = openComment;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -34,6 +34,7 @@ public class CmsConst {
     public final static String DEFAULT_CHANNEL_TEMPLATE = "DEFAULT_CHANNEL_LIST";
     public final static String DEFAULT_CATEGORY_TEMPLATE = "DEFAULT_CATEGORY";
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
+    public final static String DEFAULT_COMMENT_TEMPLATE = "DEFAULT_COMMENT";
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

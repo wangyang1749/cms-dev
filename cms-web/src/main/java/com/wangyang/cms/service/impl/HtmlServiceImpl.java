@@ -6,9 +6,11 @@ import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.entity.base.BaseCategory;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
+import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ChannelVo;
+import com.wangyang.cms.pojo.vo.CommentVo;
 import com.wangyang.cms.pojo.vo.SheetDetailVo;
 import com.wangyang.cms.repository.ArticleRepository;
 import com.wangyang.cms.repository.CategoryRepository;
@@ -60,9 +62,13 @@ public class HtmlServiceImpl implements IHtmlService {
     IChannelService channelService;
     @Autowired
     IComponentsService componentsService;
+    @Autowired
+    ICommentService commentService;
+
     @Override
     public void conventHtml(ArticleDetailVO articleVO){
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
+
             BaseCategory baseCategory = articleVO.getCategory();
 
             if(baseCategory instanceof  Category){
@@ -229,4 +235,40 @@ public class HtmlServiceImpl implements IHtmlService {
 
     }
 
+    /**
+     * 根据评论生成对应的Html
+     * @param comment
+     */
+    @Override
+    public void generateCommentHtmlByComment(Comment comment){
+        // 这里采用ResourceId的原因： 评论在存在于图片附件之下
+        if(comment.getCommentType()== CommentType.ARTICLE){
+            generateCommentHtmlByArticleId(comment.getResourceId());
+        }
+    }
+
+
+    /**
+     * 根据文章Id生成该文章评论的Html
+     * @param articleId
+     */
+    @Override
+    public void generateCommentHtmlByArticleId(int articleId){
+        Article article = articleService.findArticleById(articleId);
+
+        Page<Comment> commentPage = commentService.listByResourceId(article.getId(), CommentType.ARTICLE);
+        Page<CommentVo> commentVos = commentService.convertCommentVo(commentPage);
+
+        //只有在文章打开评论时才能生成评论
+        if(article.getOpenComment()){
+            //获取文章评论的模板
+            Template template = templateService.findByEnName(article.getCommentTemplateName());
+            //获取文章的生成路径
+            String path=article.getPath();
+            //添加前缀代表是该文章下的评论
+            String viewName="comment-"+article.getViewName();
+            TemplateUtil.convertHtmlAndSave(path,viewName,commentVos,template);
+        }
+
+    }
 }

@@ -6,7 +6,9 @@ import com.wangyang.cms.controller.api.ArticleController;
 import com.wangyang.cms.core.jms.consumer.ArticleConsumerServiceImpl;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Category;
+import com.wangyang.cms.pojo.entity.Comment;
 import com.wangyang.cms.pojo.entity.base.BaseCategory;
+import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.CategoryParam;
 import com.wangyang.cms.repository.ArticleRepository;
@@ -53,6 +55,19 @@ public abstract class AbstractServiceTest {
     @Autowired
     ArticleController articleController;
 
+    @Autowired
+    ICommentService commentService;
+
+
+    public Comment add(){
+        User user = userService.add(addUser());
+
+        Comment comment = new Comment();
+        comment.setUserId(user.getId());
+        comment.setCommentType(CommentType.ARTICLE);
+        comment.setContent("Test Comment");
+        return comment;
+    }
     public Category addCategory(){
         Category categoryParam = new Category();
         categoryParam.setName("TestCategory");

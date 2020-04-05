@@ -8,6 +8,7 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import javax.jms.ConnectionFactory;
 
 //@Configuration
+@Deprecated
 public class JmsConfig {
 
 //    @Bean
