@@ -2,22 +2,15 @@ package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Menu;
-import com.wangyang.cms.pojo.params.CategoryParam;
-import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.params.CategoryQuery;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
-import com.wangyang.cms.pojo.vo.CategoryVO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ICategoryService extends IBaseCategoryService<Category> {
+public interface ICategoryService{
     Category save(Category category);
 
     /**
@@ -76,6 +69,10 @@ public interface ICategoryService extends IBaseCategoryService<Category> {
     Optional<Category> findOptionalById(int id);
 
     List<Category> list(CategoryQuery categoryQuery, Sort sort);
+
+    List<CategoryDto> listCategoryDtoByParent(int id);
+
+    List<Category> listCategoryByParent(int id);
 
     @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
     List<Category> list();

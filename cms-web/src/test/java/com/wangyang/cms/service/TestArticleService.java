@@ -1,7 +1,6 @@
 package com.wangyang.cms.service;
 
 
-import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
@@ -9,8 +8,6 @@ import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
-import com.wangyang.cms.utils.CMSUtils;
-import com.wangyang.cms.utils.TemplateUtil;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -18,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.util.List;
+
 @Transactional
 public class TestArticleService extends AbstractServiceTest{
 
@@ -109,7 +106,7 @@ public class TestArticleService extends AbstractServiceTest{
     public void testAddHtml(){
         ArticleDetailVO article = articleService.createArticleDetailVo(addArticle(), null);
         htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/article/"+article.getViewName()+".html";
+        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
         File file = new File(path);
         Assert.assertEquals(true,file.exists());
         file.delete();
@@ -120,7 +117,7 @@ public class TestArticleService extends AbstractServiceTest{
         articleParams.setViewName("1749748955");
         ArticleDetailVO article = articleService.createArticleDetailVo(articleParams, null);
         htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/article/"+article.getViewName()+".html";
+        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
         File file = new File(path);
         Assert.assertEquals(true,file.exists());
         Assert.assertEquals("1749748955",article.getViewName());
@@ -130,18 +127,18 @@ public class TestArticleService extends AbstractServiceTest{
     @Test
     public void testAddArticleAndCategoryHtml(){
         Category category = categoryService.addOrUpdate(addCategory());
-        category.setPath("articleList");
+//        category.setPath("articleList");
         Article articleParams = addArticle();
         articleParams.setCategoryId(category.getId());
         ArticleDetailVO article = articleService.createArticleDetailVo(articleParams, null);
 
         htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/article/"+article.getViewName()+".html";
+        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
         File file = new File(path);
         Assert.assertEquals(true,file.exists());
         file.delete();
 
-        String path2 = CmsConst.WORK_DIR+"/html/articleList/"+category.getViewName()+".html";
+        String path2 = CmsConst.WORK_DIR+"/html/"+category.getPath()+"/"+category.getViewName()+".html";
         File file2 = new File(path2);
         Assert.assertEquals(true,file2.exists());
         file2.delete();

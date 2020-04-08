@@ -12,10 +12,28 @@ public class CategoryParam {
     private String viewName;
     private Boolean haveHtml;
     private String picPath;
-    private String path="articleList";
+    private String path;
     private Integer order;
     private Boolean recommend=false;
+    private String articleTemplateName;
+    private String firstArticle;
 
+
+    public String getArticleTemplateName() {
+        return articleTemplateName;
+    }
+
+    public void setArticleTemplateName(String articleTemplateName) {
+        this.articleTemplateName = articleTemplateName;
+    }
+
+    public String getFirstArticle() {
+        return firstArticle;
+    }
+
+    public void setFirstArticle(String firstArticle) {
+        this.firstArticle = firstArticle;
+    }
 
     public String getDescription() {
         return description;

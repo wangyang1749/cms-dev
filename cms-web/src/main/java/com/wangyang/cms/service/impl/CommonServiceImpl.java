@@ -3,6 +3,7 @@ package com.wangyang.cms.service.impl;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.support.TemplateOption;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
+import com.wangyang.cms.pojo.vo.IndexVo;
 import com.wangyang.cms.service.ICategoryService;
 import com.wangyang.cms.service.ICommonService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,13 @@ public class CommonServiceImpl implements ICommonService {
         return null;
     }
     @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
-    public List<CategoryDto> index() {
-        List<CategoryDto> list = categoryService.listRecommend();
-        return list;
+    public IndexVo index() {
+        List<CategoryDto> recommend = categoryService.listRecommend();
+        List<CategoryDto> parent = categoryService.listCategoryDtoByParent(0);
+        IndexVo indexVo = new IndexVo();
+        indexVo.setParent(parent);
+        indexVo.setRecommend(recommend);
+        return indexVo;
     }
 
 

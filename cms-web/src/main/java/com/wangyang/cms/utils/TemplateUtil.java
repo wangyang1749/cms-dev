@@ -164,7 +164,7 @@ public class TemplateUtil {
         return html;
     }
 
-    private static String saveFile(String path,String viewName,String html) {
+    public static String saveFile(String path,String viewName,String html) {
         if(path==null||"".equals(path)){
             path = workDir+"/"+ CmsConst.STATIC_HTML_PATH;
         }else{

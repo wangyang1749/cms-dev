@@ -3,11 +3,6 @@ package com.wangyang.cms.service;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
-import com.wangyang.cms.pojo.vo.ChannelVo;
-import com.wangyang.cms.pojo.vo.CommentVo;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface IHtmlService {
 
@@ -21,7 +16,7 @@ public interface IHtmlService {
      * @param channel
      * @return
      */
-    ChannelVo conventHtml(Channel channel);
+//    ChannelVo conventHtml(Channel channel);
 
     /**
      * 生成该栏目下文章列表, 只展示文章列表
@@ -42,7 +37,7 @@ public interface IHtmlService {
     /**
      * 生成分类列表的html, 用于首页显示
      */
-    void generateCategoryListHtml();
+    void generateCategoryListHtml(Category category);
 
     /**
      * 生成栏目列表的html, 用于首页显示
@@ -61,7 +56,7 @@ public interface IHtmlService {
     void convertHtml(Sheet sheet);
 
 
-    void generateSheetListByChannelId(int id);
+//    void generateSheetListByChannelId(int id);
 
     void generateCommentHtmlByComment(Comment comment);
 

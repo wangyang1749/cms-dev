@@ -4,12 +4,10 @@ import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.TemplateOption;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,6 +35,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
      * @return
      */
     Article saveOrUpdateArticleDraft(Article article);
+
+    Page<ArticleDto> findArticleListByCategoryId(int categoryId, int page, int size);
 
     List<ArticleDto> listBy(int categoryId);
 

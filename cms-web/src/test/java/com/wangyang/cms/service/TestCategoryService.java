@@ -2,18 +2,11 @@ package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Channel;
-import com.wangyang.cms.pojo.entity.base.BaseCategory;
-import com.wangyang.cms.pojo.vo.CategoryVO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 public class TestCategoryService extends AbstractServiceTest{

@@ -1,12 +1,6 @@
 package com.wangyang.cms.pojo.dto;
 
-import com.wangyang.cms.pojo.entity.Channel;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 public class SheetDto {
 

@@ -1,14 +1,10 @@
 package com.wangyang.cms.pojo.dto;
 
 import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Tags;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class ArticleDto  implements Serializable {
 

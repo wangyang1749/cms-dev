@@ -9,16 +9,14 @@ import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.dto.TagsDto;
 import com.wangyang.cms.pojo.entity.*;
-import com.wangyang.cms.pojo.entity.base.BaseCategory;
+import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
-import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
 import com.wangyang.cms.repository.*;
 import com.wangyang.cms.service.*;
 import com.wangyang.cms.utils.*;
@@ -70,8 +68,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Autowired
     IUserService userService;
 
-    @Autowired
-    IChannelService channelService;
 
     @Autowired
     ISheetService sheetService;
@@ -153,9 +149,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }
         article.setHaveHtml(false);
         // 获取默认文章模板Id
-        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
-            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
-        }
+//        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
+//            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+//        }
         String viewName = article.getViewName();
         if(viewName==null||"".equals(viewName)){
             viewName = CMSUtils.randomViewName();
@@ -166,21 +162,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  articleRepository.save(article);
     }
 
-    @Override
-    public List<ArticleDto> listBy(int categoryId){
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("categoryId"),categoryId);
-            }
-        };
-        return  articleRepository.findAll(specification).stream().map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article,articleDto);
-            return articleDto;
-        }).collect(Collectors.toList());
 
-    }
 
 
 
@@ -304,40 +286,29 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             article.setViewName(viewName);
         }
 
-        Optional<BaseCategory> baseCategory = baseCategoryRepository.findById(article.getCategoryId());
-        if(baseCategory.isPresent()){
-            if(baseCategory.get() instanceof Category){
-                Category category = (Category)baseCategory.get();
-                articleDetailVO.setCategory(category);
-            }else{
-                Channel channel = (Channel)baseCategory.get();
-                article.setPath(channel.getPath()+"/"+channel.getName());
-                //栏目类型的文章由栏目统一管理文章模板
-                article.setTemplateName(channel.getArticleTemplateName());
-                if(channel.getFirstArticle()==null||"".equals(channel.getFirstArticle())){
-                    channel.setFirstArticle(article.getViewName());
-                    channel = channelService.save(channel);
-                    articleDetailVO.setUpdateChannelFirstName(true);
-                }
-
-                articleDetailVO.setCategory(channel);
-            }
-        }else {
-            throw new ObjectException("文章发布的分类没有找到!!");
+        Category category = categoryService.findById(article.getCategoryId());
+        if(category.getParentId()==0){
+            throw new ObjectException(category.getName()+"是父类分类不能存储文章");
         }
+        //由分类管理文章生成的路径
+        article.setPath(category.getPath()+"/"+category.getViewName());
 
+
+        //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
+        article.setTemplateName(category.getArticleTemplateName());
 
         article = super.createOrUpdate(article);
-
         generateSummary(article);
-
-        // 获取默认文章模板Id
-        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
-            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
-        }
+//
+//        // 获取默认文章模板Id
+//        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
+//            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+//        }
 //        保存文章
         Article saveArticle = articleRepository.saveAndFlush(article);
 
+        articleDetailVO.setCategory(category);
+        articleDetailVO.setUpdateChannelFirstName(true);
         BeanUtils.copyProperties(saveArticle,articleDetailVO);
         // 添加标签
         if (!CollectionUtils.isEmpty(tagsIds)) {
@@ -425,8 +396,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
         User user = userService.findById(article.getUserId());
         articleDetailVo.setUser(user);
-        BaseCategory baseCategory = channelService.findBaseCategoryById(article.getCategoryId());
-        articleDetailVo.setCategory(baseCategory);
+        Optional<Category> optionalCategory = categoryService.findOptionalById(article.getCategoryId());
+        if(!optionalCategory.isPresent()){
+            throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
+        }
+        articleDetailVo.setCategory(optionalCategory.get());
         return articleDetailVo;
     }
 
@@ -643,6 +617,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             article.setStatus(ArticleStatus.PUBLISHED);
             article =super.createOrUpdate(article);
             article.setUpdateDate(new Date());
+            Category category = categoryService.findById(article.getCategoryId());
+            if(category.getParentId()==0){
+                throw new ObjectException(category.getName()+"是父类分类不能存储文章");
+            }
+            article.setPath(category.getPath());
+            article.setTemplateName(category.getArticleTemplateName());
             // 生成摘要
             generateSummary(article);
         }
@@ -715,18 +695,22 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //        article.setTitle(updateArticle.getTitle());
 //        article.setOriginalContent(updateArticle.getOriginalContent());
 //        article.setUserId(updateArticle.getUserId());
-        BaseCategory baseCategory = channelService.findBaseCategoryById(categoryId);
-        if(baseCategory instanceof  Channel) {
-            article.setPath(baseCategory.getPath() + "/" + baseCategory.getName());
-            article.setTemplateName(((Channel) baseCategory).getArticleTemplateName());
-        }else {
-            article.setPath("article");
-            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
-        }
+        Category category = categoryService.findById(categoryId);
+        //文章路径
+        article.setPath(category.getPath() + "/" + category.getViewName());
+        article.setTemplateName(category.getArticleTemplateName());
+
+//        if(baseCategory instanceof  Channel) {
+//            article.setPath(baseCategory.getPath() + "/" + baseCategory.getName());
+//            article.setTemplateName(((Channel) baseCategory).getArticleTemplateName());
+//        }else {
+//            article.setPath("article");
+//            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+//        }
         article.setCategoryId(categoryId);
         Article saveArticle = articleRepository.save(article);
         ArticleDetailVO articleDetailVO = conventToAddTags(saveArticle);
-        articleDetailVO.setCategory(baseCategory);
+        articleDetailVO.setCategory(category);
 
         return articleDetailVO;
     }
@@ -787,6 +771,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return articleListVo;
     }
 
+
     /**
      * 分类页文章展示设置,可以通过Option动态设置分页大小, 排序
      * @param categoryId
@@ -799,6 +784,36 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return findArticleListByCategoryId(categoryId,PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
     }
 
+
+    /**
+     * 分类页文章展示设置,可以通过Option动态设置分页大小, 排序
+     * @param categoryId
+     * @param page
+     * @return
+     */
+    @Override
+    public Page<ArticleDto> findArticleListByCategoryId(int categoryId, int page, int size) {
+
+        return findArticleListByCategoryId(categoryId,PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+    }
+
+
+    @Override
+    public List<ArticleDto> listBy(int categoryId){
+//        Specification<Article> specification = new Specification<Article>() {
+//            @Override
+//            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+//                return criteriaBuilder.equal(root.get("categoryId"),categoryId);
+//            }
+//        };
+        return  articleRepository.findAll(queryByCategory(categoryId)).stream().map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article,articleDto);
+            return articleDto;
+        }).collect(Collectors.toList());
+
+    }
+
     /**
      * 查找分类第一页的文章,用于该分类下文章的静态化
      * @param categoryId
@@ -806,6 +821,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      * @return
      */
     public Page<ArticleDto> findArticleListByCategoryId(int categoryId,Pageable pageable) {
+        Page<Article> articles = articleRepository.findAll(queryByCategory(categoryId), pageable);
+        return  convertToSimple(articles);
+    }
+
+
+    private Specification<Article> queryByCategory(int categoryId){
         Specification<Article> specification = new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -815,10 +836,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
                 ).getRestriction();
             }
         };
-        Page<Article> articles = articleRepository.findAll(specification, pageable);
-        return  convertToSimple(articles);
+        return specification;
     }
-
 //
 //    @Override
 //    public ArticleDetailVO addArticleToChannel(Article article, int channelId){

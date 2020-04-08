@@ -1,6 +1,8 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.expection.ObjectException;
+import com.wangyang.cms.expection.TemplateException;
+import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 @TemplateOption
 @Transactional
 @Slf4j
-public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> implements ICategoryService {
+public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -64,16 +66,43 @@ public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> imple
     public Category addOrUpdate(Category category) {
 //        Category category = new Category();
 //        BeanUtils.copyProperties(categoryParam, category);
-        if(category.getHaveHtml()==null){
-            category.setHaveHtml(true);
+        if(category.getParentId()==null){
+            throw  new ObjectException(category.getName()+"的父Id不能为空！！");
         }
         if (StringUtils.isEmpty(category.getViewName())) {
             String viewName = CMSUtils.randomViewName();
             category.setViewName(viewName);
         }
+
+        if (category.getParentId()==0){
+            if(category.getPath()==null){
+                throw new ObjectException(category.getName()+"的路径不能为空！");
+            }
+            return categoryRepository.save(category);
+        }
+        if(category.getHaveHtml()==null){
+            category.setHaveHtml(true);
+        }
+
         if(category.getTemplateName()==null||"".equals(category.getTemplateName())){
             category.setTemplateName(CmsConst.DEFAULT_CATEGORY_TEMPLATE);
         }
+        if(category.getArticleTemplateName()==null||"".equals(category.getArticleTemplateName())){
+            category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+        }
+        //从父类获取该列表组的生成路径和视图名称
+        if(category.getParentId()!=0){
+            Optional<Category> optionalCategory = findOptionalById(category.getParentId());
+            if(!optionalCategory.isPresent()){
+                throw  new ObjectException(category.getName()+"的父分类不存在！");
+            }
+            category.setPath(optionalCategory.get().getPath());
+            category.setSelfListViewName(optionalCategory.get().getViewName());
+        }
+        //摘除文章列表，用于其它页面组装
+        category.setArticleListViewName("__"+category.getViewName());
+        //页面本身的viewName，这个不应该依赖于category.getViewName()文章列表
+
         Category saveCategory = categoryRepository.save(category);
         return saveCategory;
     }
@@ -104,6 +133,17 @@ public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> imple
     @Override
     public Category deleteById(int id) {
         Category category = findById(id);
+        if(category.getParentId()==0){
+            List<Category> categories = listCategoryByParent(category.getId());
+            if(categories.size()!=0){
+                throw new ObjectException("不能删除该父级分类，由于存在"+categories.size()+"个子分类！");
+            }
+        }else {
+            List<ArticleDto> articleDtos = articleService.listBy(category.getId());
+            if(articleDtos.size()!=0){
+                throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
+            }
+        }
         categoryRepository.deleteById(id);
         return category;
     }
@@ -186,6 +226,9 @@ public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> imple
                    if(categoryQuery.getHaveHtml()!=null){
                        predicates.add( criteriaBuilder.isTrue(root.get("haveHtml")));
                    }
+                   if(categoryQuery.getParentId()!=null){
+                       predicates.add(criteriaBuilder.equal(root.get("parentId"),categoryQuery.getParentId()));
+                   }
                    return  criteriaQuery.where(predicates.toArray(new Predicate[0])).getRestriction();
                }
                return null;
@@ -217,7 +260,13 @@ public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> imple
      */
     @Override
     public List<CategoryDto> listAll() {
-        List<Category> categories = list(null, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+        Specification<Category> specification = new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.notEqual(root.get("parentId"),0);
+            }
+        };
+        List<Category> categories = categoryRepository.findAll(specification, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
         return categories.stream().map(category -> {
             CategoryDto categoryDto = new CategoryDto();
             BeanUtils.copyProperties(category, categoryDto);
@@ -225,6 +274,25 @@ public class CategoryServiceImpl extends BaseCategoryServiceImpl<Category> imple
         }).collect(Collectors.toList());
 
     }
+
+    @Override
+    public List<CategoryDto> listCategoryDtoByParent(int id){
+        List<Category> categories = listCategoryByParent(id);
+        return categories.stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Category> listCategoryByParent(int id){
+        CategoryQuery categoryQuery = new CategoryQuery();
+        categoryQuery.setParentId(id);
+        List<Category> categories = list(categoryQuery, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+        return categories;
+    }
+
     /**
      * 不显示没有生成Html的category
      * @return

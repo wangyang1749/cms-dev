@@ -3,8 +3,6 @@ package com.wangyang.cms.pojo.vo;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.dto.TagsDto;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Tags;
 
 import java.util.List;
 

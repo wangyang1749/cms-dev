@@ -1,11 +1,8 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.dto.SheetDto;
-import com.wangyang.cms.pojo.entity.Channel;
 import com.wangyang.cms.pojo.vo.SheetVo;
 import com.wangyang.cms.pojo.entity.Sheet;
 import com.wangyang.cms.pojo.params.SheetParam;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
 import com.wangyang.cms.service.IHtmlService;
 import com.wangyang.cms.service.ISheetService;
 import com.wangyang.cms.utils.TemplateUtil;
@@ -15,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 

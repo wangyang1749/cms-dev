@@ -9,6 +9,7 @@ import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.service.IMenuService;
 import com.wangyang.cms.service.impl.ArticleServiceImpl;
 import com.wangyang.cms.service.impl.MenuServiceImpl;
+import com.wangyang.cms.utils.DocumentUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class TestCmsUtil {
 
     @Test
     public  void test2(){
-//        List<Menu> list = menuService.list();
-//        System.out.println(list);
+        String html="<div id='aa'><a>444</a>1111111111111</div>";
+        System.out.println(DocumentUtil.getDivContent(html,"#aa"));
     }
 
     @Test

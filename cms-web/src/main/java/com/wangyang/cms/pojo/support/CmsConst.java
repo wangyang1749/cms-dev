@@ -31,10 +31,13 @@ public class CmsConst {
 
     public final static String DEFAULT_ARTICLE_TEMPLATE = "DEFAULT_ARTICLE";
     public final static String DEFAULT_ARTICLE_CHANNEL_TEMPLATE = "DEFAULT_ARTICLE_CHANNEL";
+    public final static String DEFAULT_PICTURE_TEMPLATE = "DEFAULT_PICTURE_TEMPLATE";
     public final static String DEFAULT_CHANNEL_TEMPLATE = "DEFAULT_CHANNEL_LIST";
+    public final static String DEFAULT_PICTURE_LIST_TEMPLATE = "DEFAULT_PICTURE_LIST_TEMPLATE";
     public final static String DEFAULT_CATEGORY_TEMPLATE = "DEFAULT_CATEGORY";
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
     public final static String DEFAULT_COMMENT_TEMPLATE = "DEFAULT_COMMENT";
+    public final static String DEFAULT_CATEGORY_LIST = "DEFAULT_CATEGORY_LIST";
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

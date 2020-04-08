@@ -3,14 +3,11 @@ package com.wangyang.cms.service;
 import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.authorize.service.IUserService;
 import com.wangyang.cms.controller.api.ArticleController;
-import com.wangyang.cms.core.jms.consumer.ArticleConsumerServiceImpl;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.entity.base.BaseCategory;
 import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.params.ArticleParams;
-import com.wangyang.cms.pojo.params.CategoryParam;
 import com.wangyang.cms.repository.ArticleRepository;
 import com.wangyang.cms.repository.BaseCategoryRepository;
 import com.wangyang.cms.repository.CategoryRepository;
@@ -18,7 +15,6 @@ import com.wangyang.cms.repository.OptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,16 +64,27 @@ public abstract class AbstractServiceTest {
         comment.setContent("Test Comment");
         return comment;
     }
-    public Category addCategory(){
+
+    public Category addParentCategory(){
         Category categoryParam = new Category();
         categoryParam.setName("TestCategory");
+        categoryParam.setParentId(0);
+        categoryParam.setPath("111111111111");
+        return categoryService.addOrUpdate(categoryParam);
+    }
+    public Category addCategory(){
 
+        Category categoryParam = new Category();
+        categoryParam.setName("TestCategory");
+        Category parentCategory = addParentCategory();
+        categoryParam.setParentId(parentCategory.getId());
         return categoryParam;
     }
     public Category addCategory2(){
         Category categoryParam = new Category();
         categoryParam.setName("TestCategory2");
-
+        Category parentCategory = addParentCategory();
+        categoryParam.setParentId(parentCategory.getId());
         return categoryParam;
     }
     public User addUser(){
@@ -86,7 +93,7 @@ public abstract class AbstractServiceTest {
         return user;
     }
     public Article addArticle(){
-        Category category = categoryService.save(addCategory());
+        Category category = categoryService.addOrUpdate(addCategory());
         User user = userService.add(addUser());
         Article articleParams = new Article();
         articleParams.setTitle("Title");

@@ -20,8 +20,6 @@ public class PreviewController {
     @Autowired
     IComponentsService componentsService;
 
-    @Autowired
-    IChannelService channelService;
     @GetMapping("/article/{articleId}")
     public ModelAndView previewArticle(@PathVariable("articleId")Integer articleId){
         return articleService.preview(articleId);
@@ -50,12 +48,5 @@ public class PreviewController {
     public ModelAndView previewPdf(@PathVariable("articleId")Integer articleId){
         return articleService.previewPdf(articleId);
     }
-    @GetMapping("/channel/{id}")
-    public ModelAndView previewChannel(@PathVariable("id") Integer id){
-        return channelService.preview(id);
-    }
-
-
-
 
 }

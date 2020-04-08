@@ -5,6 +5,7 @@ import com.wangyang.cms.pojo.dto.ArticleDto;
 
 import com.wangyang.cms.pojo.entity.Article;
 
+import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.BaseResponse;
@@ -13,6 +14,7 @@ import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.SheetDetailVo;
 import com.wangyang.cms.repository.CategoryRepository;
 import com.wangyang.cms.service.IArticleService;
+import com.wangyang.cms.service.ICategoryService;
 import com.wangyang.cms.service.IHtmlService;
 import com.wangyang.cms.service.IOptionService;
 import com.wangyang.cms.utils.NodeJsUtil;
@@ -50,7 +52,7 @@ public class ArticleController {
     IHtmlService htmlService;
 
     @Autowired
-    IOptionService optionService;
+    ICategoryService categoryService;
 
     @GetMapping
     public Page<? extends  ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
@@ -84,9 +86,9 @@ public class ArticleController {
             producerService.sendMessage(articleDetailVO);
 //            producerService.commonTemplate("AC");
 //            covertHtml(articleDetailVO);
-            if(articleDetailVO.getUpdateChannelFirstName()){
-                htmlService.generateChannelListHtml();
-            }
+//            if(articleDetailVO.getUpdateChannelFirstName()){
+//                htmlService.generateChannelListHtml();
+//            }
         }
         return articleDetailVO;
     }
@@ -213,7 +215,6 @@ public class ArticleController {
             if(more){
                 article = articleService.createOrUpdate(article);
                 articleService.generateSummary(article);
-                article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
                 if(article.getLikes()==null){
                     article.setLikes(0);
                 }
@@ -221,9 +222,12 @@ public class ArticleController {
                     article.setVisits(0);
                 }
                 if(article.getCommentNum()==null){
-
                     article.setCommentNum(0);
                 }
+                Category category = categoryService.findById(article.getCategoryId());
+                article.setPath(category.getPath()+"/"+category.getViewName());
+                article.setTemplateName(category.getArticleTemplateName());
+
                 articleService.save(article);
                 log.info("更新["+article.getTitle()+"]内容!!!");
             }

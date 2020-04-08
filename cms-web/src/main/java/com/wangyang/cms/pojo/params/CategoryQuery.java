@@ -3,6 +3,15 @@ package com.wangyang.cms.pojo.params;
 public class CategoryQuery {
     private Boolean haveHtml;
     private Boolean isRecommend;
+    private Integer parentId;
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
 
     public Boolean getHaveHtml() {
         return haveHtml;

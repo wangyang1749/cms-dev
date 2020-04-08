@@ -1,23 +1,16 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.expection.ObjectException;
-import com.wangyang.cms.pojo.dto.SheetDto;
 import com.wangyang.cms.pojo.entity.Menu;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.vo.SheetVo;
-import com.wangyang.cms.pojo.entity.Channel;
 import com.wangyang.cms.pojo.entity.Sheet;
 import com.wangyang.cms.pojo.entity.Template;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
-import com.wangyang.cms.repository.ChannelRepository;
 import com.wangyang.cms.repository.MenuRepository;
 import com.wangyang.cms.repository.SheetRepository;
-import com.wangyang.cms.service.IChannelService;
 import com.wangyang.cms.service.ISheetService;
 import com.wangyang.cms.service.ITemplateService;
 import com.wangyang.cms.utils.CMSUtils;
-import com.wangyang.cms.utils.ServiceUtil;
-import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,8 +32,7 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
     ITemplateService templateService;
 //    @Autowired
 //    IChannelService channelService;
-    @Autowired
-    ChannelRepository channelRepository;
+
     @Autowired
     MenuRepository menuRepository;
 

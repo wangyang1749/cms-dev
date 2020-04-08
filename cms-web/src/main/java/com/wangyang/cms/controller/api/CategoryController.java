@@ -1,11 +1,8 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.dto.BaseCategoryDto;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.base.BaseCategory;
 import com.wangyang.cms.pojo.params.CategoryParam;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.service.ICategoryService;
 import com.wangyang.cms.service.IHtmlService;
@@ -41,15 +38,16 @@ public class CategoryController {
     @PostMapping
     public Category add(@Valid @RequestBody CategoryParam categoryParam){
         Category category = new Category();
+
         BeanUtils.copyProperties(categoryParam,category);
         Category saveCategory = categoryService.addOrUpdate(category);
-
-        //生成category列表Html
-        htmlService.generateCategoryListHtml();
-        if(saveCategory.getHaveHtml()){
-            //生成文章第一页的列表
-            htmlService.convertHtml(saveCategory);
-
+        if(saveCategory.getParentId()!=0){
+            //生成category列表Html
+            htmlService.generateCategoryListHtml(saveCategory);
+            if(saveCategory.getHaveHtml()){
+                //生成文章第一页的列表
+                htmlService.convertHtml(saveCategory);
+            }
         }
         return saveCategory;
     }
@@ -57,16 +55,18 @@ public class CategoryController {
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
-        TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
+        if(category.getParentId()!=0){
+            TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
+        }
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.addOrUpdate(category);
-
-        //更新Category列表
-        htmlService.generateCategoryListHtml();
-        if(updateCategory.getHaveHtml()){
-            //生成文章第一页的列表
-            htmlService.convertHtml(category);
-
+        if(category.getParentId()!=0){
+            //更新Category列表
+            htmlService.generateCategoryListHtml(updateCategory);
+            if(updateCategory.getHaveHtml()){
+                //生成文章第一页的列表
+                htmlService.convertHtml(category);
+            }
         }
         return updateCategory;
     }
@@ -78,7 +78,7 @@ public class CategoryController {
         TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
         log.info("### delete category" + category.getName());
         //重新生成分类的列表
-        htmlService.generateCategoryListHtml();
+        htmlService.generateCategoryListHtml(category);
         return category;
     }
     @RequestMapping("/find/{id}")
@@ -86,16 +86,29 @@ public class CategoryController {
         return categoryService.findById(id);
     }
 
-    @GetMapping("/updateAll")
-    public Set<String> updateAllCategoryHtml(@RequestParam(value = "more", defaultValue = "false") Boolean more){
-        List<Category> categories = categoryService.list();
+    @GetMapping("/updateAll/{id}")
+    public Set<String> updateAllCategoryHtml(@PathVariable("id") Integer id,@RequestParam(value = "more", defaultValue = "false") Boolean more){
+        List<Category> categories = categoryService.listCategoryByParent(id);
         categories.forEach(category -> {
             if(more){
-                category.setTemplateName(CmsConst.DEFAULT_CATEGORY_TEMPLATE);
+                if(category.getTemplateName()==null){
+                    category.setTemplateName(CmsConst.DEFAULT_CATEGORY_TEMPLATE);
+                }
+                if(category.getArticleTemplateName()==null){
+                    category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+                }
+                if(category.getParentId()==null){
+                    category.setParentId(1);
+                }
+                Category parentCategory = categoryService.findById(category.getParentId());
+                category.setPath(parentCategory.getPath());
+                category.setSelfListViewName(parentCategory.getViewName());
+                category.setArticleListViewName("__"+category.getViewName());
                 categoryService.save(category);
             }
             htmlService.convertHtml(category);
         });
+
         return ServiceUtil.fetchProperty(categories,Category::getName);
     }
 
@@ -112,6 +125,9 @@ public class CategoryController {
     @GetMapping("/recommendOrCancel/{id}")
     public Category recommendOrCancelHome(@PathVariable("id") Integer id){
         Category category = categoryService.recommendOrCancelHome(id);
+//        htmlService.generateHome();
+        htmlService.convertHtml(category);
+        //只需要在推荐时刷新主页
         htmlService.generateHome();
         return category;
     }
@@ -126,10 +142,10 @@ public class CategoryController {
         Category category = categoryService.haveHtml(id);
         if(category.getHaveHtml()){
             htmlService.convertHtml(category);
-            htmlService.generateCategoryListHtml();
+            htmlService.generateCategoryListHtml(category);
         }else{
             TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-            htmlService.generateCategoryListHtml();
+            htmlService.generateCategoryListHtml(category);
         }
 //        if(category.getRecommend()){
 //            //有可能更改首页排序
@@ -139,12 +155,16 @@ public class CategoryController {
         return category;
     }
 
-    @GetMapping("/listBaseCategory")
-    public List<BaseCategoryDto> listBaseCategory(){
-        return categoryService.listBaseCategory();
+    @GetMapping("/list/{id}")
+    public List<CategoryDto> listBaseCategory(@PathVariable("id") int id){
+        return categoryService.listCategoryDtoByParent(id);
     }
 
 
+    @GetMapping("/listByParentId/{id}")
+    public List<CategoryDto> listByParentId(@PathVariable("id") Integer id){
+        return categoryService.listCategoryDtoByParent(id);
+    }
     @GetMapping("/generateHtml/{id}")
     public Category generateHtml(@PathVariable("id") Integer id){
         Category category = categoryService.findById(id);
