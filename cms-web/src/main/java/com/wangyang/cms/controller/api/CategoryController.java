@@ -63,9 +63,7 @@ public class CategoryController {
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
-        if(category.getParentId()!=0){
-            TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
-        }
+        TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.addOrUpdate(category);
         //更新Category列表
