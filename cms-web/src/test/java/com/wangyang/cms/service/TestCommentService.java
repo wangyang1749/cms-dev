@@ -10,7 +10,7 @@ public class TestCommentService extends AbstractServiceTest {
 
     @Test
     public void testAdd(){
-        Comment comment = commentService.add(add());
-        System.out.println(comment);
+//        Comment comment = commentService.add(add());
+//        System.out.println(comment);
     }
 }

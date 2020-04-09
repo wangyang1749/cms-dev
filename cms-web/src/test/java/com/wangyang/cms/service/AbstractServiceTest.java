@@ -57,7 +57,7 @@ public abstract class AbstractServiceTest {
 
     public Comment add(){
         User user = userService.add(addUser());
-
+        Article article = addArticle();
         Comment comment = new Comment();
         comment.setUserId(user.getId());
 //        comment.setCommentType(CommentType.ARTICLE);
