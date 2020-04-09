@@ -28,7 +28,6 @@ public class BaseArticle extends BaseEntity{
     @Column(columnDefinition = "bit(1) default false")
     private Boolean openComment=false;
 
-
     private String path;
 
 

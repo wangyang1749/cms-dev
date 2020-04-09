@@ -1,24 +1,14 @@
 package com.wangyang.cms.controller;
 
 import com.wangyang.cms.pojo.dto.ArticleDto;
-import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
-import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.service.IArticleService;
-import com.wangyang.cms.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 
 @Controller
@@ -28,12 +18,14 @@ public class ArticleListController {
     IArticleService articleService;
 
     @GetMapping("/category/{categoryId}")
-    public ModelAndView articleListByCategory(@PathVariable("categoryId") Integer categoryId, Integer page){
-        if(page<=0) page=1;
-        if(page==null||categoryId==null){
+    public ModelAndView articleListByCategory(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
+        if(categoryId==null){
             return new ModelAndView("error");
         }
+        if(page<=0) page=1;
         page = page-1;
+
+
         return articleService.getArticleListByCategory(categoryId,page);
     }
 
@@ -49,7 +41,7 @@ public class ArticleListController {
     public Page<ArticleDto> articleListByCategoryAjax(@PathVariable("categoryId") Integer categoryId, Integer page){
         ArticleQuery articleQuery = new ArticleQuery();
         articleQuery.setCategoryId(categoryId);
-        Page<ArticleDto> articles = articleService.findArticleListByCategoryId(categoryId,page);
+        Page<ArticleDto> articles = articleService.pageDtoBy(categoryId,page);
         return articles;
     }
 

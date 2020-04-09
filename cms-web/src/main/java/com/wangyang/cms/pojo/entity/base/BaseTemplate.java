@@ -16,8 +16,8 @@ public class BaseTemplate extends  BaseEntity{
     @Column(name = "template_value", columnDefinition = "longtext ")
     private String templateValue;
 
-    @Column(columnDefinition = "int default 0")
-    private Integer tOrder;
+    @Column(name = "template_order",columnDefinition = "int default 0")
+    private Integer order;
 
     public Boolean getStatus() {
         return status;
@@ -27,12 +27,12 @@ public class BaseTemplate extends  BaseEntity{
         this.status = status;
     }
 
-    public Integer gettOrder() {
-        return tOrder;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void settOrder(Integer tOrder) {
-        this.tOrder = tOrder;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public String getEnName() {

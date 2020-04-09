@@ -22,7 +22,7 @@ public interface IHtmlService {
      * 生成该栏目下文章列表, 只展示文章列表
      * @param category
      */
-    CategoryArticleListDao convertHtml(Category category);
+    CategoryArticleListDao convertArticleListBy(Category category);
 
 //    void generateCategoryArticleListByCategory(Category category);
 
@@ -53,12 +53,13 @@ public interface IHtmlService {
 
     void commonTemplate(String option);
 
-    void convertHtml(Sheet sheet);
+    CategoryArticleListDao convertArticleListBy(int categoryId);
+
+    void convertArticleListBy(Sheet sheet);
 
 
 //    void generateSheetListByChannelId(int id);
 
-    void generateCommentHtmlByComment(Comment comment);
 
     void generateCommentHtmlByArticleId(int articleId);
 }

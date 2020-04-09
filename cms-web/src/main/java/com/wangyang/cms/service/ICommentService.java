@@ -1,5 +1,6 @@
 package com.wangyang.cms.service;
 
+import com.wangyang.cms.pojo.dto.CommentDto;
 import com.wangyang.cms.pojo.entity.Comment;
 import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.vo.CommentVo;
@@ -31,11 +32,15 @@ public interface ICommentService {
      */
     Comment update(int id, Comment updateComment);
 
-    Page<Comment> listByResourceId(int id, CommentType commentType);
+    Page<CommentVo> listVoBy(int articleId);
 
-    Page<Comment> listByResourceId(int id, CommentType commentType, Pageable pageable);
 
-    Page<CommentVo> convertCommentVo(Page<Comment> commentPage);
+    Page<CommentVo> pageVoBy(int articleId, Pageable pageable);
+
+    Page<Comment> pageBy(int articleId, Pageable pageable);
+
+
+    Page<CommentDto> pageDtoBy(int articleId, Pageable pageable);
 
     /**
      *

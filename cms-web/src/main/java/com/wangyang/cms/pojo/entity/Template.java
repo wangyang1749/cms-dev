@@ -24,7 +24,7 @@ public class Template extends BaseTemplate implements Serializable {
         super.setTemplateValue(templateValue);
         this.templateType = templateType;
         this.setStatus(false);
-        this.settOrder(order);
+        this.setOrder(order);
 
     }
     public Template(String templateValue) {

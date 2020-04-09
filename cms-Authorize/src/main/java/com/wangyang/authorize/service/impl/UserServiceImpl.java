@@ -63,6 +63,13 @@ public class UserServiceImpl implements IUserService {
         return  null;
     }
 
+
+    @Override
+    public Optional<User> findOptionalBy(int userId){
+        return userRepository.findById(userId);
+    }
+
+
     @Override
     public UserDto getCurrentUser() {
         Optional<String> username = SecurityUtils.getCurrentUsername();

@@ -16,7 +16,25 @@ public class CategoryDto {
     private Boolean existNav;
     private String templateName;
     private String articleTemplateName;
-    private String firstArticle;
+    private Integer articleListSize;
+    private Boolean isDesc;
+
+
+    public Integer getArticleListSize() {
+        return articleListSize;
+    }
+
+    public void setArticleListSize(Integer articleListSize) {
+        this.articleListSize = articleListSize;
+    }
+
+    public Boolean getDesc() {
+        return isDesc;
+    }
+
+    public void setDesc(Boolean desc) {
+        isDesc = desc;
+    }
 
     public String getArticleTemplateName() {
         return articleTemplateName;
@@ -26,13 +44,6 @@ public class CategoryDto {
         this.articleTemplateName = articleTemplateName;
     }
 
-    public String getFirstArticle() {
-        return firstArticle;
-    }
-
-    public void setFirstArticle(String firstArticle) {
-        this.firstArticle = firstArticle;
-    }
 
     public Integer getId() {
         return id;

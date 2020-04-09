@@ -30,7 +30,7 @@ public class SheetController {
         Sheet sheet = new Sheet();
         BeanUtils.copyProperties(sheetParam,sheet);
         Sheet saveSheet = sheetService.addOrUpdate(sheet);
-        htmlService.convertHtml(saveSheet);
+        htmlService.convertArticleListBy(saveSheet);
         return saveSheet;
     }
 
@@ -39,7 +39,7 @@ public class SheetController {
         Sheet sheet = findById(id);
         BeanUtils.copyProperties(sheetParam,sheet);
         Sheet updateSheet = sheetService.addOrUpdate(sheet);
-        htmlService.convertHtml(updateSheet);
+        htmlService.convertArticleListBy(updateSheet);
         return updateSheet;
     }
 
@@ -56,7 +56,7 @@ public class SheetController {
     @GetMapping("/generate/{id}")
     public Sheet generate(@PathVariable("id") Integer id){
         Sheet sheet = sheetService.findById(id);
-        htmlService.convertHtml(sheet);
+        htmlService.convertArticleListBy(sheet);
         return sheet;
     }
     @RequestMapping("/delete/{id}")

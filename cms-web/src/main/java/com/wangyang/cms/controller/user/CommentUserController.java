@@ -25,12 +25,8 @@ public class CommentUserController {
     public String add( CommentParam commentParam){
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentParam,comment);
-        comment.setCommentType(CommentType.ARTICLE);
         Comment saveComment = commentService.add(comment);
-        /**
-         * 根据一个评论生成单个文章下的评论列表
-         */
-        htmlService.generateCommentHtmlByComment(saveComment);
+
         return "redirect:";
     }
 }

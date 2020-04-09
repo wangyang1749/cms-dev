@@ -188,9 +188,8 @@ public class CategoryServiceImpl implements ICategoryService {
         ModelAndView modelAndView = new ModelAndView();
         Category category = findById(id);
         //预览
-        CategoryArticleListDao articleListVo = articleService.getArticleListByCategory(category);
+        CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,0);
 
-//        Template template = templateService.findById(category.getTemplateId());
         Template template = templateService.findByEnName(category.getTemplateName());
         modelAndView.addObject("view", articleListVo);
         modelAndView.setViewName(template.getTemplateValue());

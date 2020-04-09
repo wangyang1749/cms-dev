@@ -1,21 +1,17 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.config.CmsConfig;
-import com.wangyang.cms.expection.TemplateException;
-import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.*;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
-import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.CommentVo;
 import com.wangyang.cms.repository.ArticleRepository;
 import com.wangyang.cms.repository.ComponentsRepository;
 import com.wangyang.cms.service.*;
-import com.wangyang.cms.utils.CMSUtils;
 import com.wangyang.cms.utils.DocumentUtil;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -62,17 +57,19 @@ public class HtmlServiceImpl implements IHtmlService {
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
 
             Category category = articleVO.getCategory();
-            String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+articleVO.getCategory().getTemplateName()+".html";
-            File file = new File(path);
-            if(!file.exists()){
-                //如果文件不存在根据父Id生成分类所在组列表
-                generateCategoryListHtml(category);
+            //判断分类列表是否存在
+//            if(!TemplateUtil.componentsExist(articleVO.getCategory().getTemplateName())){
+//                //如果文件不存在根据父Id生成分类所在组列表
+//                generateCategoryListHtml(category);
+//            }
+            //生成文章列表，文章列表依赖分类列表
+            convertArticleListBy(category);
+
+            //判断评论文件是否存在
+            if(!TemplateUtil.componentsExist(articleVO.getViewName())){
+                generateCommentHtmlByArticleId(articleVO.getId());
             }
-
-            //生成文章列表，这要在文章生成之前生成
-            convertHtml(category);
-
-            //生成文章详情页面
+            //生成文章详情页面,依赖文章评论(在栏目页面文章详情依赖文章列表)
             covertHtml(articleVO);
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
 
@@ -84,73 +81,50 @@ public class HtmlServiceImpl implements IHtmlService {
     public void addOrRemoveArticleToCategoryListByCategoryId(int id) {
         Optional<Category> optionalCategory = categoryService.findOptionalById(id);
         if(optionalCategory.isPresent()){
-            convertHtml(optionalCategory.get());
+            convertArticleListBy(optionalCategory.get());
         }
     }
 
-    /**
-     * 生成该栏目下所有文章的列表, 用于动态添加到文章详情的旁边
-     * @param channel
-     * @return
-     */
-//    @Override
-//    public ChannelVo conventHtml(Channel channel){
-//        ChannelVo channelVo = channelService.convent(channel);
-//        Template template = templateService.findByEnName(channelVo.getTemplateName());
-//        TemplateUtil.convertHtmlAndSave(channelVo,template);
-//        return channelVo;
-//    }
+
     /**
      * 生成该栏目下文章列表, 只展示文章列表
      * @param category
      */
     @Override
-    public CategoryArticleListDao convertHtml(Category category) {
-
-        String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+category.getTemplateName()+".html";
-        File file = new File(path);
-        if(!file.exists()){
-            //如果文件不存在根据父Id生成分类所在组列表
-            generateCategoryListHtml(category);
+    public CategoryArticleListDao convertArticleListBy(Category category) {
+        //生成分类列表,用于首页文章列表右侧展示
+        if(!TemplateUtil.componentsExist(category.getTemplateName())){
+                generateCategoryListHtml(category);
         }
+        //TODO 这里只是生成了文章列表第一页的静态页面
+        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
 
-        Page<ArticleDto> articleDtos ;
-
-        if(category.getTemplateName().equals(CmsConst.DEFAULT_CHANNEL_TEMPLATE)){
-            articleDtos = articleService.findArticleListByCategoryId(category.getId(), 0,100);
-        }else {
-            articleDtos= articleService.findArticleListByCategoryId(category.getId(), 0);
-        }
-
-        CategoryArticleListDao categoryArticleListDao = new CategoryArticleListDao();
-        categoryArticleListDao.setPage(articleDtos);
-        categoryArticleListDao.setCategory(category);
-        categoryArticleListDao.setViewName(category.getViewName());
-//        CategoryArticleListDao categoryArticleListDao = articleService.getArticleListByCategory(category);
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
-//        Template template = templateService.findById(category.getTemplateId());
-        //为了能统一生成
 
         Optional<Template> template = templateService.findOptionalByEnName(category.getTemplateName());
         if(template.isPresent()){
-            String html = TemplateUtil.convertHtmlAndSave(categoryArticleListDao, template.get());
+            String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template.get());
+            //生成文章列表组件,用于首页嵌入
             String content = DocumentUtil.getDivContent(html, "#articleContent");
             if(StringUtils.isNotEmpty(content)){
                 TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
             }
-//            if(category.getRecommend()&&category.getHaveHtml()){
-//                String content = DocumentUtil.getDivContent(html, "#articleContent");
-//                TemplateUtil.saveFile(category.getPath(),"__"+category.getViewName(),content);
-////                generateHome();
-//            }
         }
-        return categoryArticleListDao;
+        return categoryArticle;
     }
 
+    @Override
+    public CategoryArticleListDao convertArticleListBy(int categoryId){
+        Category category = categoryService.findById(categoryId);
+        return convertArticleListBy(category);
+    }
 
-
+    /**
+     * 生成文章详情页的静态页面
+     * @param articleDetailVO
+     * @return
+     */
     private String covertHtml(ArticleDetailVO articleDetailVO) {
-//        Template template = templateService.findById(articleDetailVO.getTemplateId());
         Template template = templateService.findByEnName(articleDetailVO.getTemplateName());
         String html = TemplateUtil.convertHtmlAndSave(articleDetailVO, template);
         return html;
@@ -158,7 +132,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     @Override
-    public void convertHtml(Sheet sheet) {
+    public void convertArticleListBy(Sheet sheet) {
         Template template = templateService.findByEnName(sheet.getTemplateName());
         TemplateUtil.convertHtmlAndSave(sheet,template);
     }
@@ -258,17 +232,6 @@ public class HtmlServiceImpl implements IHtmlService {
 //
 //    }
 
-    /**
-     * 根据评论生成对应的Html
-     * @param comment
-     */
-    @Override
-    public void generateCommentHtmlByComment(Comment comment){
-        // 这里采用ResourceId的原因： 评论在存在于图片附件之下
-        if(comment.getCommentType()== CommentType.ARTICLE){
-            generateCommentHtmlByArticleId(comment.getResourceId());
-        }
-    }
 
 
     /**
@@ -278,19 +241,12 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public void generateCommentHtmlByArticleId(int articleId){
         Article article = articleService.findArticleById(articleId);
-
-        Page<Comment> commentPage = commentService.listByResourceId(article.getId(), CommentType.ARTICLE);
-        Page<CommentVo> commentVos = commentService.convertCommentVo(commentPage);
-
         //只有在文章打开评论时才能生成评论
         if(article.getOpenComment()){
+            Page<CommentVo> commentVos = commentService.listVoBy(articleId);
             //获取文章评论的模板
             Template template = templateService.findByEnName(article.getCommentTemplateName());
-            //获取文章的生成路径
-            String path=article.getPath();
-            //添加前缀代表是该文章下的评论
-            String viewName="comment-"+article.getViewName();
-            TemplateUtil.convertHtmlAndSave(path,viewName,commentVos,template);
+            TemplateUtil.convertHtmlAndSave(CmsConst.COMPONENTS_PATH,article.getViewName(),commentVos,template);
         }
 
     }

@@ -5,13 +5,12 @@ import com.wangyang.cms.pojo.enums.CommentType;
 import javax.persistence.*;
 import java.util.Date;
 
-public class CommentDao {
+public class CommentDto {
     private Date createDate;
     private Date updateDate;
     private Integer id;
     private Integer userId;
-    private Integer resourceId;
-    private CommentType commentType;
+    private Integer articleId;
     private String username;
     private String email;
 
@@ -49,20 +48,12 @@ public class CommentDao {
         this.userId = userId;
     }
 
-    public Integer getResourceId() {
-        return resourceId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    public CommentType getCommentType() {
-        return commentType;
-    }
-
-    public void setCommentType(CommentType commentType) {
-        this.commentType = commentType;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getUsername() {

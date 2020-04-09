@@ -34,8 +34,12 @@ public class Category extends BaseEntity implements Serializable {
     @Column(columnDefinition = "bit(1) default false")
     private Boolean existNav=false;
     private String articleTemplateName;
-    private String selfListViewName;
-    private String articleListViewName;
+
+
+    private Integer articleListSize;
+//    private Integer articleListPage=0;
+    private Boolean isDesc;
+
 //    private String firstArticle;
 //    private String listViewName;//维护分类本身的列表
 
@@ -48,20 +52,21 @@ public class Category extends BaseEntity implements Serializable {
 //    }
 
 
-    public String getSelfListViewName() {
-        return selfListViewName;
+    public Integer getArticleListSize() {
+        return articleListSize;
     }
 
-    public void setSelfListViewName(String selfListViewName) {
-        this.selfListViewName = selfListViewName;
+    public void setArticleListSize(Integer articleListSize) {
+        this.articleListSize = articleListSize;
     }
 
-    public String getArticleListViewName() {
-        return articleListViewName;
+
+    public Boolean getDesc() {
+        return isDesc;
     }
 
-    public void setArticleListViewName(String articleListViewName) {
-        this.articleListViewName = articleListViewName;
+    public void setDesc(Boolean desc) {
+        isDesc = desc;
     }
 
     public String getArticleTemplateName() {

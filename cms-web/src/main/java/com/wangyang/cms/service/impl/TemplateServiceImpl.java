@@ -87,7 +87,7 @@ public class TemplateServiceImpl implements ITemplateService {
                         criteriaBuilder.equal(root.get("templateType"),templateType)).getRestriction();
             }
         };
-        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("tOrder")));
+        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("order")));
 
     }
 
@@ -101,7 +101,7 @@ public class TemplateServiceImpl implements ITemplateService {
                                         criteriaBuilder.equal(root.get("templateType"),templateType)).getRestriction();
             }
         };
-        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("tOrder")));
+        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("order")));
     }
 
     @Override

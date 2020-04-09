@@ -20,6 +20,12 @@ import java.io.File;
 public class TestArticleService extends AbstractServiceTest{
 
 
+    @Test
+    public void testUpdateCommentNum(){
+//        articleRepository.updateCommentNum(10,-1);
+//        System.out.println(articleRepository.getCommentNum(10));
+    }
+
     public void save(){
         Article article = articleService.saveOrUpdateArticleDraft(addArticle());
         Assert.assertEquals(ArticleStatus.DRAFT,article.getStatus());

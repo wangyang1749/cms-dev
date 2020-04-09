@@ -36,7 +36,7 @@ public interface IArticleService extends IBaseArticleService<Article> {
      */
     Article saveOrUpdateArticleDraft(Article article);
 
-    Page<ArticleDto> findArticleListByCategoryId(int categoryId, int page, int size);
+    Page<ArticleDto> pageDtoBy(int categoryId, int page, int size);
 
     List<ArticleDto> listBy(int categoryId);
 
@@ -118,11 +118,22 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     ArticleDetailVO updateCategory(Article article, int categoryId);
 
+    CategoryArticleListDao findCategoryArticleBy(Category category, int page);
+
     ModelAndView getArticleListByCategory(int categoryId, int page);
 
-    CategoryArticleListDao getArticleListByCategory(Category category);
 
-    Page<ArticleDto> findArticleListByCategoryId(int categoryId, int page);
+    Page<ArticleDto> pageDtoBy(int categoryId, int page);
+
+    Page<ArticleDto> pageDtoBy(Category category, int page);
+
+    Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable);
+
+    Integer getCommentNum(int id);
+
+    void updateCommentNum(int id, int num);
+
+    Article updateOrder(int articleId, int order);
 
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 

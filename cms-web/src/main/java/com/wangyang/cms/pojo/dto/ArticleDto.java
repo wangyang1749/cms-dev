@@ -33,7 +33,33 @@ public class ArticleDto  implements Serializable {
     private String commentTemplateName;
     //是否开启评论
     private Boolean openComment;
+    private Integer articleListSize;
+    private Boolean isDesc;
+    private Integer order;
 
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public Integer getArticleListSize() {
+        return articleListSize;
+    }
+
+    public void setArticleListSize(Integer articleListSize) {
+        this.articleListSize = articleListSize;
+    }
+
+    public Boolean getDesc() {
+        return isDesc;
+    }
+
+    public void setDesc(Boolean desc) {
+        isDesc = desc;
+    }
 
     public String getCommentTemplateName() {
         return commentTemplateName;

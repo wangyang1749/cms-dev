@@ -5,6 +5,7 @@ import com.wangyang.authorize.pojo.entity.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserService {
 
@@ -14,6 +15,8 @@ public interface IUserService {
 
     User findById(int id);
 
+
+    Optional<User> findOptionalBy(int userId);
 
     UserDto getCurrentUser();
 

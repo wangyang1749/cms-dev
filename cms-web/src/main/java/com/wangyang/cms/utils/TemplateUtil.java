@@ -192,5 +192,10 @@ public class TemplateUtil {
         return viewName+".html";
     }
 
+    public static boolean componentsExist(String viewName){
+        String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+viewName+".html";
+        File file = new File(path);
+        return file.exists();
+    }
 
 }

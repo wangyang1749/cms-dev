@@ -57,7 +57,7 @@ public class ArticleController {
     @GetMapping
     public Page<? extends  ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
                                                 @RequestParam(value = "more", defaultValue = "true") Boolean more,
-                                    ArticleQuery articleQuery){
+                                                ArticleQuery articleQuery){
         Page<Article> articles = articleService.articleList(articleQuery, pageable);
         if(more){
             return articleService.convertToListVo(articles);
@@ -165,10 +165,7 @@ public class ArticleController {
     }
 
 
-    @GetMapping("/preview/{articleId}")
-    public String preview(@PathVariable("articleId")Integer articleId){
-        return "11";
-    }
+
     @GetMapping("/find/{articleId}")
     public ArticleDto findById(@PathVariable("articleId") Integer articleId){
         return articleService.findArticleAOById(articleId);
@@ -190,23 +187,7 @@ public class ArticleController {
     }
 
 
-//    @GetMapping("/updateCategory/{articleId}")
-//    public Article updateCategory(@PathVariable("articleId") Integer articleId,Integer categoryId){
-//        Article article = articleService.findArticleById(articleId);
-//        Integer  oldCategory = article.getCategoryId();
-//
-//        article.setCategoryId(categoryId);
-//        articleService.save(article);
-//
-//        //更新之前存在分类,需要重新生成以便删除该文章
-//        if(oldCategory!=null&&oldCategory!=categoryId){
-//            htmlService.addOrRemoveArticleToCategoryListByCategoryId(oldCategory);
-//        }
-//        //更新新的分类
-//        htmlService.addOrRemoveArticleToCategoryListByCategoryId(categoryId);
-//
-//        return article;
-//    }
+
     @GetMapping("/updateAll")
     public Set<String> updateAllArticleHtml(@RequestParam(value = "more", defaultValue = "false") Boolean more){
         List<Article> articles = articleService.updateAllArticleHtml(more);
@@ -223,6 +204,9 @@ public class ArticleController {
                 }
                 if(article.getCommentNum()==null){
                     article.setCommentNum(0);
+                }
+                if(article.getOpenComment()==null){
+                    article.setOpenComment(false);
                 }
                 Category category = categoryService.findById(article.getCategoryId());
                 article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
@@ -269,7 +253,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/updateCategory/{articleId}")
-    public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId,Integer baseCategoryId){
+    public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId){
         Article article = articleService.findArticleById(articleId);
         String  viewName = article.getViewName();
         String path = article.getPath();
@@ -291,11 +275,21 @@ public class ArticleController {
         return articleDetailVO;
     }
 
-    @GetMapping("/findListByCategoryId/{id}")
-    public List<ArticleDto> findListByCategoryId(@PathVariable("id") Integer id){
-        return articleService.listBy(id);
+    @GetMapping("/pageDtoBy/{categoryId}")
+    public Page<ArticleDto> pageDtoBy(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
+        if(page<=0) page=1;
+        page = page-1;
+        Page<ArticleDto> articleDtoPage = articleService.pageDtoBy(categoryId, page);
+
+        return articleDtoPage;
     }
 
+    @GetMapping("/updateOrderBy/{articleId}")
+    public Article updateOrderBy(@PathVariable("articleId") Integer articleId,Integer order){
+        Article article = articleService.updateOrder(articleId, order);
+        htmlService.convertArticleListBy(article.getCategoryId());
+        return article;
+    }
     @GetMapping("/generateHtml/{id}")
     public ArticleDetailVO generateHtml(@PathVariable("id") Integer id){
         Article article = articleService.findArticleById(id);
@@ -310,8 +304,10 @@ public class ArticleController {
     public ArticleDetailVO openOrCloseComment(@PathVariable("id")Integer id){
         Article article = articleService.openComment(id);
         ArticleDetailVO articleDetailVO = articleService.convert(article);
-        //生成该文章之下的评论
-        htmlService.generateCommentHtmlByArticleId(articleDetailVO.getId());
+        if(articleDetailVO.getOpenComment()){
+            //生成该文章之下的评论
+            htmlService.generateCommentHtmlByArticleId(articleDetailVO.getId());
+        }
         //生成文章
         htmlService.conventHtml(articleDetailVO);
         return articleDetailVO;

@@ -25,10 +25,19 @@ public class Article extends BaseArticle {
     private String picPath;
     private String pdfPath;
     private Integer categoryId;
+    @Column(name = "article_order", columnDefinition = "int default 0")
+    private Integer order;
 //    @Column( columnDefinition = "int default 0")
 //    private Integer templateId;
 
 
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
     public Integer getCategoryId() {
         return categoryId;

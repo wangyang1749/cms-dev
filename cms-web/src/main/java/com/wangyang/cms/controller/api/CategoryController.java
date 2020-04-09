@@ -50,7 +50,7 @@ public class CategoryController {
         htmlService.generateCategoryListHtml(saveCategory);
         if(saveCategory.getHaveHtml()){
             //生成文章第一页的列表
-            htmlService.convertHtml(saveCategory);
+            htmlService.convertArticleListBy(saveCategory);
         }
         return saveCategory;
     }
@@ -70,7 +70,7 @@ public class CategoryController {
         htmlService.generateCategoryListHtml(updateCategory);
         if(updateCategory.getHaveHtml()){
             //生成文章第一页的列表
-            htmlService.convertHtml(category);
+            htmlService.convertArticleListBy(category);
         }
         return updateCategory;
     }
@@ -104,7 +104,7 @@ public class CategoryController {
                 category.setPath(CmsConst.CATEGORY_LIST_PATH);
                 categoryService.save(category);
             }
-            htmlService.convertHtml(category);
+            htmlService.convertArticleListBy(category);
         });
 
         return ServiceUtil.fetchProperty(categories,Category::getName);
@@ -114,7 +114,7 @@ public class CategoryController {
     public Category updateHtmlById(@PathVariable("id")  int id){
         Category category = categoryService.findById(id);
         if(category.getHaveHtml()){
-            htmlService.convertHtml(category);
+            htmlService.convertArticleListBy(category);
             return category;
         }
         return category;
@@ -124,7 +124,7 @@ public class CategoryController {
     public Category recommendOrCancelHome(@PathVariable("id") Integer id){
         Category category = categoryService.recommendOrCancelHome(id);
 //        htmlService.generateHome();
-        htmlService.convertHtml(category);
+        htmlService.convertArticleListBy(category);
         //只需要在推荐时刷新主页
         htmlService.generateHome();
         return category;
@@ -139,7 +139,7 @@ public class CategoryController {
     public Category haveHtml(@PathVariable("id") int id){
         Category category = categoryService.haveHtml(id);
         if(category.getHaveHtml()){
-            htmlService.convertHtml(category);
+            htmlService.convertArticleListBy(category);
             htmlService.generateCategoryListHtml(category);
         }else{
             TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
@@ -168,7 +168,7 @@ public class CategoryController {
     @GetMapping("/generateHtml/{id}")
     public Category generateHtml(@PathVariable("id") Integer id){
         Category category = categoryService.findById(id);
-        htmlService.convertHtml(category);
+        htmlService.convertArticleListBy(category);
         return category;
     }
 

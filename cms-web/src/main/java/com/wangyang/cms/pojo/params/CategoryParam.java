@@ -16,8 +16,25 @@ public class CategoryParam {
     private Integer order;
     private Boolean recommend=false;
     private String articleTemplateName;
-    private String firstArticle;
+    private Integer articleListSize=10;
+    private Boolean isDesc=true;
 
+
+    public Integer getArticleListSize() {
+        return articleListSize;
+    }
+
+    public void setArticleListSize(Integer articleListSize) {
+        this.articleListSize = articleListSize;
+    }
+
+    public Boolean getDesc() {
+        return isDesc;
+    }
+
+    public void setDesc(Boolean desc) {
+        isDesc = desc;
+    }
 
     public String getArticleTemplateName() {
         return articleTemplateName;
@@ -27,13 +44,6 @@ public class CategoryParam {
         this.articleTemplateName = articleTemplateName;
     }
 
-    public String getFirstArticle() {
-        return firstArticle;
-    }
-
-    public void setFirstArticle(String firstArticle) {
-        this.firstArticle = firstArticle;
-    }
 
     public String getDescription() {
         return description;

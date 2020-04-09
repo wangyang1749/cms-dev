@@ -14,23 +14,13 @@ import javax.persistence.*;
 @DiscriminatorValue(value = "1")
 public class Comment extends BaseDiscuss {
     @Column(columnDefinition = "int default 0")
-    private Integer resourceId;
-    //    @Column(columnDefinition = "int default 0")
-    private CommentType commentType;
+    private Integer articleId;
 
-    public Integer getResourceId() {
-        return resourceId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    public CommentType getCommentType() {
-        return commentType;
-    }
-
-    public void setCommentType(CommentType commentType) {
-        this.commentType = commentType;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 }
