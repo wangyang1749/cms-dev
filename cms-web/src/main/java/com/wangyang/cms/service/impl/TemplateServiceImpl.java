@@ -1,16 +1,25 @@
 package com.wangyang.cms.service.impl;
 
 import com.wangyang.cms.expection.ObjectException;
+import com.wangyang.cms.expection.OptionException;
+import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.enums.TemplateType;
 import com.wangyang.cms.repository.TemplateRepository;
+import com.wangyang.cms.service.ICategoryService;
 import com.wangyang.cms.service.ITemplateService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +28,9 @@ public class TemplateServiceImpl implements ITemplateService {
 
     @Autowired
     TemplateRepository templateRepository;
+    @Autowired
+    ICategoryService categoryService;
+
     @Override
     public Template add(Template template) {
         return templateRepository.save(template);
@@ -67,16 +79,36 @@ public class TemplateServiceImpl implements ITemplateService {
 
 
     @Override
-    public List<Template> findByTemplateType(TemplateType type) {
-        return templateRepository.findByTemplateType(type);
+    public List<Template> findByTemplateType(TemplateType templateType) {
+        Specification<Template> specification = new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(
+                        criteriaBuilder.equal(root.get("templateType"),templateType)).getRestriction();
+            }
+        };
+        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("tOrder")));
+
     }
 
+
+    @Override
+    public List<Template> listByAndStatusTrue(TemplateType templateType){
+        Specification<Template> specification = new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.isTrue(root.get("status")),
+                                        criteriaBuilder.equal(root.get("templateType"),templateType)).getRestriction();
+            }
+        };
+        return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("tOrder")));
+    }
 
     @Override
     public Template findByEnName(String enName){
         Template template = templateRepository.findByEnName(enName);
         if(template==null){
-            throw new ObjectException("Template模板没有找到!!!");
+            throw new ObjectException(enName+"Template模板没有找到!!!");
         }
         return template;
     }
@@ -90,5 +122,22 @@ public class TemplateServiceImpl implements ITemplateService {
     @Override
     public void deleteAll() {
         templateRepository.deleteAll();
+    }
+
+
+
+    @Override
+    public Template setStatus(int id){
+        Template template = findById(id);
+        if(template.getStatus()){
+            template.setStatus(false);
+        }else {
+            List<CategoryDto> categoryDtos = categoryService.listBy(template.getEnName());
+            if(categoryDtos.size()==0){
+                throw new OptionException("不能启用"+template.getName()+"在首页,因为该模板下没有分类!");
+            }
+            template.setStatus(true);
+        }
+        return templateRepository.save(template);
     }
 }

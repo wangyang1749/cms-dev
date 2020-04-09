@@ -18,11 +18,13 @@ public class Template extends BaseTemplate implements Serializable {
 
     public Template(){}
 
-    public Template(String name,String enName,String templateValue,TemplateType templateType){
+    public Template(String name,String enName,String templateValue,TemplateType templateType,Integer order){
         super.setName(name);
         super.setEnName(enName);
         super.setTemplateValue(templateValue);
         this.templateType = templateType;
+        this.setStatus(false);
+        this.settOrder(order);
 
     }
     public Template(String templateValue) {

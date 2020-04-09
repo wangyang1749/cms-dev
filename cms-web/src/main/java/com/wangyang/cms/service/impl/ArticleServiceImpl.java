@@ -287,12 +287,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }
 
         Category category = categoryService.findById(article.getCategoryId());
-        if(category.getParentId()==0){
-            throw new ObjectException(category.getName()+"是父类分类不能存储文章");
-        }
-        //由分类管理文章生成的路径
-        article.setPath(category.getPath()+"/"+category.getViewName());
-
+        article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
 
         //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
         article.setTemplateName(category.getArticleTemplateName());
@@ -400,6 +395,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         if(!optionalCategory.isPresent()){
             throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
         }
+        if(articleDetailVo.getTemplateName()==null){
+            articleDetailVo.setTemplateName(optionalCategory.get().getArticleTemplateName());
+        }
         articleDetailVo.setCategory(optionalCategory.get());
         return articleDetailVo;
     }
@@ -409,7 +407,14 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
     @Override
     public  List<Article>  updateAllArticleHtml(Boolean more){
-        List<Article> articles = articleRepository.findAll();
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("status"),ArticleStatus.PUBLISHED),
+                                        criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
+            }
+        };
+        List<Article> articles = articleRepository.findAll(specification);
         return articles;
     }
 
@@ -618,9 +623,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             article =super.createOrUpdate(article);
             article.setUpdateDate(new Date());
             Category category = categoryService.findById(article.getCategoryId());
-            if(category.getParentId()==0){
-                throw new ObjectException(category.getName()+"是父类分类不能存储文章");
-            }
             article.setPath(category.getPath());
             article.setTemplateName(category.getArticleTemplateName());
             // 生成摘要
@@ -697,7 +699,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //        article.setUserId(updateArticle.getUserId());
         Category category = categoryService.findById(categoryId);
         //文章路径
-        article.setPath(category.getPath() + "/" + category.getViewName());
+//        article.setPath();
         article.setTemplateName(category.getArticleTemplateName());
 
 //        if(baseCategory instanceof  Channel) {

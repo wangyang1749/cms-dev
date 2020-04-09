@@ -225,7 +225,7 @@ public class ArticleController {
                     article.setCommentNum(0);
                 }
                 Category category = categoryService.findById(article.getCategoryId());
-                article.setPath(category.getPath()+"/"+category.getViewName());
+                article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
                 article.setTemplateName(category.getArticleTemplateName());
 
                 articleService.save(article);

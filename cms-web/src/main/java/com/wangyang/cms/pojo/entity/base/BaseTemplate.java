@@ -11,10 +11,29 @@ public class BaseTemplate extends  BaseEntity{
     private String name;
     private String enName;
     private String description;
-
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean status=false;
     @Column(name = "template_value", columnDefinition = "longtext ")
     private String templateValue;
 
+    @Column(columnDefinition = "int default 0")
+    private Integer tOrder;
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Integer gettOrder() {
+        return tOrder;
+    }
+
+    public void settOrder(Integer tOrder) {
+        this.tOrder = tOrder;
+    }
 
     public String getEnName() {
         return enName;

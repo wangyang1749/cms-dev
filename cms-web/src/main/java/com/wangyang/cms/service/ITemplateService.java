@@ -21,10 +21,14 @@ public interface ITemplateService {
     Template findById(int id);
     Page<Template> list(Pageable pageable);
 
+    List<Template> listByAndStatusTrue(TemplateType templateType);
+
     Template findByEnName(String enName);
 
     Optional<Template> findOptionalByEnName(String enName);
 
     void deleteAll();
     List<Template> findByTemplateType(TemplateType type);
+
+    Template setStatus(int id);
 }

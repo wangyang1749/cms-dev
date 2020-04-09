@@ -2,6 +2,7 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.enums.TemplateType;
+import com.wangyang.cms.service.IHtmlService;
 import com.wangyang.cms.service.ITemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,9 @@ public class TemplateController {
     @Autowired
     ITemplateService templateService;
 
+    @Autowired
+    IHtmlService htmlService;
+
     @GetMapping("/find/{type}")
     public List<Template> findByType(@PathVariable("type") TemplateType type){
 
@@ -30,6 +34,13 @@ public class TemplateController {
         Page<Template> templatePage = templateService.list(pageable);
 
         return templatePage;
+    }
+
+    @GetMapping("/setStatus/{id}")
+    public Template setStatus(@PathVariable("id") int id){
+        Template template = templateService.setStatus(id);
+        htmlService.generateHome();
+        return template;
     }
 
     @PostMapping

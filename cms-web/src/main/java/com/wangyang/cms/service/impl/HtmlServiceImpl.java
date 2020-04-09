@@ -15,6 +15,7 @@ import com.wangyang.cms.pojo.vo.CommentVo;
 import com.wangyang.cms.repository.ArticleRepository;
 import com.wangyang.cms.repository.ComponentsRepository;
 import com.wangyang.cms.service.*;
+import com.wangyang.cms.utils.CMSUtils;
 import com.wangyang.cms.utils.DocumentUtil;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,7 @@ public class HtmlServiceImpl implements IHtmlService {
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
 
             Category category = articleVO.getCategory();
-            String path = CmsConst.WORK_DIR+"/html/"+articleVO.getPath()+"/"+articleVO.getViewName()+".html";
+            String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+articleVO.getCategory().getTemplateName()+".html";
             File file = new File(path);
             if(!file.exists()){
                 //如果文件不存在根据父Id生成分类所在组列表
@@ -105,6 +106,14 @@ public class HtmlServiceImpl implements IHtmlService {
      */
     @Override
     public CategoryArticleListDao convertHtml(Category category) {
+
+        String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+category.getTemplateName()+".html";
+        File file = new File(path);
+        if(!file.exists()){
+            //如果文件不存在根据父Id生成分类所在组列表
+            generateCategoryListHtml(category);
+        }
+
         Page<ArticleDto> articleDtos ;
 
         if(category.getTemplateName().equals(CmsConst.DEFAULT_CHANNEL_TEMPLATE)){
@@ -127,7 +136,7 @@ public class HtmlServiceImpl implements IHtmlService {
             String html = TemplateUtil.convertHtmlAndSave(categoryArticleListDao, template.get());
             String content = DocumentUtil.getDivContent(html, "#articleContent");
             if(StringUtils.isNotEmpty(content)){
-                TemplateUtil.saveFile(category.getPath(),category.getArticleListViewName(),content);
+                TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
             }
 //            if(category.getRecommend()&&category.getHaveHtml()){
 //                String content = DocumentUtil.getDivContent(html, "#articleContent");
@@ -168,15 +177,15 @@ public class HtmlServiceImpl implements IHtmlService {
     public void generateCategoryListHtml(Category category) {
 
         //获取该列表所在的组
-        List<CategoryDto> categoryDtos = categoryService.listCategoryDtoByParent(category.getParentId());
+        List<CategoryDto> categoryDtos = categoryService.listBy(category.getTemplateName());
 
         Template template = templateService.findByEnName(CmsConst.DEFAULT_CATEGORY_LIST);
-        if(StringUtils.isEmpty(category.getPath())){
-            throw  new TemplateException(category.getName()+"的路径不能为空！");
-        }
+//        if(StringUtils.isEmpty(category.getPath())){
+//            throw  new TemplateException(category.getName()+"的路径不能为空！");
+//        }
 
         //这里的viewName是父类维护的该组列表的viewName
-        TemplateUtil.convertHtmlAndSave(category.getPath(),category.getSelfListViewName(),categoryDtos,template);
+        TemplateUtil.convertHtmlAndSave(CmsConst.COMPONENTS_PATH,category.getTemplateName(),categoryDtos,template);
 
 //        Components components = componentsService.findByDataName("categoryServiceImpl.list");
 //        Object data = getData(components.getDataName());

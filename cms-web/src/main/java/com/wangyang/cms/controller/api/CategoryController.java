@@ -11,11 +11,16 @@ import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("/api/category")
@@ -32,7 +37,7 @@ public class CategoryController {
 
     @GetMapping
     public List<CategoryDto> list(){
-        return categoryService.listAll();
+        return categoryService.listAllDto();
     }
 
     @PostMapping
@@ -41,15 +46,18 @@ public class CategoryController {
 
         BeanUtils.copyProperties(categoryParam,category);
         Category saveCategory = categoryService.addOrUpdate(category);
-        if(saveCategory.getParentId()!=0){
-            //生成category列表Html
-            htmlService.generateCategoryListHtml(saveCategory);
-            if(saveCategory.getHaveHtml()){
-                //生成文章第一页的列表
-                htmlService.convertHtml(saveCategory);
-            }
+        //生成category列表Html
+        htmlService.generateCategoryListHtml(saveCategory);
+        if(saveCategory.getHaveHtml()){
+            //生成文章第一页的列表
+            htmlService.convertHtml(saveCategory);
         }
         return saveCategory;
+    }
+
+    @GetMapping("/template/{categoryEnName}")
+    public Page<CategoryDto> pageBy(@PathVariable("categoryEnName") String categoryEnName,@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
+        return categoryService.pageBy(categoryEnName,pageable);
     }
 
     @PostMapping("/update/{categoryId}")
@@ -60,13 +68,11 @@ public class CategoryController {
         }
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.addOrUpdate(category);
-        if(category.getParentId()!=0){
-            //更新Category列表
-            htmlService.generateCategoryListHtml(updateCategory);
-            if(updateCategory.getHaveHtml()){
-                //生成文章第一页的列表
-                htmlService.convertHtml(category);
-            }
+        //更新Category列表
+        htmlService.generateCategoryListHtml(updateCategory);
+        if(updateCategory.getHaveHtml()){
+            //生成文章第一页的列表
+            htmlService.convertHtml(category);
         }
         return updateCategory;
     }
@@ -86,9 +92,9 @@ public class CategoryController {
         return categoryService.findById(id);
     }
 
-    @GetMapping("/updateAll/{id}")
-    public Set<String> updateAllCategoryHtml(@PathVariable("id") Integer id,@RequestParam(value = "more", defaultValue = "false") Boolean more){
-        List<Category> categories = categoryService.listCategoryByParent(id);
+    @GetMapping("/updateAll")
+    public Set<String> updateAllCategoryHtml(@RequestParam(value = "more", defaultValue = "false") Boolean more){
+        List<Category> categories = categoryService.listAll();
         categories.forEach(category -> {
             if(more){
                 if(category.getTemplateName()==null){
@@ -97,13 +103,7 @@ public class CategoryController {
                 if(category.getArticleTemplateName()==null){
                     category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
                 }
-                if(category.getParentId()==null){
-                    category.setParentId(1);
-                }
-                Category parentCategory = categoryService.findById(category.getParentId());
-                category.setPath(parentCategory.getPath());
-                category.setSelfListViewName(parentCategory.getViewName());
-                category.setArticleListViewName("__"+category.getViewName());
+                category.setPath(CmsConst.CATEGORY_LIST_PATH);
                 categoryService.save(category);
             }
             htmlService.convertHtml(category);
@@ -155,16 +155,18 @@ public class CategoryController {
         return category;
     }
 
-    @GetMapping("/list/{id}")
-    public List<CategoryDto> listBaseCategory(@PathVariable("id") int id){
-        return categoryService.listCategoryDtoByParent(id);
-    }
+//    @GetMapping("/list/{id}")
+//    public List<CategoryDto> listBaseCategory(@PathVariable("id") int id){
+//        return categoryService.listCategoryDtoByParent(id);
+//    }
 
 
-    @GetMapping("/listByParentId/{id}")
-    public List<CategoryDto> listByParentId(@PathVariable("id") Integer id){
-        return categoryService.listCategoryDtoByParent(id);
-    }
+//    @GetMapping("/listByParentId/{id}")
+//    public List<CategoryDto> listByParentId(@PathVariable("id") Integer id){
+//        return categoryService.listCategoryDtoByParent(id);
+//    }
+
+
     @GetMapping("/generateHtml/{id}")
     public Category generateHtml(@PathVariable("id") Integer id){
         Category category = categoryService.findById(id);
