@@ -12,6 +12,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jackson.JsonComponentModule;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -67,6 +70,17 @@ public class CmsConfig implements ApplicationContextAware {
         return applicationContext != null?applicationContext.getBean(name):null;
     }
 
+
+    /**
+     * 路径特殊字符允许
+     * @return
+     */
+    @Bean
+    public ConfigurableServletWebServerFactory webServerFactory() {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+        factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "^|{}[]\\"));
+        return factory;
+    }
 
 //    @Bean
 //    public CorsFilter corsFilter() {

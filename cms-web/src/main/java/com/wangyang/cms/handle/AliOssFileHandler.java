@@ -112,6 +112,14 @@ public class AliOssFileHandler implements FileHandler {
 
 
     /**
+     * 上传公式的svg到阿里云
+     * @param math
+     * @return
+     */
+    public UploadResult uploadMath(String math,String name){
+       return null;
+    }
+    /**
      * 通过网络url上传文件
      * @param url
      * @return

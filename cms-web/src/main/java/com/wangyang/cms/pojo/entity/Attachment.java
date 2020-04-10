@@ -24,6 +24,8 @@ public class Attachment extends BaseEntity {
     private Integer width;
     private Integer height;
     private String thumbPath;
+    private String latex;
+
 
     public Integer getWidth() {
         return width;

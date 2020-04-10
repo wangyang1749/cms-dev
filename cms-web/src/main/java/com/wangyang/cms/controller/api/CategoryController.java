@@ -101,6 +101,12 @@ public class CategoryController {
                 if(category.getArticleTemplateName()==null){
                     category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
                 }
+                if(category.getDesc()==null){
+                    category.setDesc(true);
+                }
+                if(category.getArticleListSize()==null){
+                    category.setArticleListSize(10);
+                }
                 category.setPath(CmsConst.CATEGORY_LIST_PATH);
                 categoryService.save(category);
             }

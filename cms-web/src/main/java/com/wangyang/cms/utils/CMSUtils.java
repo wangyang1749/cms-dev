@@ -17,7 +17,7 @@ public class CMSUtils {
     }
 
     public static String randomTime(){
-        return new Date().toString();
+        return String.valueOf(System.currentTimeMillis());
     }
     public static String getHostAddress(){
         /**

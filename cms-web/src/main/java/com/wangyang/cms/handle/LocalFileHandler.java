@@ -45,6 +45,10 @@ public class LocalFileHandler implements FileHandler{
         return AttachmentType.LOCAL.equals(type);
     }
 
+    public UploadResult addLatexSvg(){
+        return null;
+    }
+
     @Override
     public UploadResult upload(MultipartFile file) {
         Assert.notNull(file, "Multipart file must not be null");
