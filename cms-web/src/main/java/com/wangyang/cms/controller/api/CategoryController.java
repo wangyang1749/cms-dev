@@ -56,8 +56,8 @@ public class CategoryController {
     }
 
     @GetMapping("/template/{categoryEnName}")
-    public Page<CategoryDto> pageBy(@PathVariable("categoryEnName") String categoryEnName,@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
-        return categoryService.pageBy(categoryEnName,pageable);
+    public Page<CategoryDto> pageBy(@PathVariable("categoryEnName") String categoryEnName, @RequestParam(value = "page", defaultValue = "0")Integer page){
+        return categoryService.pageBy(categoryEnName,page,20);
     }
 
     @PostMapping("/update/{categoryId}")

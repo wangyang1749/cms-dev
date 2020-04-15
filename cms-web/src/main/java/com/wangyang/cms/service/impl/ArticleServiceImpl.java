@@ -84,6 +84,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public ArticleDetailVO createArticleDetailVo(Article article, Set<Integer> tagsIds) {
 
         article.setStatus(ArticleStatus.PUBLISHED);
+        article.setOrder(0);
         // 文章发布默认生成HTML
         if(article.getHaveHtml()==null){
             article.setHaveHtml(true);

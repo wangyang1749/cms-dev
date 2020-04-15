@@ -7,6 +7,7 @@
         <module>cms-Authorize</module>
         <module>cms-web</module>
         <module>cms-oAuth2</module>
+        <module>cms-system-call</module>
     </modules>
 
     <parent>
@@ -305,6 +306,36 @@
             <artifactId>commons-exec</artifactId>
             <version>1.3</version>
         </dependency>
+
+        <!--REngine Java Interface to R -->
+        <dependency>
+            <groupId>org.rosuda.REngine</groupId>
+            <artifactId>REngine</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rosuda.REngine</groupId>
+            <artifactId>Rserve</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-evaluator</artifactId>
+            <version>1.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-evaluator-extension</artifactId>
+            <version>1.4.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.68</version>
+        </dependency>
+
 
     </dependencies>
 </dependencyManagement>

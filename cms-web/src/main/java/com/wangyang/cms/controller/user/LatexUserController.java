@@ -12,17 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 public class LatexUserController {
 
     @ResponseBody
-    @GetMapping(value = "/svg",produces = "image/svg+xml")
+    @RequestMapping(value = "/svg",produces = "image/svg+xml")
     public String getSvg(@RequestParam(value = "latex",required = false) String latex ){
         if (latex==null){
             return "请输入公式,例如: ?math=\\sum_{i=1}^n a_i=0";
         }
 
+
         return LatexUtil.getSvg(latex,false);
     }
 
     @ResponseBody
-    @GetMapping(value = "/svgPath")
+    @RequestMapping(value = "/svgPath")
     public BaseResponse getSvgPath(@RequestParam(value = "latex",required = false) String latex ){
         if (latex==null){
             return BaseResponse.error("请输入公式,例如: ?math=\\sum_{i=1}^n a_i=0");

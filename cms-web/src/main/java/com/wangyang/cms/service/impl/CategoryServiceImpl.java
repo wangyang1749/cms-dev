@@ -116,10 +116,15 @@ public class CategoryServiceImpl implements ICategoryService {
         return saveCategory;
     }
 
-
+    @Override
+    public Page<CategoryDto> pageBy(String categoryEnName, int page, int size){
+        Sort sort = Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id")));
+        return  pageBy(categoryEnName,PageRequest.of(page,size,sort));
+    }
 
     @Override
     public Page<CategoryDto> pageBy(String categoryEnName,Pageable pageable){
+
         Specification<Category> specification = new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -136,18 +141,37 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public List<CategoryDto> listBy(String categoryEnName){
+        Sort sort = Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id")));
         Specification<Category> specification = new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 return criteriaBuilder.equal(root.get("templateName"),categoryEnName);
             }
         };
-        return  categoryRepository.findAll(specification).stream().map(category -> {
+        return  categoryRepository.findAll(specification,sort).stream().map(category -> {
             CategoryDto categoryDto = new CategoryDto();
             BeanUtils.copyProperties(category,categoryDto);
             return categoryDto;
         }).collect(Collectors.toList());
 
+    }
+
+    /**
+     * 显示推荐的首页并且是生成html的
+     * @return
+     */
+    @Override
+    public List<CategoryDto> listRecommend(){
+        Sort sort = Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id")));
+        CategoryQuery categoryQuery = new CategoryQuery();
+        categoryQuery.setHaveHtml(true);
+        categoryQuery.setRecommend(true);
+        List<Category> categories = list(categoryQuery,sort );
+        return categories.stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
     }
 
 
@@ -272,22 +296,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return categories;
     }
 
-    /**
-     * 显示推荐的首页并且是生成html的
-     * @return
-     */
-    @Override
-    public List<CategoryDto> listRecommend(){
-        CategoryQuery categoryQuery = new CategoryQuery();
-        categoryQuery.setHaveHtml(true);
-        categoryQuery.setRecommend(true);
-        List<Category> categories = list(categoryQuery, Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
-        return categories.stream().map(category -> {
-            CategoryDto categoryDto = new CategoryDto();
-            BeanUtils.copyProperties(category, categoryDto);
-            return categoryDto;
-        }).collect(Collectors.toList());
-    }
+
     /**
      * 显示所有Category, 转化为Dto
      * @return
@@ -299,7 +308,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public List<Category> listAll(){
-        return categoryRepository.findAll();
+        return categoryRepository.findAll(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
     }
 
 

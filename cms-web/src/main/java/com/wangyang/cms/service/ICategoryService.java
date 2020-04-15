@@ -24,6 +24,8 @@ public interface ICategoryService{
 
 //    CategoryArticleListDao getArticleListByCategory(Category category);
 
+    Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
+
     Page<CategoryDto> pageBy(String categoryEnName, Pageable pageable);
 
     List<CategoryDto> listBy(String categoryEnName);
