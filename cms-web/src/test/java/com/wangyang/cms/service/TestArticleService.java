@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.util.List;
 
 @Transactional
 public class TestArticleService extends AbstractServiceTest{
@@ -231,4 +232,10 @@ public class TestArticleService extends AbstractServiceTest{
         System.out.println(articleService.getLikesNumber(888));
     }
 
+
+    @Test
+    public void testCarousel(){
+        List<Article> articles = articleService.carousel();
+        System.out.println(articles.size());
+    }
 }

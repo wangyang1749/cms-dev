@@ -27,9 +27,19 @@ public class Article extends BaseArticle {
     private Integer categoryId;
     @Column(name = "article_order", columnDefinition = "int default 0")
     private Integer order;
+    @Column(name = "article_top",columnDefinition = "bit(1) default false")
+    private Boolean top;
 //    @Column( columnDefinition = "int default 0")
 //    private Integer templateId;
 
+
+    public Boolean getTop() {
+        return top;
+    }
+
+    public void setTop(Boolean top) {
+        this.top = top;
+    }
 
     public Integer getOrder() {
         return order;

@@ -14,6 +14,7 @@ import com.wangyang.cms.pojo.enums.ArticleStatus;
 import com.wangyang.cms.pojo.enums.PropertyEnum;
 import com.wangyang.cms.pojo.params.ArticleQuery;
 import com.wangyang.cms.pojo.support.CmsConst;
+import com.wangyang.cms.pojo.support.TemplateOption;
 import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
+@TemplateOption
 public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implements IArticleService {
 
     @Value("${cms.workDir}")
@@ -94,6 +96,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return articleDetailVO;
 
     }
+
+
+
 
     @Override
     public ArticleDetailVO updateArticleDetailVo(Article article,  Set<Integer> tagsIds) {
@@ -840,5 +845,27 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         article.setOrder(order);
         Article saveArticle = articleRepository.save(article);
         return saveArticle;
+    }
+
+
+
+
+
+    @Override
+    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
+    public List<Article> carousel(){
+        Specification<Article> specification  = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(
+                        criteriaBuilder.isNotNull(root.get("picPath"))
+                ).getRestriction();
+            }
+        };
+        List<Article> articles = articleRepository.findAll(specification,Sort.by(Sort.Order.desc("updateDate")));
+        if(articles.size()<=3){
+            return articles;
+        }
+        return articles.subList(0,3);
     }
 }

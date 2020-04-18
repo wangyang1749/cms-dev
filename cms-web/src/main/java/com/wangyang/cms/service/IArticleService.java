@@ -135,6 +135,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Article updateOrder(int articleId, int order);
 
+    List<Article> carousel();
+
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 
 //    Page<ArticleDto> findArticleListByCategoryId(int categoryId,Pageable pageable);
