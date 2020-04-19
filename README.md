@@ -5,13 +5,17 @@
 ### 项目展示
 + 目前我已将本项目部署在自己的小型服务器里
 
-<http://47.93.201.74/index.html>
+<http://www.bioinfo.online/>
 
 + 后台界面
-![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/ca1c3d26-4c89-42c0-9266-90982a107733.jpg)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/5406acbf-de2f-418b-866f-3d113fad41a9.png)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/593ceb55-19c9-4b9b-9612-c8f8fc771a66.png)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/c18cfb8d-023a-4881-a82a-d4291f7695ef.png)
 + 静态化的前台界面
-![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/f816694d-8d5a-4dbc-a5fb-64bd30e68e6c.jpg)
-![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/07423807-2310-41da-a42f-589db2c8b86c.jpg)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/d68e9599-496a-470f-86ac-7926374ea56e.png)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/6a358f19-2db8-4afc-a2bb-d0afff8e676a.png)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/94535ba9-4d75-4792-b6b2-53eac38a1ee9.png)
+![](https://wangyang-bucket.oss-cn-beijing.aliyuncs.com/image-bed/9fac9998-c498-4742-b9a8-f42bcc29d82f.png)
 ### Project Configuration
 1. 本项目依赖两个模块
 + 使用vue实现的后界面
