@@ -20,5 +20,7 @@ public interface IUserService {
 
     UserDto getCurrentUser();
 
+    String getCurrentUserName();
+
     List<User> findAllById(Collection<Integer> ids);
 }

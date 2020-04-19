@@ -2,8 +2,11 @@ package com.wangyang.cms.controller.user;
 
 import com.wangyang.authorize.jwt.JWTFilter;
 import com.wangyang.authorize.jwt.TokenProvider;
+import com.wangyang.authorize.pojo.dto.UserDto;
 import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.authorize.service.IUserService;
 import com.wangyang.cms.controller.api.AuthenticationController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +26,18 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/user")
 public class UserArticleController {
+    @Autowired
+    IUserService userService;
 
     private TokenProvider tokenProvider;
 
     private AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    @GetMapping("/getCurrent")
+    @ResponseBody
+    public UserDto getCurrentUser(){
+        return userService.getCurrentUser();
+    }
 
     public UserArticleController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;
@@ -64,6 +71,7 @@ public class UserArticleController {
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,jwt);
+        cookie.setPath("/");
 //        cookie.setComment("auth purpose");
         cookie.setMaxAge(3600);
         response.addCookie(cookie);

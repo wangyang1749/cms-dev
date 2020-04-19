@@ -75,6 +75,13 @@ public class UserServiceImpl implements IUserService {
         Optional<String> username = SecurityUtils.getCurrentUsername();
         return findByUsername(username.get());
     }
+    @Override
+    public String getCurrentUserName() {
+        Optional<String> username = SecurityUtils.getCurrentUsername();
+        return username.get();
+    }
+
+
 
     @Override
     public List<User> findAllById(Collection<Integer> ids){
