@@ -7,14 +7,24 @@ import org.springframework.data.domain.Sort;
 import javax.xml.crypto.Data;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 public class CMSUtils {
 
     public static String randomViewName(){
-        return UUID.randomUUID().toString();
+        Calendar date = Calendar.getInstance();
+        int year = date.get(Calendar.YEAR);
+        int month =date.get(Calendar.MONTH);
+        int second = date.get(Calendar.SECOND);
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        int millisecond = date.get(Calendar.MILLISECOND);
+        String viewName = String.valueOf(year)+String.valueOf(month)+String.valueOf(day)+String.valueOf(second)+String.valueOf(millisecond);
+//        return UUID.randomUUID().toString();
+        return viewName;
     }
+
 
     public static String randomTime(){
         return String.valueOf(System.currentTimeMillis());
