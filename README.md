@@ -1,6 +1,10 @@
 
-### Create Cms Project
-内容管理项目, 由后台控制实现前台页面静态化
+### 个人博客系统介绍
+本项目使用SpringBoot作为后端；使用thymeleaf作为模板引擎，实现页面静态化；
+使用vue开发管理员界面。
+
+本系统也有一个配套的原生android程序（正在开发中）
+android的项目地址：<https://github.com/wangyang1749/cms-android.git>
 
 ### 项目展示
 + 目前我已将本项目部署在自己的小型服务器里
