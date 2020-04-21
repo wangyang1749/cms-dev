@@ -1,5 +1,6 @@
-package com.wangyang.data.repository;
+package com.wangyang.cms.repository;
 
+import com.wangyang.data.repository.BaseTemplateRepository;
 import com.wangyang.model.pojo.entity.base.BaseTemplate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

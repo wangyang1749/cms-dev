@@ -1,7 +1,5 @@
-package com.wangyang.cms.config;
+package com.wangyang.authorize.config;
 
-import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
-import com.wangyang.authorize.config.CustomUrlDecisionManager;
 import com.wangyang.authorize.jwt.JWTConfigurer;
 import com.wangyang.authorize.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;

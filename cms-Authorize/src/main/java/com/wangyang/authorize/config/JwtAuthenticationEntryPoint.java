@@ -1,4 +1,4 @@
-package com.wangyang.cms.config;
+package com.wangyang.authorize.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangyang.common.BaseResponse;

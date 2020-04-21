@@ -1,4 +1,4 @@
-package com.wangyang.cms.config;
+package com.wangyang.authorize.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

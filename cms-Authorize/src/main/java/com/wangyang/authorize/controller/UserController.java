@@ -1,5 +1,6 @@
-package com.wangyang.cms.controller.api;
+package com.wangyang.authorize.controller;
 
+import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.authorize.pojo.dto.UserDto;
 import com.wangyang.data.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    IUserService userService;
+    UserDetailServiceImpl userService;
 
-//    @GetMapping("/getCurrent")
-//    public UserDto getCurrentUser(){
-//        return userService.getCurrentUser();
-//    }
+    @GetMapping("/getCurrent")
+    public UserDto getCurrentUser(){
+        return userService.getCurrentUser();
+    }
 }

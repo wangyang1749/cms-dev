@@ -7,7 +7,6 @@ import com.wangyang.common.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,13 +37,13 @@ public class ControllerExceptionHandler {
         return baseResponse;
     }
 
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public BaseResponse userException(InternalAuthenticationServiceException e) {
-        BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
-        baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        return baseResponse;
-    }
+//    @ExceptionHandler(InternalAuthenticationServiceException.class)
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public BaseResponse userException(InternalAuthenticationServiceException e) {
+//        BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
+//        baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+//        return baseResponse;
+//    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

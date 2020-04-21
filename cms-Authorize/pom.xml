@@ -8,16 +8,14 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>Cms-Authorize</artifactId>
-
     <dependencies>
 
-        <dependency>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <artifactId>cms-model</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <artifactId>cms-model</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.wangyang.cms</groupId>
@@ -30,11 +28,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!--lombok log4-->
