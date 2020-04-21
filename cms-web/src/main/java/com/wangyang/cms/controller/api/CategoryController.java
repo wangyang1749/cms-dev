@@ -1,13 +1,13 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.dto.CategoryDto;
-import com.wangyang.cms.service.IHtmlService;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.params.CategoryParam;
+import com.wangyang.data.service.ICategoryService;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.model.pojo.dto.CategoryDto;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.params.CategoryParam;
 import com.wangyang.common.CmsConst;
-import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.utils.ServiceUtil;
-import com.wangyang.cms.utils.TemplateUtil;
+import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.cms.util.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

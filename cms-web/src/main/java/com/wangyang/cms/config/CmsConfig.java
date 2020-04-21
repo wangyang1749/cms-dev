@@ -1,8 +1,8 @@
 package com.wangyang.cms.config;
 
 import com.wangyang.cms.core.thymeleaf.CmsDialect;
-import lombok.extern.slf4j.Slf4j;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;

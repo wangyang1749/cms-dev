@@ -1,15 +1,16 @@
 package com.wangyang.authorize.config.service;
 
 
-import com.wangyang.authorize.jwt.TokenProvider;
-import com.wangyang.authorize.pojo.entity.Role;
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.service.IRoleService;
-import com.wangyang.authorize.service.IUserService;
+import com.wangyang.authorize.pojo.dto.UserDto;
+import com.wangyang.authorize.utils.SecurityUtils;
+import com.wangyang.data.repository.UserRepository;
+import com.wangyang.data.service.IRoleService;
+import com.wangyang.data.service.IUserService;
+import com.wangyang.model.pojo.entity.Role;
+import com.wangyang.model.pojo.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,9 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -27,10 +28,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
     private IUserService userService;
-//    @Autowired
-//    private IPermissionService permissionService;
+
+
     @Autowired
     private IRoleService roleService;
+
+    @Autowired
+    UserRepository userRepository;
 
 
     @Override
@@ -51,6 +55,33 @@ public class UserDetailServiceImpl implements UserDetailsService {
 //            }
 //            user.setRoles(roles);
 //        }
-        return userService.findByUsername(username);
+        return findByUsername(username);
+    }
+
+
+    public UserDto findByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw  new UsernameNotFoundException("用户名不存在!!");
+        }
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user,userDto);
+        List<Role> roles = roleService.findByUserId(user.getId());
+        if(CollectionUtils.isEmpty(roles)){
+            return null;
+        }
+        userDto.setRoles(roles);
+        return  userDto;
+    }
+
+
+    public UserDto getCurrentUser() {
+        Optional<String> username = SecurityUtils.getCurrentUsername();
+        return findByUsername(username.get());
+    }
+
+    public String getCurrentUserName() {
+        Optional<String> username = SecurityUtils.getCurrentUsername();
+        return username.get();
     }
 }

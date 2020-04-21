@@ -1,7 +1,7 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.entity.Option;
-import com.wangyang.cms.service.IOptionService;
+import com.wangyang.data.service.IOptionService;
+import com.wangyang.model.pojo.entity.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

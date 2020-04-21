@@ -1,8 +1,8 @@
 package com.wangyang.cms.core;
 
-import com.wangyang.cms.expection.CmsException;
-import com.wangyang.cms.utils.ExceptionUtils;
-import com.wangyang.cms.utils.ValidationUtils;
+import com.wangyang.common.exception.CmsException;
+import com.wangyang.common.utils.ExceptionUtils;
+import com.wangyang.common.utils.ValidationUtils;
 import com.wangyang.common.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

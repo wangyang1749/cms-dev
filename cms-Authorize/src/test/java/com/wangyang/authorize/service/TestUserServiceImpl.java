@@ -1,11 +1,10 @@
 package com.wangyang.authorize.service;
 
-import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.model.pojo.entity.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import javax.transaction.Transactional;
-import javax.xml.ws.soap.Addressing;
 
 @Transactional
 public class TestUserServiceImpl extends AbstractServiceTest{

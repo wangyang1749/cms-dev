@@ -1,8 +1,8 @@
 package com.wangyang.authorize.service;
 
-import com.wangyang.authorize.pojo.entity.Role;
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.pojo.entity.UserRole;
+import com.wangyang.model.pojo.entity.Role;
+import com.wangyang.model.pojo.entity.User;
+import com.wangyang.model.pojo.entity.UserRole;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

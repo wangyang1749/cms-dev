@@ -1,6 +1,6 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.enums.PropertyEnum;
+import com.wangyang.model.pojo.enums.PropertyEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

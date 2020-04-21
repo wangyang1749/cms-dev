@@ -1,7 +1,7 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.entity.Attachment;
-import com.wangyang.cms.service.IAttachmentService;
+import com.wangyang.data.service.IAttachmentService;
+import com.wangyang.model.pojo.entity.Attachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

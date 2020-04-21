@@ -7,7 +7,7 @@
         <module>cms-Authorize</module>
         <module>cms-web</module>
         <module>cms-oAuth2</module>
-        <module>cms-syscall</module>
+        <module>extension-cms-syscall</module>
         <module>cms-common</module>
         <module>cms-service</module>
         <module>cms-model</module>

@@ -1,9 +1,9 @@
 package com.wangyang.cms.controller.user;
 
-import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.params.CommentParam;
-import com.wangyang.cms.service.ICommentService;
-import com.wangyang.cms.service.IHtmlService;
+import com.wangyang.data.service.ICommentService;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.model.pojo.entity.Comment;
+import com.wangyang.model.pojo.params.CommentParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,8 +1,8 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.dto.TagsDto;
-import com.wangyang.cms.pojo.entity.Tags;
-import com.wangyang.cms.service.ITagsService;
+import com.wangyang.data.service.ITagsService;
+import com.wangyang.model.pojo.dto.TagsDto;
+import com.wangyang.model.pojo.entity.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

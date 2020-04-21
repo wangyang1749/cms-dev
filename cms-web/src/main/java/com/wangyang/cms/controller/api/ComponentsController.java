@@ -1,8 +1,9 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.entity.Components;
-import com.wangyang.cms.pojo.params.ComponentsParam;
-import com.wangyang.cms.service.IComponentsService;
+import com.wangyang.cms.util.TemplateUtil;
+import com.wangyang.data.service.IComponentsService;
+import com.wangyang.model.pojo.entity.Components;
+import com.wangyang.model.pojo.params.ComponentsParam;
 import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,9 @@ public class ComponentsController {
 
     @GetMapping("/generate/{id}")
     public BaseResponse generateHtml(@PathVariable("id") Integer id){
-        return BaseResponse.ok(componentsService.generateHtml(id));
+        Components templatePage = componentsService.findById(id);
+        Object o = componentsService.getModel(templatePage.getDataName());
+        return BaseResponse.ok(TemplateUtil.convertHtmlAndSave(o, templatePage));
     }
 
 

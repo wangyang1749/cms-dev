@@ -1,12 +1,12 @@
 package com.wangyang.cms.service;
 
 
-import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.enums.ArticleStatus;
-import com.wangyang.cms.pojo.vo.ArticleDetailVO;
-import com.wangyang.cms.pojo.params.ArticleParams;
-import com.wangyang.cms.pojo.params.ArticleQuery;
+import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.enums.ArticleStatus;
+import com.wangyang.model.pojo.vo.ArticleDetailVO;
+import com.wangyang.model.pojo.params.ArticleParams;
+import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.CmsConst;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;

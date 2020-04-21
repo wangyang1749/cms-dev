@@ -3,8 +3,8 @@ package com.wangyang.cms.controller.user;
 import com.wangyang.authorize.jwt.JWTFilter;
 import com.wangyang.authorize.jwt.TokenProvider;
 import com.wangyang.authorize.pojo.dto.UserDto;
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.service.IUserService;
+import com.wangyang.model.pojo.entity.User;
+import com.wangyang.data.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,11 +28,11 @@ public class UserArticleController {
 
     private AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @GetMapping("/getCurrent")
-    @ResponseBody
-    public UserDto getCurrentUser(){
-        return userService.getCurrentUser();
-    }
+//    @GetMapping("/getCurrent")
+//    @ResponseBody
+//    public UserDto getCurrentUser(){
+//        return userService.getCurrentUser();
+//    }
 
     public UserArticleController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;

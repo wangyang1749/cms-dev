@@ -7,16 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CmsConst {
 
-
-
-
     @Value("${cms.workDir}")
     private void setWorkDir(String workDir) {
         this.WORK_DIR = workDir;
     }
     public static  String WORK_DIR;
-
-
 
 
     public static final String SYSTEM_TEMPLATE_PATH="templates";

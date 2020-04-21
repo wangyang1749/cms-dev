@@ -11,5 +11,41 @@
 
     <artifactId>cms-service</artifactId>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>cms-common</artifactId>
+        </dependency>
+
+        <!--aliyun-sdk-oss-->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+
+        <!--mysql connector-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--H2 database-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+
+
+    </dependencies>
 
 </project>

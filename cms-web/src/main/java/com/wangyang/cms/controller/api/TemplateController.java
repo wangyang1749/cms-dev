@@ -1,9 +1,9 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.enums.TemplateType;
-import com.wangyang.cms.service.IHtmlService;
-import com.wangyang.cms.pojo.entity.Template;
-import com.wangyang.cms.service.ITemplateService;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.ITemplateService;
+import com.wangyang.model.pojo.enums.TemplateType;
+import com.wangyang.model.pojo.entity.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

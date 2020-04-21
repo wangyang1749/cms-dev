@@ -2,7 +2,7 @@ package com.wangyang.cms.controller;
 
 
 import com.google.common.base.Joiner;
-import com.wangyang.authorize.service.IUserService;
+import com.wangyang.data.service.IUserService;
 import com.wangyang.common.CmsConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

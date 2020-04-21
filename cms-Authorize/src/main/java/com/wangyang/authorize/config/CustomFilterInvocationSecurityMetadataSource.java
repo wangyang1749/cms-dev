@@ -1,8 +1,8 @@
 package com.wangyang.authorize.config;
 
-import com.wangyang.authorize.pojo.dto.PermissionDto;
-import com.wangyang.authorize.pojo.entity.Role;
-import com.wangyang.authorize.service.IPermissionService;
+import com.wangyang.model.pojo.dto.PermissionDto;
+import com.wangyang.data.service.IPermissionService;
+import com.wangyang.model.pojo.entity.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;

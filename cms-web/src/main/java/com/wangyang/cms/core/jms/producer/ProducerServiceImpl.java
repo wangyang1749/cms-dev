@@ -1,6 +1,6 @@
 package com.wangyang.cms.core.jms.producer;
 
-import com.wangyang.cms.pojo.vo.ArticleDetailVO;
+import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;

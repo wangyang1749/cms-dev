@@ -1,16 +1,18 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.controller.api.ArticleController;
-import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.repository.ArticleRepository;
-import com.wangyang.cms.repository.CategoryRepository;
-import com.wangyang.cms.repository.OptionRepository;
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.service.IUserService;
-import com.wangyang.cms.pojo.params.ArticleParams;
-import com.wangyang.cms.repository.BaseCategoryRepository;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.*;
+import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.entity.Comment;
+import com.wangyang.data.repository.ArticleRepository;
+import com.wangyang.data.repository.CategoryRepository;
+import com.wangyang.data.repository.OptionRepository;
+import com.wangyang.model.pojo.entity.User;
+import com.wangyang.data.service.IUserService;
+import com.wangyang.model.pojo.params.ArticleParams;
+import com.wangyang.data.repository.BaseCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

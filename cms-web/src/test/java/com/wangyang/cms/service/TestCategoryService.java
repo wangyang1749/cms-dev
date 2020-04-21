@@ -1,7 +1,7 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.dto.CategoryDto;
-import com.wangyang.cms.pojo.entity.Category;
+import com.wangyang.model.pojo.dto.CategoryDto;
+import com.wangyang.model.pojo.entity.Category;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

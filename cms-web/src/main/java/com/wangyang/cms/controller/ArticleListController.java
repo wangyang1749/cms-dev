@@ -1,8 +1,13 @@
 package com.wangyang.cms.controller;
 
-import com.wangyang.cms.pojo.dto.ArticleDto;
-import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.service.IArticleService;
+import com.wangyang.data.service.IArticleService;
+import com.wangyang.data.service.ICategoryService;
+import com.wangyang.data.service.ITemplateService;
+import com.wangyang.model.pojo.dto.ArticleDto;
+import com.wangyang.model.pojo.dto.CategoryArticleListDao;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.entity.Template;
+import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +22,12 @@ public class ArticleListController {
     @Autowired
     IArticleService articleService;
 
+    @Autowired
+    ICategoryService categoryService;
+
+    @Autowired
+    ITemplateService templateService;
+
     @GetMapping("/category/{categoryId}")
     public ModelAndView articleListByCategory(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
         if(categoryId==null){
@@ -26,7 +37,17 @@ public class ArticleListController {
         page = page-1;
 
 
-        return articleService.getArticleListByCategory(categoryId,page);
+        ModelAndView modelAndView = new ModelAndView();
+        Category category = categoryService.findById(categoryId);
+//
+//        // 分页
+        CategoryArticleListDao articleListByCategory = articleService.findCategoryArticleBy(category, page);
+//        Template template = templateService.findById(category.getTemplateId());
+        Template template = templateService.findByEnName(category.getTemplateName());
+        modelAndView.setViewName(template.getTemplateValue());
+        modelAndView.addObject("view", articleListByCategory);
+        return modelAndView;
+
     }
 
 

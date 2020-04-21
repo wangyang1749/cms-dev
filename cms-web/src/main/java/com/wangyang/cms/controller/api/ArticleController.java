@@ -1,20 +1,20 @@
 package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.core.jms.producer.IProducerService;
-import com.wangyang.cms.pojo.dto.ArticleDto;
-import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.vo.ArticleDetailVO;
-import com.wangyang.cms.service.IHtmlService;
+import com.wangyang.data.service.IArticleService;
+import com.wangyang.data.service.ICategoryService;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.model.pojo.dto.ArticleDto;
+import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.vo.ArticleDetailVO;
 
-import com.wangyang.cms.pojo.entity.Category;
-import com.wangyang.cms.pojo.params.ArticleParams;
-import com.wangyang.cms.pojo.params.ArticleQuery;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.params.ArticleParams;
+import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
-import com.wangyang.cms.service.IArticleService;
-import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.utils.ServiceUtil;
-import com.wangyang.cms.utils.TemplateUtil;
+import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.cms.util.TemplateUtil;
 import com.wangyang.syscall.utils.NodeJsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

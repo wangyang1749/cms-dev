@@ -1,11 +1,11 @@
 package com.wangyang.cms.controller;
 
-import com.wangyang.cms.pojo.dto.ArticleDto;
-import com.wangyang.cms.pojo.entity.Article;
+import com.wangyang.data.service.IArticleService;
+import com.wangyang.model.pojo.dto.ArticleDto;
+import com.wangyang.model.pojo.entity.Article;
 import com.google.common.base.Joiner;
-import com.wangyang.cms.pojo.params.ArticleQuery;
+import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.CmsConst;
-import com.wangyang.cms.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

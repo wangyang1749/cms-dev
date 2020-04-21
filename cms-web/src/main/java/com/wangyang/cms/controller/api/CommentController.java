@@ -1,11 +1,11 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.params.CommentLoginUserParam;
-import com.wangyang.cms.service.ICommentService;
-import com.wangyang.cms.service.IHtmlService;
-import com.wangyang.cms.pojo.params.CommentParam;
-import com.wangyang.cms.pojo.vo.CommentVo;
+import com.wangyang.data.service.ICommentService;
+import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.model.pojo.entity.Comment;
+import com.wangyang.model.pojo.params.CommentLoginUserParam;
+import com.wangyang.model.pojo.params.CommentParam;
+import com.wangyang.model.pojo.vo.CommentVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

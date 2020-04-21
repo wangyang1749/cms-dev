@@ -1,6 +1,6 @@
 package com.wangyang.authorize.service;
 
-import com.wangyang.authorize.pojo.dto.PermissionDto;
+import com.wangyang.model.pojo.dto.PermissionDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
