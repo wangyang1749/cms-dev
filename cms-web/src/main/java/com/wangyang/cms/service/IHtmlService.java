@@ -1,7 +1,9 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
-import com.wangyang.cms.pojo.entity.*;
+import com.wangyang.cms.pojo.entity.Category;
+import com.wangyang.cms.pojo.entity.Components;
+import com.wangyang.cms.pojo.entity.Sheet;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 
 public interface IHtmlService {

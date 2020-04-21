@@ -1,35 +1,21 @@
 package com.wangyang.cms.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangyang.authorize.config.CustomFilterInvocationSecurityMetadataSource;
 import com.wangyang.authorize.config.CustomUrlDecisionManager;
-import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.authorize.jwt.JWTConfigurer;
 import com.wangyang.authorize.jwt.TokenProvider;
-import com.wangyang.authorize.pojo.dto.UserDto;
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
-
-import java.io.PrintWriter;
 
 //@Configuration
 @EnableWebSecurity

@@ -1,6 +1,6 @@
 package com.wangyang.cms.core;
 
-import com.wangyang.cms.pojo.support.BaseResponse;
+import com.wangyang.common.BaseResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

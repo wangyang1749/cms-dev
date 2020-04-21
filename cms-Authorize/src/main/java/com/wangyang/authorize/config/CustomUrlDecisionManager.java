@@ -29,7 +29,7 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
 
         for (ConfigAttribute configAttribute : configAttributes) {
             String needRole = configAttribute.getAttribute();
-            log.info("该路径需要的权限"+needRole);
+            log.debug("该路径需要的权限"+needRole);
             if(needRole.equals("ROLE_LOGIN")){
                 if (authentication instanceof AnonymousAuthenticationToken) {
                     throw new AccessDeniedException("尚未登录，请登录!");
@@ -40,7 +40,7 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
             //获取用户权限, 与当前权限进行比较
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             for (GrantedAuthority authority : authorities) {
-                log.info("当前用户具有的权限"+authority.getAuthority());
+                log.debug("当前用户具有的权限"+authority.getAuthority());
                 if (authority.getAuthority().equals(needRole)) {
                     return;
                 }

@@ -2,8 +2,8 @@ package com.wangyang.cms.controller;
 
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.service.IArticleService;
+import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;

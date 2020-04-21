@@ -1,6 +1,5 @@
 package com.wangyang.cms.repository;
 
-import com.wangyang.cms.pojo.entity.ArticleTags;
 import com.wangyang.cms.pojo.entity.Tags;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,14 +1,10 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.dto.SheetDto;
-import com.wangyang.cms.pojo.vo.SheetVo;
 import com.wangyang.cms.pojo.entity.Sheet;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
+import com.wangyang.cms.pojo.vo.SheetVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 public interface ISheetService {
 

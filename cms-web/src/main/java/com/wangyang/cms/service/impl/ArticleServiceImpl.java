@@ -1,26 +1,28 @@
 package com.wangyang.cms.service.impl;
 
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.service.IUserService;
 import com.wangyang.cms.expection.ArticleException;
 import com.wangyang.cms.expection.ObjectException;
 import com.wangyang.cms.pojo.dto.ArticleDto;
 import com.wangyang.cms.pojo.dto.CategoryArticleListDao;
 import com.wangyang.cms.pojo.dto.CategoryDto;
 import com.wangyang.cms.pojo.dto.TagsDto;
-import com.wangyang.cms.pojo.entity.*;
-import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
-import com.wangyang.cms.pojo.enums.PropertyEnum;
-import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.pojo.support.CmsConst;
-import com.wangyang.cms.pojo.support.TemplateOption;
-import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.pojo.vo.ArticleDetailVO;
 import com.wangyang.cms.pojo.vo.ArticleVO;
+import com.wangyang.cms.utils.JpaUtils;
+import com.wangyang.common.CMSUtils;
+import com.wangyang.cms.utils.MarkdownUtils;
+import com.wangyang.cms.utils.ServiceUtil;
+import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.authorize.service.IUserService;
+import com.wangyang.cms.pojo.entity.*;
+import com.wangyang.cms.pojo.params.ArticleQuery;
+import com.wangyang.common.CmsConst;
+import com.wangyang.cms.pojo.support.TemplateOption;
+import com.wangyang.cms.pojo.support.TemplateOptionMethod;
 import com.wangyang.cms.repository.*;
 import com.wangyang.cms.service.*;
-import com.wangyang.cms.utils.*;
+import com.wangyang.syscall.utils.NodeJsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -791,7 +793,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
     @Override
     public Page<ArticleDto> pageDtoBy(Category category, int page){
-        return  pageDtoBy(category.getId(),CMSUtils.articleListPageRequest(page,category));
+        return  pageDtoBy(category.getId(), JpaUtils.articleListPageRequest(page,category));
     }
 
 

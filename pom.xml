@@ -7,7 +7,10 @@
         <module>cms-Authorize</module>
         <module>cms-web</module>
         <module>cms-oAuth2</module>
-        <module>cms-system-call</module>
+        <module>cms-syscall</module>
+        <module>cms-common</module>
+        <module>cms-service</module>
+        <module>cms-model</module>
     </modules>
 
     <parent>
@@ -294,6 +297,8 @@
             <artifactId>selenium-support</artifactId>
             <version>${selenium.version}</version>
         </dependency>
+
+        <!--        java解析Html-->
         <dependency>
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
@@ -319,6 +324,7 @@
             <version>1.8.1</version>
         </dependency>
 
+        <!--        java解析python训练模型-->
         <dependency>
             <groupId>org.jpmml</groupId>
             <artifactId>pmml-evaluator</artifactId>
@@ -335,6 +341,13 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.68</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+
 
 
     </dependencies>

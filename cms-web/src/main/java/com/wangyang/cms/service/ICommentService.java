@@ -1,8 +1,7 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.dto.CommentDto;
 import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.enums.CommentType;
+import com.wangyang.cms.pojo.dto.CommentDto;
 import com.wangyang.cms.pojo.vo.CommentVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

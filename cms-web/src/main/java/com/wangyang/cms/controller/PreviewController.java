@@ -1,6 +1,9 @@
 package com.wangyang.cms.controller;
 
-import com.wangyang.cms.service.*;
+import com.wangyang.cms.service.IArticleService;
+import com.wangyang.cms.service.ICategoryService;
+import com.wangyang.cms.service.IComponentsService;
+import com.wangyang.cms.service.ISheetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

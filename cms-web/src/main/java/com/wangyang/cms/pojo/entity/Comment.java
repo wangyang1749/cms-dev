@@ -2,8 +2,6 @@ package com.wangyang.cms.pojo.entity;
 
 
 import com.wangyang.cms.pojo.entity.base.BaseDiscuss;
-import com.wangyang.cms.pojo.entity.base.BaseEntity;
-import com.wangyang.cms.pojo.enums.CommentType;
 
 import javax.persistence.*;
 

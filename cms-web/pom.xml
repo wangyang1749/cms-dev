@@ -17,6 +17,18 @@
             <version>0.0.1-SNAPSHOT</version>
             <artifactId>Cms-Authorize</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>cms-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>cms-syscall</artifactId>
+        </dependency>
+
+
 
 <!--        <dependency>-->
 <!--            <groupId>com.wangyang.cms</groupId>-->
@@ -185,6 +197,7 @@
             <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
 
+<!--        java处理图片-->
         <dependency>
             <groupId>org.jclarion</groupId>
             <artifactId>image4j</artifactId>
@@ -201,33 +214,7 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!--执行Js-->
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-        </dependency>
 
-        <!--java调用chrome-->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-        </dependency>
 
         <dependency>
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
@@ -239,10 +226,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
+
 
     </dependencies>
 

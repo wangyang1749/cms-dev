@@ -1,8 +1,7 @@
 package com.wangyang.cms.repository;
 
-import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.enums.TemplateType;
+import com.wangyang.cms.pojo.entity.Template;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

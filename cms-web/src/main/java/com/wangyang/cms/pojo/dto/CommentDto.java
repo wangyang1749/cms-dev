@@ -1,8 +1,5 @@
 package com.wangyang.cms.pojo.dto;
 
-import com.wangyang.cms.pojo.enums.CommentType;
-
-import javax.persistence.*;
 import java.util.Date;
 
 public class CommentDto {

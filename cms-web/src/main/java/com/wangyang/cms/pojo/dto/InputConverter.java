@@ -3,8 +3,6 @@ package com.wangyang.cms.pojo.dto;
 import com.wangyang.cms.utils.ReflectionUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.lang.reflect.ParameterizedType;
-
 public interface InputConverter<DOMAIN> {
     default DOMAIN convertTo() {
         try {

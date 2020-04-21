@@ -1,6 +1,5 @@
 package com.wangyang.cms.utils;
 
-import com.wangyang.cms.expection.DocumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

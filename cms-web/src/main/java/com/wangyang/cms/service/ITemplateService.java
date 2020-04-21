@@ -1,7 +1,7 @@
 package com.wangyang.cms.service;
 
-import com.wangyang.cms.pojo.entity.Template;
 import com.wangyang.cms.pojo.enums.TemplateType;
+import com.wangyang.cms.pojo.entity.Template;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

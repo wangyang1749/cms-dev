@@ -1,11 +1,6 @@
 package com.wangyang.cms.repository;
 
 import com.wangyang.cms.pojo.entity.Article;
-import com.wangyang.cms.pojo.enums.ArticleStatus;
-import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.pojo.vo.ArticleVO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;

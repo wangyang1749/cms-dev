@@ -4,7 +4,6 @@ import com.wangyang.cms.pojo.dto.InputConverter;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;

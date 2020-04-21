@@ -1,7 +1,6 @@
 package com.wangyang.cms.controller.user;
 
 import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.enums.CommentType;
 import com.wangyang.cms.pojo.params.CommentParam;
 import com.wangyang.cms.service.ICommentService;
 import com.wangyang.cms.service.IHtmlService;
@@ -9,7 +8,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller

@@ -1,9 +1,9 @@
 package com.wangyang.cms.core;
 
 import com.wangyang.cms.expection.CmsException;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.utils.ExceptionUtils;
 import com.wangyang.cms.utils.ValidationUtils;
+import com.wangyang.common.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

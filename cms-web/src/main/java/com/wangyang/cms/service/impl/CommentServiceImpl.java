@@ -1,15 +1,14 @@
 package com.wangyang.cms.service.impl;
 
-import com.wangyang.authorize.pojo.entity.User;
-import com.wangyang.authorize.service.IUserService;
 import com.wangyang.cms.expection.ObjectException;
 import com.wangyang.cms.expection.OptionException;
-import com.wangyang.cms.pojo.dto.CommentDto;
 import com.wangyang.cms.pojo.entity.Article;
 import com.wangyang.cms.pojo.entity.Comment;
-import com.wangyang.cms.pojo.vo.CommentVo;
-import com.wangyang.cms.repository.ArticleRepository;
 import com.wangyang.cms.repository.CommentRepository;
+import com.wangyang.authorize.pojo.entity.User;
+import com.wangyang.authorize.service.IUserService;
+import com.wangyang.cms.pojo.dto.CommentDto;
+import com.wangyang.cms.pojo.vo.CommentVo;
 import com.wangyang.cms.service.IArticleService;
 import com.wangyang.cms.service.ICommentService;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +30,7 @@ public class CommentServiceImpl implements ICommentService {
 //    @Autowired
 //    UserRepository userRepository;
     @Autowired
-    CommentRepository commentRepository;
+CommentRepository commentRepository;
     @Autowired
     IArticleService articleService;
     @Autowired

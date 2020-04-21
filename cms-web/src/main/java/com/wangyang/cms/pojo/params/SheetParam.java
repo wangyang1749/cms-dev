@@ -2,8 +2,6 @@ package com.wangyang.cms.pojo.params;
 
 import com.wangyang.cms.pojo.enums.ArticleStatus;
 
-import javax.persistence.Column;
-
 public class SheetParam {
 
     private ArticleStatus status ;//=ArticleStatus.PUBLISHED;

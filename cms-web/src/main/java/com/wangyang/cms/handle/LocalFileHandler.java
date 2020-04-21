@@ -2,9 +2,8 @@ package com.wangyang.cms.handle;
 
 import com.wangyang.cms.expection.FileOperationException;
 import com.wangyang.cms.pojo.enums.AttachmentType;
-import com.wangyang.cms.pojo.support.CmsConst;
 import com.wangyang.cms.pojo.support.UploadResult;
-import com.wangyang.cms.utils.CMSUtils;
+import com.wangyang.common.CMSUtils;
 import com.wangyang.cms.utils.FilenameUtils;
 import com.wangyang.cms.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component

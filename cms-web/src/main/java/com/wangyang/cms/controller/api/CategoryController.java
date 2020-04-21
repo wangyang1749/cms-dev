@@ -1,26 +1,22 @@
 package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.pojo.dto.CategoryDto;
+import com.wangyang.cms.service.IHtmlService;
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.params.CategoryParam;
-import com.wangyang.cms.pojo.support.CmsConst;
+import com.wangyang.common.CmsConst;
 import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.service.IHtmlService;
 import com.wangyang.cms.utils.ServiceUtil;
 import com.wangyang.cms.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
-
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("/api/category")

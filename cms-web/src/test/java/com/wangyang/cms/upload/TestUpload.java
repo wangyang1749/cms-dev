@@ -1,8 +1,6 @@
 package com.wangyang.cms.upload;
 
 import com.wangyang.cms.handle.FileHandlers;
-import com.wangyang.cms.pojo.enums.AttachmentType;
-import com.wangyang.cms.pojo.support.UploadResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

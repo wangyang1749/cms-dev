@@ -18,12 +18,8 @@ import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
-import com.wangyang.cms.cache.StringCacheStore;
-import com.wangyang.cms.pojo.support.CmsConst;
+import com.wangyang.common.CmsConst;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
 
 import java.util.Arrays;
 

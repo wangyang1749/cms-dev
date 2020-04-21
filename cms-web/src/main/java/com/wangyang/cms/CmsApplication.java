@@ -10,7 +10,7 @@ import org.springframework.jms.annotation.EnableJms;
 
 @SpringBootApplication
 @EnableJms
-@ComponentScan(basePackages = {"com.wangyang.cms","com.wangyang.authorize"})
+@ComponentScan(basePackages = {"com.wangyang.cms","com.wangyang.authorize","com.wangyang.common","com.wangyang.syscall.controller"})
 @EnableJpaRepositories(basePackages = {"com.wangyang.cms.repository","com.wangyang.authorize.repository"})
 @EntityScan(basePackages = {"com.wangyang.cms.pojo.entity","com.wangyang.authorize.pojo.entity"})
 @EnableCaching

@@ -1,7 +1,7 @@
 package com.wangyang.cms.pojo.dto;
 
-import com.wangyang.authorize.pojo.entity.User;
 import com.wangyang.cms.pojo.enums.ArticleStatus;
+import com.wangyang.authorize.pojo.entity.User;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -2,28 +2,23 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.core.jms.producer.IProducerService;
 import com.wangyang.cms.pojo.dto.ArticleDto;
-
 import com.wangyang.cms.pojo.entity.Article;
+import com.wangyang.cms.pojo.vo.ArticleDetailVO;
+import com.wangyang.cms.service.IHtmlService;
 
 import com.wangyang.cms.pojo.entity.Category;
 import com.wangyang.cms.pojo.params.ArticleParams;
 import com.wangyang.cms.pojo.params.ArticleQuery;
-import com.wangyang.cms.pojo.support.BaseResponse;
-import com.wangyang.cms.pojo.support.CmsConst;
-import com.wangyang.cms.pojo.vo.ArticleDetailVO;
-import com.wangyang.cms.pojo.vo.SheetDetailVo;
-import com.wangyang.cms.repository.CategoryRepository;
+import com.wangyang.common.BaseResponse;
+import com.wangyang.common.CmsConst;
 import com.wangyang.cms.service.IArticleService;
 import com.wangyang.cms.service.ICategoryService;
-import com.wangyang.cms.service.IHtmlService;
-import com.wangyang.cms.service.IOptionService;
-import com.wangyang.cms.utils.NodeJsUtil;
 import com.wangyang.cms.utils.ServiceUtil;
 import com.wangyang.cms.utils.TemplateUtil;
+import com.wangyang.syscall.utils.NodeJsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -55,9 +50,9 @@ public class ArticleController {
     ICategoryService categoryService;
 
     @GetMapping
-    public Page<? extends  ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
-                                                @RequestParam(value = "more", defaultValue = "true") Boolean more,
-                                                ArticleQuery articleQuery){
+    public Page<? extends ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
+                                                  @RequestParam(value = "more", defaultValue = "true") Boolean more,
+                                                  ArticleQuery articleQuery){
         Page<Article> articles = articleService.articleList(articleQuery, pageable);
         if(more){
             return articleService.convertToListVo(articles);

@@ -2,8 +2,8 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.pojo.entity.Components;
 import com.wangyang.cms.pojo.params.ComponentsParam;
-import com.wangyang.cms.pojo.support.BaseResponse;
 import com.wangyang.cms.service.IComponentsService;
+import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
