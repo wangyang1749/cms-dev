@@ -1,6 +1,6 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.util.TemplateUtil;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.IComponentsService;
 import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.params.ComponentsParam;

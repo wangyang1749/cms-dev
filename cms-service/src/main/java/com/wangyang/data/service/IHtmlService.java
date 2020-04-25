@@ -1,4 +1,4 @@
-package com.wangyang.cms.html;
+package com.wangyang.data.service;
 
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.Category;

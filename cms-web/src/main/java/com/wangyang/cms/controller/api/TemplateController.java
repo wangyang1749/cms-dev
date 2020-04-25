@@ -1,6 +1,6 @@
 package com.wangyang.cms.controller.api;
 
-import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.ITemplateService;
 import com.wangyang.model.pojo.enums.TemplateType;
 import com.wangyang.model.pojo.entity.Template;

@@ -1,7 +1,7 @@
 package com.wangyang.cms.service;
 
 import com.wangyang.cms.controller.api.ArticleController;
-import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.entity.Category;

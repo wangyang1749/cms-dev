@@ -1,7 +1,7 @@
 package com.wangyang.cms.controller.api;
 
 import com.wangyang.data.service.ICommentService;
-import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.IHtmlService;
 import com.wangyang.model.pojo.entity.Comment;
 import com.wangyang.model.pojo.params.CommentLoginUserParam;
 import com.wangyang.model.pojo.params.CommentParam;

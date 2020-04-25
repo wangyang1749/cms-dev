@@ -15,9 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 public class AuthenticationController {
 
@@ -31,7 +34,40 @@ public class AuthenticationController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
+    @PostMapping("/login")
+    public String authorize(@Valid User loginDto, HttpServletResponse response, HttpServletRequest request) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.getObject();
+
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//        boolean rememberMe = (loginDto.isRememberMe() == null) ? false : loginDto.isRememberMe();
+        String jwt = tokenProvider.createToken(authentication, true);
+
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,jwt);
+//        cookie.setComment("auth purpose");
+        cookie.setMaxAge(3600);
+        response.addCookie(cookie);
+        String redirect = request.getParameter("redirect");
+        String resUrl = "redirect:";
+        if(redirect!=null){
+            resUrl = resUrl+"user/loginSuccess?redirect="+redirect;
+        }else {
+            resUrl = resUrl+"user/loginSuccess";
+        }
+        return resUrl;
+//        return new ResponseEntity<>(new AuthenticationController.JWTToken(jwt), httpHeaders, HttpStatus.OK);
+    }
+
     @PostMapping("/authenticate")
+    @ResponseBody
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody User loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =

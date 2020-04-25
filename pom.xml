@@ -11,6 +11,7 @@
         <module>cms-common</module>
         <module>cms-service</module>
         <module>cms-model</module>
+        <module>cms-schedule</module>
     </modules>
 
     <parent>
@@ -348,6 +349,23 @@
             <version>2.7.2</version>
         </dependency>
 
+<!--        java发送Http请求-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>4.5.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.2</version>
+        </dependency>
 
 
     </dependencies>

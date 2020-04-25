@@ -80,8 +80,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return findByUsername(username.get());
     }
 
-    public String getCurrentUserName() {
+    public Optional<String> getCurrentUserName() {
         Optional<String> username = SecurityUtils.getCurrentUsername();
-        return username.get();
+        return username;
     }
 }

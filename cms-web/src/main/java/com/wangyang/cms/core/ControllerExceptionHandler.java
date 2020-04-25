@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice({"com.wangyang.cms.controller"})
+@RestControllerAdvice({"com.wangyang"})
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,7 +60,7 @@ public class ControllerExceptionHandler {
         BaseResponse baseResponse = handleBaseException(e);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         baseResponse.setStatus(status.value());
-        baseResponse.setMessage(status.getReasonPhrase());
+        baseResponse.setMessage(e.getMessage());
         return baseResponse;
     }
     private <T> BaseResponse<T> handleBaseException(Throwable t) {

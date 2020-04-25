@@ -1,4 +1,4 @@
-package com.wangyang.cms.util;
+package com.wangyang.common.utils;
 
 
 import com.wangyang.common.exception.FileOperationException;

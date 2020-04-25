@@ -1,7 +1,7 @@
 package com.wangyang.cms.core.jms.consumer;
 
 import com.wangyang.cms.core.jms.producer.DestinationConst;
-import com.wangyang.cms.html.IHtmlService;
+import com.wangyang.data.service.IHtmlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;

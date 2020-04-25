@@ -1,0 +1,27 @@
+package com.wangyang.model.pojo.entity;
+
+import com.wangyang.model.pojo.entity.base.BaseEntity;
+import com.wangyang.model.pojo.enums.ScheduleStatus;
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Data
+@Entity(name = "t_sys_task")
+public class SysTask extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String jobName;
+    private String description;
+    private String cornExpression;
+    private String beanClass;
+    private String jobGroup;
+    private ScheduleStatus scheduleStatus;
+    private Integer userId;
+
+}

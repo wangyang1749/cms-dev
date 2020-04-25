@@ -18,10 +18,7 @@ public class UserArticleController {
         return "user/write";
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "templates/user/login";
-    }
+
 
 
 }

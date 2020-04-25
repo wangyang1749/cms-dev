@@ -8,7 +8,7 @@ public class TestLatexUtil {
 
     @Test
     public void test(){
-        String svgPath = LatexUtil.getSvg("\\sum_{i=1}^n=a_i=0",false);
-        System.out.println(svgPath);
+//        String svgPath = LatexUtil.getSvg("\\sum_{i=1}^n=a_i=0",false);
+//        System.out.println(svgPath);
     }
 }
