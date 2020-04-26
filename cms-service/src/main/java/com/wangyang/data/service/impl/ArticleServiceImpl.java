@@ -529,7 +529,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
     public Page<ArticleDto> articleShowLatest(){
-        Page<Article> articlePage = articleRepository.findAll(PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),CmsConst.DEFAULT_ARTICLE_TEMPLATE)).getRestriction();
+            }
+        };
+        Page<Article> articlePage = articleRepository.findAll(specification,PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
         return convertToSimple(articlePage);
     }
 
