@@ -41,6 +41,9 @@ public class CmsConst {
     public final static String DEFAULT_CATEGORY_LIST = "DEFAULT_CATEGORY_LIST";//分类列表
 
 
+    public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
+
+
     public static final String MARKDOWN_REVEAL_START = "<p>@=";
     public static final String MARKDOWN_REVEAL_END = "=@</p>";
     public static final String LABEL_SECTION_START = "<section>";

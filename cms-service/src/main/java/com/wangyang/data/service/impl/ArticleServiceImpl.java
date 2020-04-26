@@ -522,17 +522,15 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
+    /**
+     * 生成最新文章
+     * @return
+     */
     @Override
-    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticle",viewName="newArticle",path = "components",event = "ACAU")
+    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
     public Page<ArticleDto> articleShowLatest(){
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Path path = root.get("likes");
-                return null;
-            }
-        };
-        return articleShow(specification,PageRequest.of(0,5,Sort.by(Sort.Order.desc("createDate"))));
+        Page<Article> articlePage = articleRepository.findAll(PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
+        return convertToSimple(articlePage);
     }
 
     @Override

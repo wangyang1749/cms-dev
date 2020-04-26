@@ -105,7 +105,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
 
                 new Template("基于AJAX分页的分类模板","CATEGORY_PAGE","templates/@categoryPage", TemplateType.CATEGORY,10),
-                new Template("文章幻灯片模板","REVEAL","templates/@articleReveal", TemplateType.ARTICLE,11)
+                new Template("文章幻灯片模板","REVEAL","templates/@articleReveal", TemplateType.ARTICLE,11),
+
+                new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"templates/@articleList", TemplateType.ARTICLE_LIST,12)
 
         );
         List<Template> findTemplates = templateRepository.findAll();

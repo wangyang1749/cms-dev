@@ -34,7 +34,9 @@ public class QuartzUtils {
         checkAlreadyStart(scheduler,sysTask.getJobName(),sysTask.getJobGroup());
         Class<?> clz = Class.forName(sysTask.getBeanClass());
         Class<? extends Job> jobClass =  (Class<? extends Job>)(clz.newInstance().getClass());
-        JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(sysTask.getJobName(), sysTask.getJobGroup())
+        JobDetail jobDetail = JobBuilder.newJob(jobClass)
+                .withIdentity(sysTask.getJobName(), sysTask.getJobGroup())
+                .usingJobData("jobMethod",sysTask.getMethodName())
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(sysTask.getJobName(),sysTask.getJobGroup())
@@ -66,52 +68,38 @@ public class QuartzUtils {
         SysTask sysTask = sysTaskService.findBy(id);
         BeanUtils.copyProperties(task,sysTask,"id");
 
+//        Scheduler scheduler = schedulerFactory.getScheduler();
+//
+//        TriggerKey triggerKey = TriggerKey.triggerKey(sysTask.getJobName(), sysTask.getJobGroup());
+//        CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+//        if(trigger==null){
+////            startJob(sysTask);
+//            throw new MyScheduleException("任务没有启动，不能更新！");
+//
+//        }else {
+//            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(sysTask.getCornExpression());
+//            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+//            scheduler.rescheduleJob(triggerKey, trigger);
+//        }
         Scheduler scheduler = schedulerFactory.getScheduler();
-        TriggerKey triggerKey = TriggerKey.triggerKey(sysTask.getJobName(), sysTask.getJobGroup());
-        CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-        if(trigger==null){
-//            startJob(sysTask);
-            throw new MyScheduleException("任务没有启动，不能更新！");
+        JobKey jobKey = JobKey.jobKey(sysTask.getJobName(), sysTask.getJobGroup());
+        scheduler.deleteJob(jobKey);
 
-        }else {
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(sysTask.getCornExpression());
-            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
-            scheduler.rescheduleJob(triggerKey, trigger);
-        }
-
-
-        sysTask.setScheduleStatus(ScheduleStatus.RUNNING);
+        sysTask.setScheduleStatus(ScheduleStatus.NONE);
         return sysTaskService.addOrUpdate(sysTask);
     }
     public  SysTask addJob(SysTask sysTask) throws Exception {
             Scheduler scheduler = schedulerFactory.getScheduler();
-            checkAlreadyStart(scheduler,sysTask.getJobName(),sysTask.getJobGroup());
-            Class<?> clz = Class.forName(sysTask.getBeanClass());
-            Class<? extends Job> jobClass =  (Class<? extends Job>)(clz.newInstance().getClass());
-            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(sysTask.getJobName(), sysTask.getJobGroup())
-                    .build();
-
-            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(sysTask.getJobName(),sysTask.getJobGroup())
-                    .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
-                    .withSchedule(CronScheduleBuilder.cronSchedule(sysTask.getCornExpression())).startNow().build();
-
-            scheduler.scheduleJob(jobDetail,trigger);
-
+            startJob(scheduler,sysTask);
             SysTask saveSysTask = sysTaskService.addOrUpdate(sysTask);
-            if(!scheduler.isShutdown()){
-                scheduler.start();
-            }
             return saveSysTask;
-
     }
 
 
     public SysTask pauseJob(int  id) throws SchedulerException {
         SysTask sysTask = sysTaskService.findBy(id);
-
 //        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         Scheduler scheduler = schedulerFactory.getScheduler();
-
         JobKey jobKey = JobKey.jobKey(sysTask.getJobName(), sysTask.getJobGroup());
         scheduler.pauseJob(jobKey);
         sysTask.setScheduleStatus(ScheduleStatus.PAUSE);
@@ -130,7 +118,6 @@ public class QuartzUtils {
 
     public SysTask removeJob(int id) throws SchedulerException {
         SysTask sysTask = sysTaskService.findBy(id);
-//        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         Scheduler scheduler = schedulerFactory.getScheduler();
         JobKey jobKey = JobKey.jobKey(sysTask.getJobName(), sysTask.getJobGroup());
         scheduler.deleteJob(jobKey);

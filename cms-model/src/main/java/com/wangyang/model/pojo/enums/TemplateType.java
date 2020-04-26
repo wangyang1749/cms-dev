@@ -7,7 +7,8 @@ public enum  TemplateType implements ValueEnum<Integer>  {
     CHANNEL(3), //栏目模板
     ARTICLE_CHANNEL(4),// 文章栏目模板
     COMMENT(5),
-    CATEGORY_LIST(6);//评论模板
+    CATEGORY_LIST(6),
+    ARTICLE_LIST(7);
 
     private final int value;
     TemplateType(int value) {

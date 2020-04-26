@@ -22,6 +22,7 @@ public class SysTask extends BaseEntity {
     private String beanClass;
     private String jobGroup;
     private ScheduleStatus scheduleStatus;
+    private String methodName;
     private Integer userId;
 
 }

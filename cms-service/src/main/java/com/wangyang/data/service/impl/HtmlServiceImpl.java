@@ -4,6 +4,7 @@ import com.wangyang.common.utils.DocumentUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.ApplicationBean;
 import com.wangyang.data.service.*;
+import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.dto.CategoryDto;
 import com.wangyang.model.pojo.enums.ArticleStatus;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -56,14 +59,10 @@ public class HtmlServiceImpl implements IHtmlService {
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
 
             Category category = articleVO.getCategory();
-            //判断分类列表是否存在
-//            if(!TemplateUtil.componentsExist(articleVO.getCategory().getTemplateName())){
-//                //如果文件不存在根据父Id生成分类所在组列表
-//                generateCategoryListHtml(category);
-//            }
             //生成文章列表，文章列表依赖分类列表
             convertArticleListBy(category);
-
+            // 生成首页文章最新文章
+            generateNewArticle();
             //判断评论文件是否存在
             if(!TemplateUtil.componentsExist(articleVO.getViewName())){
                 generateCommentHtmlByArticleId(articleVO.getId());
@@ -109,7 +108,14 @@ public class HtmlServiceImpl implements IHtmlService {
                 TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
             }
         }
+
         return categoryArticle;
+    }
+
+    public void generateNewArticle(){
+        Components components = componentsService.findByDataName("articleServiceImpl.articleShowLatest");
+        Object data = getData(components.getDataName());
+        TemplateUtil.convertHtmlAndSave(data,components);
     }
 
     @Override
