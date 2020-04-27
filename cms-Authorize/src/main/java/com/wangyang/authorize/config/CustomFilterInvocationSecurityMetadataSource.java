@@ -40,7 +40,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
                 return SecurityConfig.createList(str);
             }
         }
-        return SecurityConfig.createList("ROLE_LOGIN");
+        return SecurityConfig.createList("ROLE_ANONYMOUS");
 
     }
 

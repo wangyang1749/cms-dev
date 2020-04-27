@@ -74,7 +74,7 @@ public class CmsWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/latex/**","/user/latex/**","/components/**","/api/comment","/user/login","/user/authenticate","/admin/**","/templates/**","/download/**","/preview/**","/article/**","/articleList/**","/sheet/**","/","/android/**","/favicon.ico");
+        web.ignoring().antMatchers("/latex/**","/user/latex/**","/components/**","/api/comment","/user/login","/user/authenticate","/admin/**","/templates/**","/download/**","/preview/**","/android/**");
     }
 
     @Override

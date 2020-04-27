@@ -2,8 +2,13 @@ package com.wangyang.authorize.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -14,6 +19,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JWTFilter extends GenericFilterBean {
 
@@ -33,14 +43,24 @@ public class JWTFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
+
         //验证JWT
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            httpServletRequest.setAttribute("username",authentication.getName());
             LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), requestURI);
         } else {
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_ANONYMOUS");
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            grantedAuthorities.add(grantedAuthority);
+//            User principal = new User("匿名用户", "", grantedAuthorities);
+
+//            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal,"",grantedAuthorities));
+            SecurityContextHolder.getContext().setAuthentication(new AnonymousAuthenticationToken("doesNotMatter","anonymousUser",grantedAuthorities));
             LOG.debug("no valid JWT token found, uri: {}", requestURI);
         }
+
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
@@ -48,7 +68,11 @@ public class JWTFilter extends GenericFilterBean {
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/user")){
+        if(requestURI.startsWith("/api")){
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+                return bearerToken.substring(7);
+            }
+        }else {
             Cookie[] cookies = request.getCookies();
             if(cookies!=null){
                 for (int i = 0;i<cookies.length;i++){
@@ -58,11 +82,6 @@ public class JWTFilter extends GenericFilterBean {
                     }
                 }
             }
-        }
-
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
         }
         return null;
     }

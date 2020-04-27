@@ -30,24 +30,30 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
         for (ConfigAttribute configAttribute : configAttributes) {
             String needRole = configAttribute.getAttribute();
             log.debug("该路径需要的权限"+needRole);
-            if(needRole.equals("ROLE_LOGIN")){
-                if (authentication instanceof AnonymousAuthenticationToken) {
-                    throw new AccessDeniedException("尚未登录，请登录!");
-                }else {
-                    return;
-                }
+            if(needRole.equals("ROLE_ANONYMOUS")){
+                return;
+//                if (authentication instanceof AnonymousAuthenticationToken) {
+//                    throw new AccessDeniedException("尚未登录，请登录!");
+//                }else {
+//                    return;
+//                }
             }
-            //获取用户权限, 与当前权限进行比较
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            for (GrantedAuthority authority : authorities) {
-                log.debug("当前用户具有的权限"+authority.getAuthority());
-                if (authority.getAuthority().equals(needRole)) {
-                    return;
+
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                log.info("尚未登录，请联系管理员!!");
+                throw new AccessDeniedException("尚未登录，请登录!");
+            }else {
+                //获取用户权限, 与当前权限进行比较
+                Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+                for (GrantedAuthority authority : authorities) {
+                    log.debug("当前用户具有的权限"+authority.getAuthority());
+                    if (authority.getAuthority().equals(needRole)) {
+                        return;
+                    }
                 }
             }
         }
         log.info("权限不足，请联系管理员!!");
-//        throw new AccessDeniedException("权限不足，请联系管理员!");
         throw new AccessDeniedException("权限不足，请联系管理员!!");
     }
 

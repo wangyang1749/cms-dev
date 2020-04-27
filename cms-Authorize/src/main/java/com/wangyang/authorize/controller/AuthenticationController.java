@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +36,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String authorize(@Valid User loginDto, HttpServletResponse response, HttpServletRequest request) {
+    public String authorize(@Valid User loginDto,HttpServletResponse response) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
         AuthenticationManager authenticationManager = authenticationManagerBuilder.getObject();
 
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(authenticationToken);
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+
+            return "redirect:/user/login";
+        }
 
 //        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -53,16 +61,17 @@ public class AuthenticationController {
 //        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,jwt);
 //        cookie.setComment("auth purpose");
+        cookie.setPath("/");
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
-        String redirect = request.getParameter("redirect");
-        String resUrl = "redirect:";
-        if(redirect!=null){
-            resUrl = resUrl+"user/loginSuccess?redirect="+redirect;
-        }else {
-            resUrl = resUrl+"user/loginSuccess";
-        }
-        return resUrl;
+//        String redirect = request.getParameter("redirect");
+//        String resUrl = "redirect:";
+//        if(redirect!=null){
+//            resUrl = resUrl+"/user/loginSuccess?redirect="+redirect;
+//        }else {
+//            resUrl = resUrl+"/user/loginSuccess";
+//        }
+        return "redirect:/user/info";
 //        return new ResponseEntity<>(new AuthenticationController.JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
