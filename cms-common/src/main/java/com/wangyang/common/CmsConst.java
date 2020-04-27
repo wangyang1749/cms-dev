@@ -38,10 +38,16 @@ public class CmsConst {
 
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
     public final static String DEFAULT_COMMENT_TEMPLATE = "DEFAULT_COMMENT";//评论
+
+    // 依据模板类型分类列表
     public final static String DEFAULT_CATEGORY_LIST = "DEFAULT_CATEGORY_LIST";//分类列表
 
 
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
+
+
+    public final static String TAGS_INFORMATION = "TAGS_INFORMATION";//分类列表
+    public final static String TAGS_RECOMMEND = "TAGS_RECOMMEND";//分类列表
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

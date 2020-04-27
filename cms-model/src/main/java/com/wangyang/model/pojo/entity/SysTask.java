@@ -23,6 +23,7 @@ public class SysTask extends BaseEntity {
     private String jobGroup;
     private ScheduleStatus scheduleStatus;
     private String methodName;
+    private String args;
     private Integer userId;
 
 }

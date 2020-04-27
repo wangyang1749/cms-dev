@@ -2,8 +2,11 @@ package com.wangyang.cms.listener;
 
 import com.wangyang.data.service.IOptionService;
 import com.wangyang.data.service.ISheetService;
+import com.wangyang.data.service.ITagsService;
+import com.wangyang.model.pojo.dto.TagsDto;
 import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.entity.Option;
+import com.wangyang.model.pojo.entity.Tags;
 import com.wangyang.model.pojo.enums.PropertyEnum;
 import com.wangyang.model.pojo.enums.TemplateType;
 import com.wangyang.data.repository.ComponentsRepository;
@@ -50,6 +53,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     TemplateRepository templateRepository;
 
     @Autowired
+    ITagsService tagsService;
+
+    @Autowired
     IOptionService optionService;
 //    @Autowired
 //    IUserService userService;
@@ -83,6 +89,14 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     private void initDatabase(ApplicationStartedEvent applicationStartedEvent) {
 
+       List<Tags> tags = Arrays.asList(new Tags("资讯",CmsConst.TAGS_INFORMATION),new Tags("推荐",CmsConst.TAGS_RECOMMEND));
+       tags.forEach(tag->{
+           Tags saveTag = tagsService.add(tag);
+           if(saveTag!=null){
+               log.info("添加 Tags"+tag.getName());
+           }
+
+       });
 //        log.info(">>> init user wangyang");
 //        User user = new User();
 //        user.setUsername("wangyang");

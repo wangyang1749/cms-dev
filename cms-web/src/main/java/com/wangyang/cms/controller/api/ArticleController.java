@@ -309,4 +309,11 @@ public class ArticleController {
     }
 
 
+
+
+    @GetMapping("/pageByTagId/{tagId}")
+    public Page<ArticleDto> pageByTagId(@PathVariable("tagId") Integer tagId,@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
+        return  articleService.pageByTagId(tagId,pageable);
+    }
+
 }

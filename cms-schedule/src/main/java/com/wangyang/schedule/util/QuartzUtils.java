@@ -37,6 +37,7 @@ public class QuartzUtils {
         JobDetail jobDetail = JobBuilder.newJob(jobClass)
                 .withIdentity(sysTask.getJobName(), sysTask.getJobGroup())
                 .usingJobData("jobMethod",sysTask.getMethodName())
+                .usingJobData("jobArgs",sysTask.getArgs())
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(sysTask.getJobName(),sysTask.getJobGroup())

@@ -823,4 +823,30 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }
         return articles.subList(0,3);
     }
+
+    @Override
+    public Page<ArticleDto> pageByTagId(int tagId, int size){
+        return pageByTagId(tagId,PageRequest.of(0,size,Sort.by(Sort.Order.desc("createDate"))));
+    }
+
+    @Override
+    public Page<ArticleDto> pageByTagId(int tagId, Pageable pageable){
+
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                Subquery<Article> subquery = criteriaQuery.subquery(Article.class);
+                Root<ArticleTags> subRoot = subquery.from(ArticleTags.class);
+                subquery = subquery.select(subRoot.get("articleId")).where(criteriaBuilder.equal(subRoot.get("tagsId"),tagId));
+                return criteriaBuilder.in(root.get("id")).value(subquery);
+            }
+        };
+        Page<Article> articles = articleRepository.findAll(specification, pageable);
+        return   articles.map(article -> {
+            ArticleDto articleVO = new ArticleDto();
+            BeanUtils.copyProperties(article,articleVO);
+            return articleVO;
+        });
+    }
 }

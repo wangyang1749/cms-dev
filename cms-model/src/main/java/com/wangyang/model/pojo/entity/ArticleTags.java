@@ -16,6 +16,8 @@ public class ArticleTags extends BaseEntity {
     private int articleId;
     private int tagsId;
 
+
+
     public int getId() {
         return id;
     }

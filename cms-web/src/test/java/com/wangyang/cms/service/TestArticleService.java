@@ -22,6 +22,12 @@ public class TestArticleService extends AbstractServiceTest{
 
 
     @Test
+    public void testTags(){
+//        Page<Article> page = articleService.pageByTagId(4, 2);
+//        System.out.println(page);
+    }
+
+    @Test
     public void testUpdateCommentNum(){
 //        articleRepository.updateCommentNum(10,-1);
 //        System.out.println(articleRepository.getCommentNum(10));

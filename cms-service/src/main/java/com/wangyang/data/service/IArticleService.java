@@ -131,6 +131,10 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     List<Article> carousel();
 
+    Page<ArticleDto> pageByTagId(int tagId, int size);
+
+    Page<ArticleDto> pageByTagId(int tagId, Pageable pageable);
+
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 
 //    Page<ArticleDto> findArticleListByCategoryId(int categoryId,Pageable pageable);

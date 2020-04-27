@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ITagsService {
 
@@ -44,4 +45,8 @@ public interface ITagsService {
     Tags findById(int id);
 
     List<TagsDto> listAll();
+
+    Optional<Tags> findBy(String tagName);
+
+    Optional<Tags> findBySlugName(String slugName);
 }

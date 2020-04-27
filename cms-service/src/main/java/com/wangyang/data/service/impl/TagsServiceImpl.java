@@ -6,6 +6,7 @@ import com.wangyang.model.pojo.entity.Tags;
 import com.wangyang.data.repository.TagsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,10 @@ public class TagsServiceImpl implements ITagsService {
     }
     @Override
     public Tags add(Tags tags) {
+        Optional<Tags> tagsOptional = findBySlugName(tags.getSlugName());
+        if(tagsOptional.isPresent()){
+            return null;
+        }
         return tagsRepository.save(tags);
     }
 
@@ -64,5 +69,15 @@ public class TagsServiceImpl implements ITagsService {
         return null;
     }
 
+
+    @Override
+    public Optional<Tags> findBy(String tagName){
+        return  Optional.ofNullable(tagsRepository.findTagsByName(tagName));
+    }
+
+    @Override
+    public Optional<Tags> findBySlugName(String slugName){
+        return  Optional.ofNullable(tagsRepository.findTagsBySlugName(slugName));
+    }
 
 }
