@@ -12,27 +12,26 @@
     <artifactId>cms-web</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <artifactId>Cms-Authorize</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <artifactId>cms-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wangyang.cms</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <artifactId>extension-cms-syscall</artifactId>
-        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <artifactId>cms-common</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.wangyang.cms</groupId>
             <version>0.0.1-SNAPSHOT</version>
             <artifactId>cms-model</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>cms-common</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>com.wangyang.cms</groupId>
             <version>0.0.1-SNAPSHOT</version>
@@ -42,9 +41,18 @@
         <dependency>
             <groupId>com.wangyang.cms</groupId>
             <version>0.0.1-SNAPSHOT</version>
+            <artifactId>extension-cms-syscall</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
             <artifactId>cms-schedule</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>Cms-Authorize</artifactId>
+        </dependency>
 
 
 

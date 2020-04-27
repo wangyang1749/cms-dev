@@ -1,6 +1,7 @@
 package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.core.jms.producer.IProducerService;
+import com.wangyang.common.utils.TestStatic;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
@@ -15,7 +16,6 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.syscall.utils.NodeJsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +172,7 @@ public class ArticleController {
         Article article = articleService.findArticleById(articleId);
         String url = "http://localhost:8080/article/previewPdf/"+articleId;
         String generatePath = article.getPath()+"/"+article.getViewName()+".pdf";
-        NodeJsUtil.execNodeJs("node","templates/nodejs/generatePdf.js",url,generatePath);
+//        NodeJsUtil.execNodeJs("node","templates/nodejs/generatePdf.js",url,generatePath);
         return BaseResponse.ok("生成成功");
     }
     @GetMapping("/download/{id}")
@@ -287,6 +287,8 @@ public class ArticleController {
     }
     @GetMapping("/generateHtml/{id}")
     public ArticleDetailVO generateHtml(@PathVariable("id") Integer id){
+
+        TestStatic.test();
         Article article = articleService.findArticleById(id);
         ArticleDetailVO articleDetailVO = articleService.updateArticleDetailVo(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);

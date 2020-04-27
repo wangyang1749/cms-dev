@@ -38,9 +38,6 @@ public class MarkdownUtils {
                     FootnoteExtension.create()
 
             )).set(TocExtension.LEVELS, 255)
-            .set(GitLabExtension.USE_NODEJS,true)
-            .set(GitLabExtension.KATEX_NODEJS_FILEMAME, CmsConst.WORK_DIR +"/templates/nodejs/katex.js")
-            .set(GitLabExtension.MERAID_NODEJS_FILEMAME, CmsConst.WORK_DIR+"/templates/nodejs/mermaid.js")
             .set(TocExtension.LIST_CLASS,"toc")
             .set(TocExtension.IS_NUMBERED,true)
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
