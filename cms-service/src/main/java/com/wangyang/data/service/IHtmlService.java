@@ -55,6 +55,8 @@ public interface IHtmlService {
 
     void commonTemplate(String option);
 
+    String convertArticleListBy(Category category, int page);
+
     CategoryArticleListDao convertArticleListBy(int categoryId);
 
     void convertArticleListBy(Sheet sheet);

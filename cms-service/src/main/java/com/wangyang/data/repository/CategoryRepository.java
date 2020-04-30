@@ -20,4 +20,5 @@ public interface CategoryRepository extends JpaRepository<Category,Integer>
     @Query(value = "select o.id from Category o where status=true")
     List<Integer> findAllId();
 
+    Category findByViewName(String viewName);
 }

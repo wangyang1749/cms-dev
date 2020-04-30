@@ -1,7 +1,7 @@
 package com.wangyang.cms.controller.api;
 
 import com.wangyang.cms.core.jms.producer.IProducerService;
-import com.wangyang.common.utils.TestStatic;
+import com.wangyang.common.utils.*;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
@@ -14,8 +14,6 @@ import com.wangyang.model.pojo.params.ArticleParams;
 import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
-import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.common.utils.TemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
@@ -85,6 +84,7 @@ public class ArticleController {
 //                htmlService.generateChannelListHtml();
 //            }
         }
+
         return articleDetailVO;
     }
 
@@ -140,8 +140,11 @@ public class ArticleController {
         Article article = articleService.deleteByArticleId(id);
         //删除文章
         TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
+        Category category = categoryService.findById(article.getCategoryId());
         //重新生成文章列表
-        htmlService.addOrRemoveArticleToCategoryListByCategoryId(article.getCategoryId());
+        htmlService.convertArticleListBy(category);
+        // 删除分页的文章列表
+        FileUtils.removeCategoryPageTemp(category);
         return  article;
     }
 
@@ -261,12 +264,16 @@ public class ArticleController {
         TemplateUtil.deleteTemplateHtml(viewName,path);
         //更新旧的文章列表
         if(categoryId!=null){
-            htmlService.addOrRemoveArticleToCategoryListByCategoryId(categoryId);
-
+            Category oldCategory = categoryService.findById(categoryId);
+            htmlService.convertArticleListBy(oldCategory);
+            // 删除分页的文章列表
+            FileUtils.removeCategoryPageTemp(oldCategory);
         }
 
         //生成改变后文章
         htmlService.conventHtml(articleDetailVO);
+        // 删除分页的文章列表
+        FileUtils.removeCategoryPageTemp(articleDetailVO.getCategory());
         return articleDetailVO;
     }
 

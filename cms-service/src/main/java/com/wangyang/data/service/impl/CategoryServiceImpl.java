@@ -364,13 +364,8 @@ public class CategoryServiceImpl implements ICategoryService {
         return  categoryRepository.save(category);
     }
 
-//    private List<CategoryVO> createTree(int pid, List<CategoryVO> categories) {
-//        List<CategoryVO> treeCategory = new ArrayList<>();
-//        for (CategoryVO categoryVO : categories) {
-//            if (pid == categoryVO.getParentId()) {
-//                treeCategory.add(categoryVO);
-//            }
-//        }
-//        return treeCategory;
-//    }
+    @Override
+    public Category findByViewName(String viewName){
+        return categoryRepository.findByViewName(viewName);
+    }
 }

@@ -1,6 +1,7 @@
 package com.wangyang.data.service.impl;
 
 import com.wangyang.common.utils.DocumentUtil;
+import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.ApplicationBean;
 import com.wangyang.data.service.*;
@@ -70,7 +71,8 @@ public class HtmlServiceImpl implements IHtmlService {
             //生成文章详情页面,依赖文章评论(在栏目页面文章详情依赖文章列表)
             covertHtml(articleVO);
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
-
+            //创建/更新 文章-删除文章分页的缓存文件
+            FileUtils.removeCategoryPageTemp(articleVO.getCategory());
         }
     }
 
@@ -94,10 +96,8 @@ public class HtmlServiceImpl implements IHtmlService {
         if(!TemplateUtil.componentsExist(category.getTemplateName())){
                 generateCategoryListHtml(category);
         }
-        //TODO 这里只是生成了文章列表第一页的静态页面
-        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
-
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
+        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
 
         Optional<Template> template = templateService.findOptionalByEnName(category.getTemplateName());
         if(template.isPresent()){
@@ -108,8 +108,33 @@ public class HtmlServiceImpl implements IHtmlService {
                 TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
             }
         }
-
         return categoryArticle;
+    }
+
+    /**
+     * 生成分页的缓存
+     * @param category
+     * @param page
+     * @return
+     */
+    @Override
+    public String convertArticleListBy(Category category, int page) {
+        if(page<=0){
+            return "Page is not exist!!";
+        }
+        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, page-1);
+        Page<ArticleDto> articlePage = categoryArticle.getPage();
+        if(page>articlePage.getTotalPages()){
+            return "Page is not exist!!";
+        }
+        log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
+        Optional<Template> template = templateService.findOptionalByEnName(category.getTemplateName());
+        if(template.isPresent()){
+            String path = category.getPath()+"/"+category.getViewName();
+            String viewName = String.valueOf(page);
+            return TemplateUtil.convertHtmlAndSave(path,viewName,categoryArticle,template.get());
+        }
+        return null;
     }
 
     public void generateNewArticle(){

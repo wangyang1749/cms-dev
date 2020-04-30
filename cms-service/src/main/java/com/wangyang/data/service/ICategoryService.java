@@ -77,4 +77,6 @@ public interface ICategoryService{
     Category haveHtml(int id);
 
     Category addOrRemoveToMenu(int id);
+
+    Category findByViewName(String viewName);
 }
