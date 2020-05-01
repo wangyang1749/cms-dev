@@ -88,9 +88,10 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         article.setStatus(ArticleStatus.PUBLISHED);
         article.setOrder(0);
         // 文章发布默认生成HTML
-        if(article.getHaveHtml()==null){
-            article.setHaveHtml(true);
-        }
+        article.setHaveHtml(true);
+//        if(article.getHaveHtml()==null){
+//
+//        }
 
         ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds);
         return articleDetailVO;
@@ -104,6 +105,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public ArticleDetailVO updateArticleDetailVo(Article article,  Set<Integer> tagsIds) {
         article.setPdfPath(null);
         article.setStatus(ArticleStatus.PUBLISHED);
+        article.setHaveHtml(true);
         article.setUpdateDate(new Date());
         // 文章发布默认生成HTML
         if(article.getHaveHtml()==null){
@@ -143,12 +145,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      */
     @Override
     public Article saveOrUpdateArticleDraft(Article article){
+        article.setOrder(0);
         if(article.getUserId()==null){
             throw new ArticleException("文章用户不能为空!!");
         }
-        if(article.getCategoryId()==null){
-            throw new ArticleException("文章类别不能为空!!");
-        }
+//        if(article.getCategoryId()==null){
+//            throw new ArticleException("文章类别不能为空!!");
+//        }
         article.setHaveHtml(false);
         // 获取默认文章模板Id
 //        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
@@ -341,13 +344,15 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         User user = userService.findById(article.getUserId());
         articleDetailVo.setUser(user);
         Optional<Category> optionalCategory = categoryService.findOptionalById(article.getCategoryId());
-        if(!optionalCategory.isPresent()){
-            throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
+        if(optionalCategory.isPresent()){
+//            throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
+            if(articleDetailVo.getTemplateName()==null){
+                articleDetailVo.setTemplateName(optionalCategory.get().getArticleTemplateName());
+            }
+            articleDetailVo.setCategory(optionalCategory.get());
         }
-        if(articleDetailVo.getTemplateName()==null){
-            articleDetailVo.setTemplateName(optionalCategory.get().getArticleTemplateName());
-        }
-        articleDetailVo.setCategory(optionalCategory.get());
+
+
         return articleDetailVo;
     }
 
@@ -382,6 +387,16 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return optionalArticle.get();
     }
 
+
+    @Override
+    public Article findByIdAndUserId(int id, int userId){
+        Article article = articleRepository.findByIdAndUserId(id, userId);
+        if(article==null){
+            throw new ObjectException("用户为"+userId+"的文章不存在！");
+        }
+        return article;
+    }
+
     @Override
     public Page<Article> articleList(ArticleQuery articleQuery,Pageable pageable){
         return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
@@ -402,6 +417,33 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             return articleVO;
         });
 
+    }
+
+
+    /**
+     * 添加为分裂数据添加category
+     * @param articlePage
+     * @return
+     */
+    @Override
+    public Page<ArticleVO> convertToAddCategory(Page<Article> articlePage) {
+        List<Article> articles = articlePage.getContent();
+        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
+        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
+        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
+        Page<ArticleVO> articleVOS = articlePage.map(article -> {
+            ArticleVO articleVO = new ArticleVO();
+            BeanUtils.copyProperties(article,articleVO);
+            if(categoryMap.containsKey(article.getCategoryId())){
+                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
+            }
+            return articleVO;
+        });
+        return articleVOS;
     }
 
     @Override
@@ -431,17 +473,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             return categoryDto;
         }).collect(Collectors.toList());
         Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
-//        List<ArticleCategory> articleCategorys = articleCategoryRepository.findAllByArticleIdIn(categorys);
-//        Set<Integer> categoryIds = ServiceUtil.fetchProperty(articleCategorys, ArticleCategory::getCategoryId);
-//        List<Category> categorys = categoryRepository.findAllById(categoryIds);
-//        Map<Integer, Category> categoryMap = ServiceUtil.convertToMap(categorys, Category::getId);
-//        Map<Integer,List<Category>> categoryListMap = new HashMap<>();
-//        articleCategorys.forEach(
-//                articleCategory -> {
-//                    categoryListMap.computeIfAbsent(articleCategory.getArticleId(),
-//                            categoryId->new LinkedList<>()).add(categoryMap.get(articleCategory.getCategoryId()));
-//                }
-//        );
+
 
         Page<ArticleVO> articleVOS = articlePage.map(article -> {
             ArticleVO articleVO = new ArticleVO();
@@ -468,39 +500,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return articleVOS;
     }
 
-    private Specification<Article> buildSpecByQuery(ArticleQuery articleQuery) {
-        return (Specification<Article>) (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new LinkedList<>();
-
-            if (articleQuery.getStatus() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("status"), articleQuery.getStatus()));
-            }
-
-            if (articleQuery.getCategoryId() != null) {
-//                Subquery<Article> articleSubQuery = query.subquery(Article.class);
-//                Root<ArticleCategory> postCategoryRoot = articleSubQuery.from(ArticleCategory.class);
-//                articleSubQuery.select(postCategoryRoot.get("articleId"));
-//                articleSubQuery.where(
-//                        criteriaBuilder.equal(root.get("id"), postCategoryRoot.get("articleId")),
-//                        criteriaBuilder.equal(postCategoryRoot.get("categoryId"), articleQuery.getCategoryId()));
-//                predicates.add(criteriaBuilder.exists(articleSubQuery));
-                predicates.add(criteriaBuilder.equal(root.get("categoryId"),articleQuery.getCategoryId()));
-            }
-
-            if (articleQuery.getKeyword() != null) {
-                // Format like condition
-                String likeCondition = String.format("%%%s%%",articleQuery.getKeyword());
-
-                // Build like predicate
-                Predicate titleLike = criteriaBuilder.like(root.get("title"), likeCondition);
-                Predicate originalContentLike = criteriaBuilder.like(root.get("originalContent"), likeCondition);
-
-                predicates.add(criteriaBuilder.or(titleLike, originalContentLike));
-            }
-
-            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
-        };
-    }
 
     @Override
     public Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable){
@@ -570,6 +569,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public Article haveHtml(int id){
         Article article = findArticleById(id);
+        if(article.getCategoryId()==null){
+            throw new ArticleException("文章别为空不能生成文章，请编辑添加类别！");
+        }
         if(article.getStatus()==ArticleStatus.DRAFT){
             //草稿文章要生成Html,将文章状态改为发布
             article.setStatus(ArticleStatus.PUBLISHED);
@@ -849,4 +851,60 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             return articleVO;
         });
     }
+
+
+    @Override
+    public Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery){
+//        Specification<Article> specification = new Specification<Article>() {
+//            @Override
+//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+//                return criteriaQuery.where(criteriaBuilder.equal(root.get("userId"),userId)).getRestriction();
+//            }
+//        };
+        articleQuery.setUserId(userId);
+        return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
+    }
+
+
+    private Specification<Article> buildSpecByQuery(ArticleQuery articleQuery) {
+        return (Specification<Article>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new LinkedList<>();
+
+            if (articleQuery.getStatus() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), articleQuery.getStatus()));
+            }
+
+            if (articleQuery.getCategoryId() != null) {
+//                Subquery<Article> articleSubQuery = query.subquery(Article.class);
+//                Root<ArticleCategory> postCategoryRoot = articleSubQuery.from(ArticleCategory.class);
+//                articleSubQuery.select(postCategoryRoot.get("articleId"));
+//                articleSubQuery.where(
+//                        criteriaBuilder.equal(root.get("id"), postCategoryRoot.get("articleId")),
+//                        criteriaBuilder.equal(postCategoryRoot.get("categoryId"), articleQuery.getCategoryId()));
+//                predicates.add(criteriaBuilder.exists(articleSubQuery));
+                predicates.add(criteriaBuilder.equal(root.get("categoryId"),articleQuery.getCategoryId()));
+            }
+
+            if (articleQuery.getKeyword() != null) {
+                // Format like condition
+                String likeCondition = String.format("%%%s%%",articleQuery.getKeyword());
+
+                // Build like predicate
+                Predicate titleLike = criteriaBuilder.like(root.get("title"), likeCondition);
+                Predicate originalContentLike = criteriaBuilder.like(root.get("originalContent"), likeCondition);
+
+                predicates.add(criteriaBuilder.or(titleLike, originalContentLike));
+            }
+
+            if(articleQuery.getUserId()!=null){
+                predicates.add(criteriaBuilder.equal(root.get("userId"), articleQuery.getUserId()));
+            }
+            if(articleQuery.getStatus()!=null){
+                predicates.add(criteriaBuilder.equal(root.get("status"),articleQuery.getStatus()));
+            }
+            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
+        };
+    }
+
 }

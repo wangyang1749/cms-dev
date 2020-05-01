@@ -1,5 +1,6 @@
 package com.wangyang.cms.controller;
 
+import com.wangyang.common.CmsConst;
 import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.*;
@@ -33,11 +34,20 @@ public class PreviewController {
         if(article.getStatus()!= ArticleStatus.PUBLISHED){
             article = articleService.createOrUpdate(article);
         }
-        ArticleDetailVO articleDetailVo = articleService.convert(article);
+        ArticleDetailVO articleDetailVo;
+        if(article.getCategoryId()==null){
+            articleDetailVo = articleService.conventToAddTags(article);
+        }else {
+            articleDetailVo= articleService.convert(article);
+
+        }
 //        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());
 //        if(!templateOptional.isPresent()){
 //            throw new TemplateException("Template not found in preview !!");
 //        }
+        if(articleDetailVo.getCategory()==null&&!articleDetailVo.getStatus().equals(ArticleStatus.PUBLISHED)){
+            articleDetailVo.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
+        }
         Template template = templateService.findByEnName(articleDetailVo.getTemplateName());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("view",articleDetailVo);

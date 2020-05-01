@@ -1,14 +1,13 @@
 package com.wangyang.authorize.jwt;
 
+import com.wangyang.authorize.pojo.dto.SpringUserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -20,10 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JWTFilter extends GenericFilterBean {
 
@@ -48,6 +44,8 @@ public class JWTFilter extends GenericFilterBean {
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            SpringUserDto springUserDto = (SpringUserDto)authentication.getPrincipal();
+            httpServletRequest.setAttribute("userId", springUserDto.getId());
             httpServletRequest.setAttribute("username",authentication.getName());
             LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), requestURI);
         } else {

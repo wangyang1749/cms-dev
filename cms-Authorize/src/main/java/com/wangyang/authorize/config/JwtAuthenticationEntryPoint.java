@@ -23,10 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         // Here you can place any message you want
 
         String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/user")){
-            response.sendRedirect("/user/login?redirect="+requestURI);
-            return;
-        }else {
+        if(requestURI.startsWith("/api")){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=utf-8");
             PrintWriter out = response.getWriter();
@@ -37,6 +34,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             out.flush();
             out.close();
 //            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+        }else {
+            response.sendRedirect("/login?redirect="+requestURI);
         }
     }
 }

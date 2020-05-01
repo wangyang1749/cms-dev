@@ -20,12 +20,12 @@ public class ArticleParams  implements InputConverter<Article> {
     @NotBlank(message = "文章内容不能为空!!")
     private String originalContent;
     private String summary;
-    private String viewName;
+//    private String viewName;
     private Set<Integer> tagIds;
-    @NotNull(message = "文章类别不能为空!!")
+//    @NotNull(message = "文章类别不能为空!!")
     private Integer categoryId;
-    @NotNull(message = "文章用户不能为空!!")
-    private Integer userId;
+//    @NotNull(message = "文章用户不能为空!!")
+//    private Integer userId;
     private String  path="article";
     private String picPath;
 
@@ -77,13 +77,7 @@ public class ArticleParams  implements InputConverter<Article> {
         this.summary = summary;
     }
 
-    public String getViewName() {
-        return viewName;
-    }
 
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
-    }
 
     public Set<Integer> getTagIds() {
         return tagIds;
@@ -101,13 +95,7 @@ public class ArticleParams  implements InputConverter<Article> {
         this.categoryId = categoryId;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public String getPath() {
         return path;

@@ -1,7 +1,7 @@
 package com.wangyang.authorize.config.service;
 
 
-import com.wangyang.authorize.pojo.dto.UserDto;
+import com.wangyang.authorize.pojo.dto.SpringUserDto;
 import com.wangyang.authorize.utils.SecurityUtils;
 import com.wangyang.data.repository.UserRepository;
 import com.wangyang.data.service.IRoleService;
@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,6 +37,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,24 +61,39 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return findByUsername(username);
     }
 
+    public User addUser(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User saveUser = userService.add(user);
+        return saveUser;
+    }
 
-    public UserDto findByUsername(String username) {
+    public SpringUserDto findByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if(user==null){
             throw  new UsernameNotFoundException("用户名不存在!!");
         }
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(user,userDto);
+        SpringUserDto springUserDto = new SpringUserDto();
+        BeanUtils.copyProperties(user, springUserDto);
         List<Role> roles = roleService.findByUserId(user.getId());
         if(CollectionUtils.isEmpty(roles)){
             return null;
         }
-        userDto.setRoles(roles);
-        return  userDto;
+        springUserDto.setRoles(roles);
+        return springUserDto;
     }
 
 
-    public UserDto getCurrentUser() {
+    public SpringUserDto findById(int id){
+        User user = userService.findById(id);
+        user.setPassword(null);
+        SpringUserDto springUserDto = new SpringUserDto();
+        BeanUtils.copyProperties(user, springUserDto);
+        List<Role> roles = roleService.findByUserId(user.getId());
+        springUserDto.setRoles(roles);
+        return springUserDto;
+    }
+
+    public SpringUserDto getCurrentUser() {
         Optional<String> username = SecurityUtils.getCurrentUsername();
         return findByUsername(username.get());
     }

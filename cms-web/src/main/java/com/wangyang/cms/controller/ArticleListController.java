@@ -101,7 +101,7 @@ public class ArticleListController {
         return articles;
     }
 
-    @GetMapping("/like/{id}")
+    @GetMapping("/option/like/{id}")
     @ResponseBody
     public BaseResponse increaseLikes(@PathVariable("id") int id) {
         int likes = articleService.increaseLikes(id);
@@ -113,7 +113,7 @@ public class ArticleListController {
         }
     }
 
-    @GetMapping("/visit/{id}")
+    @GetMapping("/option/visit/{id}")
     @ResponseBody
     public BaseResponse increaseVisits(@PathVariable("id") int id) {
         int visits = articleService.increaseVisits(id);

@@ -45,4 +45,6 @@ public interface ArticleRepository extends JpaRepository<Article,Integer>
 
 //    @Query("select o from Article o where o.id in (select a.articleId from ArticleCategory a where a.categoryId=?1)")
 //    List<Article> findByCategoryId(int id);
+
+    Article findByIdAndUserId(int id,int userId);
 }

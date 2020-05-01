@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Slf4j
-public class UserDto implements UserDetails {
+public class SpringUserDto implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -7,6 +7,7 @@ import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 
 import com.wangyang.model.pojo.entity.Category;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.io.File;
@@ -70,9 +72,11 @@ public class ArticleController {
 
 
     @PostMapping
-    public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams){
+    public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams, HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
         Article article = new Article();
         BeanUtils.copyProperties(articleParams,article);
+        article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article, articleParams.getTagIds());
         if(article.getHaveHtml()){
 //            htmlService.receiveArticleDetailVO(articleDetailVO);
@@ -123,9 +127,11 @@ public class ArticleController {
      * @return
      */
     @PostMapping("/save")
-    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams){
+    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams, HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
         Article article = new Article();
         BeanUtils.copyProperties(articleParams,article);
+        article.setUserId(userId);
         return  articleService.saveOrUpdateArticleDraft(article);
     }
 
@@ -140,11 +146,15 @@ public class ArticleController {
         Article article = articleService.deleteByArticleId(id);
         //删除文章
         TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
-        Category category = categoryService.findById(article.getCategoryId());
-        //重新生成文章列表
-        htmlService.convertArticleListBy(category);
-        // 删除分页的文章列表
-        FileUtils.removeCategoryPageTemp(category);
+
+        if(article.getStatus().equals(ArticleStatus.PUBLISHED)){
+            Category category = categoryService.findById(article.getCategoryId());
+            //重新生成文章列表
+            htmlService.convertArticleListBy(category);
+            // 删除分页的文章列表
+            FileUtils.removeCategoryPageTemp(category);
+        }
+
         return  article;
     }
 

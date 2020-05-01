@@ -89,13 +89,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     private void initDatabase(ApplicationStartedEvent applicationStartedEvent) {
 
-       List<Tags> tags = Arrays.asList(new Tags("资讯",CmsConst.TAGS_INFORMATION),new Tags("推荐",CmsConst.TAGS_RECOMMEND));
+       List<Tags> tags = Arrays.asList(new Tags(CmsConst.TAGS_INFORMATION,CmsConst.TAGS_INFORMATION),new Tags(CmsConst.TAGS_RECOMMEND,CmsConst.TAGS_RECOMMEND));
        tags.forEach(tag->{
            Tags saveTag = tagsService.add(tag);
-           if(saveTag!=null){
-               log.info("添加 Tags"+tag.getName());
-           }
-
        });
 //        log.info(">>> init user wangyang");
 //        User user = new User();

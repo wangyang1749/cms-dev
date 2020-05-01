@@ -3,9 +3,13 @@ package com.wangyang.data.service.impl;
 import com.wangyang.data.repository.UserRepository;
 import com.wangyang.data.service.IRoleService;
 import com.wangyang.data.service.IUserService;
+import com.wangyang.model.pojo.dto.UserDto;
+import com.wangyang.model.pojo.entity.Role;
 import com.wangyang.model.pojo.entity.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +30,11 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    public Page<User> pageBy(Pageable pageable){
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
     public User add(User user){
         User saveUser = userRepository.save(user);
         return saveUser;
@@ -37,6 +46,17 @@ public class UserServiceImpl implements IUserService {
             return user.get();
         }
         return  null;
+    }
+
+    @Override
+    public UserDto findUserDaoById(int id){
+        User user = findById(id);
+        user.setPassword(null);
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        List<Role> roles = roleService.findByUserId(user.getId());
+        userDto.setRoles(roles);
+        return userDto;
     }
 
 

@@ -1,7 +1,9 @@
 package com.wangyang.model.pojo.params;
 
 import com.wangyang.model.pojo.enums.ArticleStatus;
+import lombok.Data;
 
+@Data
 public class ArticleQuery {
     /**
      * Keyword.
@@ -18,27 +20,9 @@ public class ArticleQuery {
      */
     private Integer categoryId;
 
-    public String getKeyword() {
-        return keyword;
-    }
+    public Integer userId;
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
+    public ArticleStatus articleStatus;
 
-    public ArticleStatus getStatus() {
-        return status;
-    }
 
-    public void setStatus(ArticleStatus status) {
-        this.status = status;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
 }

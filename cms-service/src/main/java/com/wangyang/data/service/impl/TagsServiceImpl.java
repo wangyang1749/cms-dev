@@ -4,6 +4,7 @@ import com.wangyang.data.service.ITagsService;
 import com.wangyang.model.pojo.dto.TagsDto;
 import com.wangyang.model.pojo.entity.Tags;
 import com.wangyang.data.repository.TagsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TagsServiceImpl implements ITagsService {
 
     @Autowired
@@ -41,10 +43,11 @@ public class TagsServiceImpl implements ITagsService {
     }
     @Override
     public Tags add(Tags tags) {
-        Optional<Tags> tagsOptional = findBySlugName(tags.getSlugName());
+        Optional<Tags> tagsOptional = findBy(tags.getName());
         if(tagsOptional.isPresent()){
-            return null;
+            return tagsOptional.get();
         }
+        log.info("添加 Tags"+tags.getName());
         return tagsRepository.save(tags);
     }
 

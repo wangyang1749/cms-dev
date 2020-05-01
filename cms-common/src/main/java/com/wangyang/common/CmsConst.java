@@ -46,8 +46,8 @@ public class CmsConst {
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
 
 
-    public final static String TAGS_INFORMATION = "TAGS_INFORMATION";//分类列表
-    public final static String TAGS_RECOMMEND = "TAGS_RECOMMEND";//分类列表
+    public final static String TAGS_INFORMATION = "资讯";//分类列表
+    public final static String TAGS_RECOMMEND = "推荐";//分类列表
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

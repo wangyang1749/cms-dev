@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping
 public class AuthenticationController {
 
     private  TokenProvider tokenProvider;
@@ -75,7 +75,7 @@ public class AuthenticationController {
 //        return new ResponseEntity<>(new AuthenticationController.JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/user/authenticate")
     @ResponseBody
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody User loginDto) {
 

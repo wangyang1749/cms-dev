@@ -75,9 +75,13 @@ public interface IArticleService extends IBaseArticleService<Article> {
     ArticleDetailVO findArticleAOById(int id);
     Article findArticleById(int id);
 
-    Page<Article> articleList(ArticleQuery articleQuery,Pageable pageable);
+    Article findByIdAndUserId(int id, int userId);
+
+    Page<Article> articleList(ArticleQuery articleQuery, Pageable pageable);
 
     Page<ArticleDto> convertToSimple(Page<Article> articlePage);
+
+    Page<ArticleVO> convertToAddCategory(Page<Article> articlePage);
 
     Page<ArticleVO> convertToListVo(Page<Article> articlePage);
 
@@ -134,6 +138,9 @@ public interface IArticleService extends IBaseArticleService<Article> {
     Page<ArticleDto> pageByTagId(int tagId, int size);
 
     Page<ArticleDto> pageByTagId(int tagId, Pageable pageable);
+
+    Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery);
+
 
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 

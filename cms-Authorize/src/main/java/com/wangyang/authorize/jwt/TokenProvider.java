@@ -1,5 +1,6 @@
 package com.wangyang.authorize.jwt;
 
+import com.wangyang.authorize.pojo.dto.SpringUserDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -61,9 +61,11 @@ public class TokenProvider  implements InitializingBean {
             validity = new Date(now + this.tokenValidityInMilliseconds);
         }
 
+        SpringUserDto springUserDto = (SpringUserDto) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim("ID", springUserDto.getId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -80,9 +82,12 @@ public class TokenProvider  implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+//        User principal = new User(claims.getSubject(), "", authorities);
+        SpringUserDto springUserDto = new SpringUserDto();
+        springUserDto.setUsername(claims.getSubject());
+        int id = (Integer)claims.get("ID");
+        springUserDto.setId(id);
+        return new UsernamePasswordAuthenticationToken(springUserDto, token, authorities);
     }
 
     public boolean validateToken(String authToken) {

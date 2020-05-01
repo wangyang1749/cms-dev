@@ -53,7 +53,7 @@ public class ArticleJob {
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "newInformation",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void newInformation(){
-        Optional<Tags> tags = tagsService.findBySlugName(CmsConst.TAGS_INFORMATION);
+        Optional<Tags> tags = tagsService.findBy(CmsConst.TAGS_INFORMATION);
         if(tags.isPresent()){
             log.info("Schedule 生成推荐文章,在"+tags.get().getName());
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
@@ -67,7 +67,7 @@ public class ArticleJob {
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "recommendArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void recommendArticle(){
-        Optional<Tags> tags = tagsService.findBySlugName(CmsConst.TAGS_RECOMMEND);
+        Optional<Tags> tags = tagsService.findBy(CmsConst.TAGS_RECOMMEND);
         if(tags.isPresent()){
             log.info("Schedule 生成推荐文章,在"+tags.get().getName());
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
