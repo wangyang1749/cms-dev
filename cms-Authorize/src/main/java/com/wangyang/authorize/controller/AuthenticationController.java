@@ -62,7 +62,7 @@ public class AuthenticationController {
         Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,jwt);
 //        cookie.setComment("auth purpose");
         cookie.setPath("/");
-        cookie.setMaxAge(3600);
+        cookie.setMaxAge(3600*24);
         response.addCookie(cookie);
 //        String redirect = request.getParameter("redirect");
 //        String resUrl = "redirect:";
