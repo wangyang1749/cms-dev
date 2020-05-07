@@ -96,10 +96,10 @@ public class ArticleController {
     public ArticleDetailVO updateArticleDetailVO(@Valid @RequestBody ArticleParams articleParams,
                                          @PathVariable("articleId") Integer articleId){
         Article article = articleService.findArticleById(articleId);
-        if(article.getSummary().equals(articleParams.getSummary())){
-            //重新生成摘要
-            articleParams.setSummary(null);
-        }
+//        if(article.getSummary().equals(articleParams.getSummary())){
+//            //重新生成摘要
+//            articleParams.setSummary(null);
+//        }
         Integer  oldCategory = article.getCategoryId();
         BeanUtils.copyProperties(articleParams,article);
         ArticleDetailVO articleDetailVO = articleService.updateArticleDetailVo( article, articleParams.getTagIds());
