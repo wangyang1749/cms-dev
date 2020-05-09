@@ -69,7 +69,6 @@ public interface ICategoryService{
 
     List<Category> listAll();
 
-    @TemplateOptionMethod(name = "Category List",templateValue = "templates/components/@categoryList",viewName="categoryList",path = "components")
     List<Category> list();
 
     Category recommendOrCancelHome(int id);

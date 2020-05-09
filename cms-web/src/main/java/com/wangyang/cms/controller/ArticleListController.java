@@ -8,18 +8,28 @@ import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.ITemplateService;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
+import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.entity.Category;
 import com.wangyang.model.pojo.entity.Template;
 import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.Map;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 
 @Controller
@@ -61,6 +71,46 @@ public class ArticleListController {
         return  "Page is not found!";
 
 //        return "1111"+categoryViewName+page;
+    }
+
+    @ResponseBody
+    @GetMapping("/articleList")
+    public String articleListBySort(HttpServletRequest request,  ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("index");
+        Map<String, String[]> params = request.getParameterMap();
+        if(params!=null){
+            params.forEach((k,v)->{
+                sb.append("-"+k+"-"+v[0]);
+            });
+        }
+        File file = new File(CmsConst.WORK_DIR+"/html/articleList/queryTemp/"+sb.toString()+".html");
+        String result = null;
+        if(file.exists()){
+            result = FileUtils.convert(file,request);
+        }else {
+//            ArticleQuery articleQuery = new ArticleQuery();
+//            Pageable pageable = PageRequest.of(0,1);
+            Page<Article> articlePage = articleService.pageBy(pageable,articleQuery);
+            Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
+            String resultHtml = htmlService.convertArticlePageBy(request,articleDtoPage, sb.toString());
+            result =  FileUtils.convertByString(resultHtml,request);
+        }
+        if (request!=null){
+            return result;
+        }
+
+        return  "Page is not found!";
+
+//        return "1111"+categoryViewName+page;
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void notFound(PropertyReferenceException ex) {
+        System.out.println(ex.getMessage());
     }
 
     @GetMapping("/category/{categoryId}")

@@ -24,5 +24,6 @@ public class ArticleQuery {
 
     public ArticleStatus articleStatus;
 
+    public Integer tagsId;
 
 }

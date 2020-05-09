@@ -153,6 +153,8 @@ public class ArticleController {
             htmlService.convertArticleListBy(category);
             // 删除分页的文章列表
             FileUtils.removeCategoryPageTemp(category);
+            FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
+
         }
 
         return  article;
@@ -284,6 +286,8 @@ public class ArticleController {
         htmlService.conventHtml(articleDetailVO);
         // 删除分页的文章列表
         FileUtils.removeCategoryPageTemp(articleDetailVO.getCategory());
+        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
+
         return articleDetailVO;
     }
 

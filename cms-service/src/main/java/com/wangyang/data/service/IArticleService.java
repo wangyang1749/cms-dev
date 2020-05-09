@@ -141,6 +141,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery);
 
+    Page<Article>  pageBy(Pageable pageable, ArticleQuery articleQuery);
+
 
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 

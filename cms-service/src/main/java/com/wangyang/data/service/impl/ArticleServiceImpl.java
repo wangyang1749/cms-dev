@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-@TemplateOption
+//@TemplateOption
 public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implements IArticleService {
 
     @Value("${cms.workDir}")
@@ -526,12 +526,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      * @return
      */
     @Override
-    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
+//    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
     public Page<ArticleDto> articleShowLatest(){
         Specification<Article> specification = new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),CmsConst.DEFAULT_ARTICLE_TEMPLATE)).getRestriction();
+//                return criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),CmsConst.DEFAULT_ARTICLE_TEMPLATE)).getRestriction();
+                return null;
             }
         };
         Page<Article> articlePage = articleRepository.findAll(specification,PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
@@ -809,7 +810,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
 
     @Override
-    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
+//    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
     public List<Article> carousel(){
         Specification<Article> specification  = new Specification<Article>() {
             @Override
@@ -866,6 +867,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
     }
 
+    @Override
+    public Page<Article>  pageBy(Pageable pageable,ArticleQuery articleQuery){
+        return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
+    }
+
+
+
 
     private Specification<Article> buildSpecByQuery(ArticleQuery articleQuery) {
         return (Specification<Article>) (root, query, criteriaBuilder) -> {
@@ -902,6 +910,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             }
             if(articleQuery.getStatus()!=null){
                 predicates.add(criteriaBuilder.equal(root.get("status"),articleQuery.getStatus()));
+            }
+            if(articleQuery.getTagsId()!=null){
+
+                Subquery<Article> subquery = query.subquery(Article.class);
+                Root<ArticleTags> subRoot = subquery.from(ArticleTags.class);
+                subquery = subquery.select(subRoot.get("articleId")).where(criteriaBuilder.equal(subRoot.get("tagsId"),articleQuery.getTagsId()));
+                predicates.add(criteriaBuilder.in(root.get("id")).value(subquery));
             }
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };

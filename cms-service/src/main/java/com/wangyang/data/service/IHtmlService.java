@@ -1,10 +1,14 @@
 package com.wangyang.data.service;
 
+import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.Category;
 import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.entity.Sheet;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
+import org.springframework.data.domain.Page;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface IHtmlService {
 
@@ -56,6 +60,8 @@ public interface IHtmlService {
     void commonTemplate(String option);
 
     String convertArticleListBy(Category category, int page);
+
+    String convertArticlePageBy(HttpServletRequest request,Page<ArticleDto> articleDtoPage, String viewName);
 
     CategoryArticleListDao convertArticleListBy(int categoryId);
 

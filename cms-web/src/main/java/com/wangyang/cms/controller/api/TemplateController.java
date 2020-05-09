@@ -23,6 +23,11 @@ public class TemplateController {
     @Autowired
     IHtmlService htmlService;
 
+
+    public List<String> listTemplateType(){
+        return null;
+    }
+
     @GetMapping("/find/{type}")
     public List<Template> findByType(@PathVariable("type") TemplateType type){
 

@@ -83,12 +83,15 @@ public class TemplateUtil {
         Assert.notNull(template,"template can't null");
         Map<String,Object> map = new HashMap<>();
         map.put("view",object);
+        return convertHtmlAndSave(path,viewName,map,template);
+    }
+
+    public static String convertHtmlAndSave(String path,String viewName,Map<String,Object> map, Template template){
+        Assert.notNull(template,"template can't null");
         map.put("template",template);
         map.put("isSave",true);
         Context context = new Context();
         context.setVariables(map);
-//        convertHtml(template,context,object,true);
-
         String html = getHtml(template.getTemplateValue(),context);
         saveFile(path,viewName,html);
         return html;

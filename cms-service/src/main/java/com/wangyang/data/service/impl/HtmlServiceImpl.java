@@ -24,9 +24,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -73,6 +76,8 @@ public class HtmlServiceImpl implements IHtmlService {
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
             //创建/更新 文章-删除文章分页的缓存文件
             FileUtils.removeCategoryPageTemp(articleVO.getCategory());
+            //移除临时文章分类
+            FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
         }
     }
 
@@ -103,10 +108,10 @@ public class HtmlServiceImpl implements IHtmlService {
         if(template.isPresent()){
             String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template.get());
             //生成文章列表组件,用于首页嵌入
-            String content = DocumentUtil.getDivContent(html, "#articleContent");
-            if(StringUtils.isNotEmpty(content)){
-                TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
-            }
+//            String content = DocumentUtil.getDivContent(html, "#articleContent");
+//            if(StringUtils.isNotEmpty(content)){
+//                TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
+//            }
         }
         return categoryArticle;
     }
@@ -137,8 +142,27 @@ public class HtmlServiceImpl implements IHtmlService {
         return null;
     }
 
+
+    /**
+     * 生成单纯文章分页的缓存，没有分类
+     * @return
+     */
+    @Override
+    public String convertArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage, String viewName) {
+//        log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
+        Optional<Template> template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
+        if(template.isPresent()){
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleDtoPage);
+            map.put("request",request);
+            String path = "articleList/queryTemp";
+            return TemplateUtil.convertHtmlAndSave(path,viewName,map,template.get());
+        }
+        return null;
+    }
+
     public void generateNewArticle(){
-        Components components = componentsService.findByDataName("articleServiceImpl.articleShowLatest");
+        Components components = componentsService.findByDataName("articleJob.articleShowLatest");
         Object data = getData(components.getDataName());
         TemplateUtil.convertHtmlAndSave(data,components);
     }

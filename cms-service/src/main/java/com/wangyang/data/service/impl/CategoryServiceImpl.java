@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@TemplateOption
+//@TemplateOption
 @Transactional
 @Slf4j
 public class CategoryServiceImpl implements ICategoryService {
@@ -305,7 +305,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
-    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
+//    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
     public List<Category> list() {
         CategoryQuery categoryQuery = new CategoryQuery();
         categoryQuery.setHaveHtml(true);

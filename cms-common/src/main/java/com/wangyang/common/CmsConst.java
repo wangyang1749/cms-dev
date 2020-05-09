@@ -43,8 +43,9 @@ public class CmsConst {
     public final static String DEFAULT_CATEGORY_LIST = "DEFAULT_CATEGORY_LIST";//分类列表
 
 
-    public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
 
+    public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
+    public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
 
     public final static String TAGS_INFORMATION = "资讯";//分类列表
     public final static String TAGS_RECOMMEND = "推荐";//分类列表

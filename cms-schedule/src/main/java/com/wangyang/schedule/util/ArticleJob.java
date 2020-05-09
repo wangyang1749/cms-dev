@@ -2,13 +2,15 @@ package com.wangyang.schedule.util;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.data.service.IArticleService;
-import com.wangyang.data.service.ITagsService;
-import com.wangyang.data.service.ITemplateService;
+import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.dto.ArticleDto;
-import com.wangyang.model.pojo.entity.Article;
-import com.wangyang.model.pojo.entity.Tags;
-import com.wangyang.model.pojo.entity.Template;
+import com.wangyang.model.pojo.dto.CategoryDto;
+import com.wangyang.model.pojo.entity.*;
+import com.wangyang.model.pojo.enums.TemplateType;
+import com.wangyang.model.pojo.params.CategoryQuery;
+import com.wangyang.model.pojo.support.TemplateOption;
+import com.wangyang.model.pojo.support.TemplateOptionMethod;
+import com.wangyang.model.pojo.vo.IndexVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +23,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
 @Slf4j
+@TemplateOption
 public class ArticleJob {
 
     @Autowired
@@ -32,6 +38,12 @@ public class ArticleJob {
 
     @Autowired
     ITagsService tagsService;
+
+    @Autowired
+    ICategoryService categoryService;
+
+    @Autowired
+    IMenuService menuService;
 
     @Autowired
     ITemplateService templateService;
@@ -46,8 +58,12 @@ public class ArticleJob {
             }
         };
         Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits"))));
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",articleDtos);
+        map.put("param","/articleList?sort=visits,DESC");
+        map.put("name","热门文章");
         Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-        TemplateUtil.convertHtmlAndSave("components","hotArticle",articleDtos,template);
+        TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
     }
 
     //每天凌晨执行
@@ -57,8 +73,12 @@ public class ArticleJob {
         if(tags.isPresent()){
             log.info("Schedule 生成推荐文章,在"+tags.get().getName());
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleDtos);
+            map.put("param","/articleList?tagsId="+tags.get().getId());
+            map.put("name","最新资讯");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-            TemplateUtil.convertHtmlAndSave("components","newInformation",articleDtos,template);
+            TemplateUtil.convertHtmlAndSave("components","newInformation",map,template);
         }else {
             log.info("Schedule 不能找到Tags"+CmsConst.TAGS_INFORMATION);
         }
@@ -71,11 +91,51 @@ public class ArticleJob {
         if(tags.isPresent()){
             log.info("Schedule 生成推荐文章,在"+tags.get().getName());
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleDtos);
+            map.put("param","/articleList?tagsId="+tags.get().getId());
+            map.put("name","推荐阅读");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-            TemplateUtil.convertHtmlAndSave("components","recommendArticle",articleDtos,template);
+            TemplateUtil.convertHtmlAndSave("components","recommendArticle",map,template);
         }else {
             log.info("Schedule 不能找到Tags"+CmsConst.TAGS_RECOMMEND);
         }
+    }
+
+    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
+    public List<Article> carousel(){
+        return articleService.carousel();
+    }
+
+    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
+    public Page<ArticleDto> articleShowLatest(){
+        return articleService.articleShowLatest();
+    }
+
+
+    @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer",path = "components")
+    public Map<String, String> footer() {
+        return null;
+    }
+
+    @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
+    public IndexVo index() {
+//        List<CategoryDto> recommend = categoryService.listRecommend();
+//        List<Template> templates = templateService.listByAndStatusTrue(TemplateType.CATEGORY);
+        IndexVo indexVo = new IndexVo();
+//        indexVo.setTemplates(templates);
+//        indexVo.setRecommend(recommend);
+        return indexVo;
+    }
+
+    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
+    public List<Category> listCategory() {
+       return categoryService.list();
+    }
+
+    @TemplateOptionMethod(name = "Menu",templateValue = "templates/components/@header",viewName="header",path = "components")
+    public List<Menu> listMenu(){
+        return menuService.list();
     }
 
 }

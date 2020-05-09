@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-@TemplateOption
+//@TemplateOption
 public class CommonServiceImpl implements ICommonService {
 
 
@@ -28,11 +28,11 @@ public class CommonServiceImpl implements ICommonService {
     ITemplateService templateService;
 
     @Override
-    @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer",path = "components")
+//    @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer",path = "components")
     public Map<String, String> footer() {
         return null;
     }
-    @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
+//    @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
     public IndexVo index() {
         List<CategoryDto> recommend = categoryService.listRecommend();
         List<Template> templates = templateService.listByAndStatusTrue(TemplateType.CATEGORY);

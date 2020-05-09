@@ -160,8 +160,13 @@ public class FileUtils {
         File file = new File(CmsConst.WORK_DIR+"/html/"+viewPath);
         return  convert(file,request);
     }
+
     public  static boolean removeCategoryPageTemp(Category category) {
         File file = new File(CmsConst.WORK_DIR+"/html/"+category.getPath()+"/"+category.getViewName());
+        return remove(file);
+    }
+    public  static boolean remove(String path) {
+        File file = new File(path);
         return remove(file);
     }
     public  static boolean remove(File file) {

@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@TemplateOption
+//@TemplateOption
 public class MenuServiceImpl implements IMenuService {
 
     @Autowired
@@ -64,7 +64,7 @@ public class MenuServiceImpl implements IMenuService {
 
 
     @Override
-    @TemplateOptionMethod(name = "Menu",templateValue = "templates/components/@header",viewName="header",path = "components")
+//    @TemplateOptionMethod(name = "Menu",templateValue = "templates/components/@header",viewName="header",path = "components")
     public List<Menu> list(){
         return menuRepository.findAll();
     }
