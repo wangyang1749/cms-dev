@@ -194,7 +194,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
     @Override
     public Components generateHome(){
-        Components components = componentsService.findByDataName("commonServiceImpl.index");
+        Components components = componentsService.findByDataName("articleJob.index");
         Object data = getData(components.getDataName());
         TemplateUtil.convertHtmlAndSave(data,components);
         return components;
@@ -219,16 +219,11 @@ public class HtmlServiceImpl implements IHtmlService {
 //        Object data = getData(components.getDataName());
 //        TemplateUtil.convertHtmlAndSave(data, components);
     }
-    @Override
-    public void generateChannelListHtml() {
-        Components components = componentsService.findByDataName("channelServiceImpl.list");
-        Object data = getData(components.getDataName());
-        TemplateUtil.convertHtmlAndSave(data, components);
-    }
+
 
     @Override
     public void generateMenuListHtml() {
-        Components components = componentsService.findByDataName("menuServiceImpl.list");
+        Components components = componentsService.findByDataName("articleJob.listMenu");
         Object data = getData(components.getDataName());
         TemplateUtil.convertHtmlAndSave(data,components);
     }

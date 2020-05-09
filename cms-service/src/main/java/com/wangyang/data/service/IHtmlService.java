@@ -45,10 +45,6 @@ public interface IHtmlService {
      */
     void generateCategoryListHtml(Category category);
 
-    /**
-     * 生成栏目列表的html, 用于首页显示
-     */
-    void generateChannelListHtml();
 
     /**
      * 生成菜单的html
