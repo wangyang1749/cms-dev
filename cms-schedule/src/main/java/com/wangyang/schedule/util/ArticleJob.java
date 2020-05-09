@@ -60,7 +60,7 @@ public class ArticleJob {
         Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits"))));
         Map<String,Object> map = new HashMap<>();
         map.put("view",articleDtos);
-        map.put("param","/articleList?sort=visits,DESC");
+        map.put("showUrl","/articleList?sort=visits,DESC");
         map.put("name","热门文章");
         Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
         TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
@@ -75,7 +75,7 @@ public class ArticleJob {
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
             Map<String,Object> map = new HashMap<>();
             map.put("view",articleDtos);
-            map.put("param","/articleList?tagsId="+tags.get().getId());
+            map.put("showUrl","/articleList?tagsId="+tags.get().getId());
             map.put("name","最新资讯");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
             TemplateUtil.convertHtmlAndSave("components","newInformation",map,template);
@@ -93,7 +93,7 @@ public class ArticleJob {
             Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
             Map<String,Object> map = new HashMap<>();
             map.put("view",articleDtos);
-            map.put("param","/articleList?tagsId="+tags.get().getId());
+            map.put("showUrl","/articleList?tagsId="+tags.get().getId());
             map.put("name","推荐阅读");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
             TemplateUtil.convertHtmlAndSave("components","recommendArticle",map,template);
