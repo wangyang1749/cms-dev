@@ -161,6 +161,21 @@ public class HtmlServiceImpl implements IHtmlService {
         return null;
     }
 
+    @Override
+    public String previewArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage) {
+//        log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
+        Optional<Template> template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
+        if(template.isPresent()){
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleDtoPage);
+            map.put("request",request);
+            return TemplateUtil.convertHtmlAndPreview(map,template.get());
+        }
+        return null;
+    }
+
+
+
     public void generateNewArticle(){
         Components components = componentsService.findByDataName("articleJob.articleShowLatest");
         Object data = getData(components.getDataName());

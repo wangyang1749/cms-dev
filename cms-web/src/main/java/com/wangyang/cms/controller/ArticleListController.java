@@ -2,6 +2,7 @@ package com.wangyang.cms.controller;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -80,6 +82,7 @@ public class ArticleListController {
         StringBuffer sb = new StringBuffer();
         sb.append("index");
         Map<String, String[]> params = request.getParameterMap();
+        Set<String> keys = params.keySet();
         if(params!=null){
             params.forEach((k,v)->{
                 sb.append("-"+k+"-"+v[0]);
@@ -94,7 +97,13 @@ public class ArticleListController {
 //            Pageable pageable = PageRequest.of(0,1);
             Page<Article> articlePage = articleService.pageBy(pageable,articleQuery);
             Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
-            String resultHtml = htmlService.convertArticlePageBy(request,articleDtoPage, sb.toString());
+            String resultHtml;
+            if(keys.contains("keyword")){
+                resultHtml = htmlService.previewArticlePageBy(request,articleDtoPage);
+            }else {
+                resultHtml = htmlService.convertArticlePageBy(request,articleDtoPage, sb.toString());
+            }
+
             result =  FileUtils.convertByString(resultHtml,request);
         }
         if (request!=null){

@@ -59,6 +59,9 @@ public interface IHtmlService {
 
     String convertArticlePageBy(HttpServletRequest request,Page<ArticleDto> articleDtoPage, String viewName);
 
+
+    String previewArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage);
+
     CategoryArticleListDao convertArticleListBy(int categoryId);
 
     void convertArticleListBy(Sheet sheet);
