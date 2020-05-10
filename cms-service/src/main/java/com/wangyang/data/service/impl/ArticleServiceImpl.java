@@ -532,7 +532,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 //                return criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),CmsConst.DEFAULT_ARTICLE_TEMPLATE)).getRestriction();
-                return null;
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("status"),ArticleStatus.PUBLISHED)).getRestriction();
             }
         };
         Page<Article> articlePage = articleRepository.findAll(specification,PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
