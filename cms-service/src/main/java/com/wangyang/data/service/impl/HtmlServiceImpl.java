@@ -108,10 +108,10 @@ public class HtmlServiceImpl implements IHtmlService {
         if(template.isPresent()){
             String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template.get());
             //生成文章列表组件,用于首页嵌入
-//            String content = DocumentUtil.getDivContent(html, "#articleContent");
-//            if(StringUtils.isNotEmpty(content)){
-//                TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
-//            }
+            String content = DocumentUtil.getDivContent(html, "#components");
+            if(StringUtils.isNotEmpty(content)){
+                TemplateUtil.saveFile(CmsConst.COMPONENTS_PATH,category.getViewName(),content);
+            }
         }
         return categoryArticle;
     }
