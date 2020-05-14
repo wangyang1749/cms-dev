@@ -11,18 +11,23 @@ public interface IComponentsService {
 
     Page<Components> list(Pageable pageable);
 
-    Components add(Components templatePage);
+    List<Components> listNeedArticle();
+
+    Components add(ComponentsParam componentsParam);
+
 
     List<Components> addAll(List<Components> templatePages);
     Components update(int id, ComponentsParam templatePageParam);
 
     Components findById(int id);
 
-    void delete(int id);
+    Components findDetailsById(int id);
+
+    Components delete(int id);
     void deleteAll();
 
 
-    Object getModel(String dataName);
+    Object getModel(Components components);
 
     Components findByDataName(String dataName);
 }

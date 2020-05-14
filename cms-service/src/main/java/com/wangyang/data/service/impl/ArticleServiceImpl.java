@@ -63,7 +63,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     CommentRepository commentRepository;
 
 
+    @Autowired
+    ComponentsArticleRepository componentsArticleRepository;
 
+    @Autowired
+    IComponentsArticleService componentsArticleService;
     @Autowired
     IOptionService optionService;
 
@@ -338,7 +342,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             articleDetailVo.setTagIds( ServiceUtil.fetchProperty(tags, Tags::getId));
         }
         if(article.getCategoryId()==null){
-            throw  new ArticleException("请先为文章 id:["+article.getId()+"] title: "+article.getTitle()+"指定类别再执行全部更新!!");
+            throw  new ArticleException("文章["+article.getTitle()+"]的没有指定类别!!");
         }
 
         User user = userService.findById(article.getUserId());
@@ -375,7 +379,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public ArticleDetailVO findArticleAOById(int id) {
 
-        return convert(findArticleById(id));
+        return conventToAddTags(findArticleById(id));
+//        return convert(findArticleById(id));
     }
 
     @Override
@@ -872,7 +877,21 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
     }
 
-
+    @Override
+    public List<ArticleDto> listByTitle(String title){
+       Specification<Article> specification = new Specification<Article>() {
+           @Override
+           public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+               String likeCondition = String.format("%%%s%%",title);
+               return criteriaQuery.where(criteriaBuilder.like(root.get("title"),likeCondition)).getRestriction();
+           }
+       };
+        return articleRepository.findAll(specification).stream().map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article, articleDto);
+            return articleDto;
+        }).collect(Collectors.toList());
+    }
 
 
     private Specification<Article> buildSpecByQuery(ArticleQuery articleQuery) {
@@ -922,4 +941,33 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         };
     }
 
+
+    /**
+     * 根据id查找文章
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Article> listByIds(Set<Integer> ids){
+        List<Article> articles = articleRepository.findAllById(ids);
+        return articles;
+    }
+
+    @Override
+    public List<ArticleDto> listByComponentsId(int componentsId){
+        List<ComponentsArticle> componentsArticles = componentsArticleRepository.findByComponentId(componentsId);
+        Set<Integer> articleIds = ServiceUtil.fetchProperty(componentsArticles, ComponentsArticle::getArticleId);
+        List<Article> articles = articleRepository.findAllById(articleIds);
+        return articles.stream().map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article,articleDto);
+            return articleDto;
+        }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Article findByViewName(String viewName){
+        return articleRepository.findByViewName(viewName);
+    }
 }

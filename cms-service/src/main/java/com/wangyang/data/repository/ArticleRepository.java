@@ -47,4 +47,6 @@ public interface ArticleRepository extends JpaRepository<Article,Integer>
 //    List<Article> findByCategoryId(int id);
 
     Article findByIdAndUserId(int id,int userId);
+
+    Article findByViewName(String viewName);
 }

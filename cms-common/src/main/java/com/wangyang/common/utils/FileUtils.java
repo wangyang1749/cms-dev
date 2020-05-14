@@ -92,7 +92,28 @@ public class FileUtils {
         return fileSystem;
     }
 
-    private static String openFile(File file){
+
+
+    public static  void saveFile(File file,String content){
+        FileOutputStream fileOutputStream=null;
+        try {
+            fileOutputStream  = new FileOutputStream(file);
+
+            fileOutputStream.write(content.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(fileOutputStream!=null){
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String openFile(File file){
         FileInputStream fileInputStream=null;
         try {
             if(file.exists()){

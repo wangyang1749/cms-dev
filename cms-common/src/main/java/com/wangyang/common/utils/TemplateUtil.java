@@ -97,9 +97,9 @@ public class TemplateUtil {
         return html;
     }
 
-    public static String convertHtmlAndPreview(Map<String,Object> map, Template template){
+    public static String convertHtmlAndPreview(Map<String,Object> map, BaseTemplate template){
         Assert.notNull(template,"template can't null");
-        map.put("template",template);
+//        map.put("template",template);
         map.put("isSave",true);
         Context context = new Context();
         context.setVariables(map);
@@ -119,11 +119,11 @@ public class TemplateUtil {
     }
 
 
-    public static String convertHtmlAndPreview(Object object, BaseTemplate template){
-        Context context = new Context();
-        context.setVariable("view",object);
-        return  convertHtml(template,context,object,false);
-    }
+//    public static String convertHtmlAndPreviewByMap(Object object, BaseTemplate template){
+//        Context context = new Context();
+//        context.setVariable("view",object);
+//        return  convertHtml(template,context,object,false);
+//    }
 
     private static String getValue(Object object,String method){
         String viewName = null;

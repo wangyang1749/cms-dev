@@ -139,6 +139,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
 
         List<Components> componentsList = new ArrayList<>();
+        componentsList.add( new Components("Carousel","components","templates/components/@carousel","carousel","@Article","",true));
         Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(TemplateOption.class);
         beans.forEach((k,v)->{
             Class<?> targetClass = AopUtils.getTargetClass(v);

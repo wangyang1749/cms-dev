@@ -339,4 +339,13 @@ public class ArticleController {
         return  articleService.pageByTagId(tagId,pageable);
     }
 
+    @GetMapping("/query")
+    public List<ArticleDto> listByTitle(String title){
+        return articleService.listByTitle(title);
+    }
+
+    @GetMapping("/listByComponentsId/{componentsId}")
+    public List<ArticleDto> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
+        return  articleService.listByComponentsId(componentsId);
+    }
 }

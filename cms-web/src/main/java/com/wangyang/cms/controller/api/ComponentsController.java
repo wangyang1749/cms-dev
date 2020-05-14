@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
@@ -25,28 +27,51 @@ public class ComponentsController {
         return  componentsService.list(pageable);
     }
 
-    @PostMapping
-    public Components add(Components templatePage){
-        return componentsService.add(templatePage);
+    @RequestMapping("/find/{id}")
+    public Components findById(@PathVariable("id") Integer id){
+        return componentsService.findById(id);
     }
 
+    @PostMapping
+    public Components add(@RequestBody  ComponentsParam componentsParam){
+        return componentsService.add(componentsParam);
+    }
+
+
+
     @PostMapping("/update/{id}")
-    public Components update(@PathVariable("id") Integer id, ComponentsParam templatePageParam){
+    public Components update(@PathVariable("id") Integer id,@RequestBody  ComponentsParam templatePageParam){
         return componentsService.update(id,templatePageParam);
     }
 
+
+
+
+
     @RequestMapping("/delete/{id}")
-    public void delete(@PathVariable("id") Integer id){
-        componentsService.delete(id);
+    public Components delete(@PathVariable("id") Integer id){
+        Components components = componentsService.delete(id);
+        TemplateUtil.deleteTemplateHtml(components.getViewName(),components.getPath());
+        return components;
     }
 
 
     @GetMapping("/generate/{id}")
     public BaseResponse generateHtml(@PathVariable("id") Integer id){
-        Components templatePage = componentsService.findById(id);
-        Object o = componentsService.getModel(templatePage.getDataName());
-        return BaseResponse.ok(TemplateUtil.convertHtmlAndSave(o, templatePage));
+        Components components = componentsService.findById(id);
+        Object o = componentsService.getModel(components);
+        return BaseResponse.ok(TemplateUtil.convertHtmlAndSave(o, components));
     }
 
 
+    @GetMapping("/listNeedArticle")
+    public List<Components> listNeedArticle(){
+        return componentsService.listNeedArticle();
+    }
+
+
+    @GetMapping("/findDetailsById/{id}")
+    public Components findDetailsById(@PathVariable("id") Integer id){
+        return componentsService.findDetailsById(id);
+    }
 }

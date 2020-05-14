@@ -23,10 +23,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -66,6 +63,23 @@ public class ArticleJob {
         TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
     }
 
+    @ArticleJobAnnotation(jobName = "likeArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
+    public void likeArticle(){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return null;
+            }
+        };
+        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("likes"))));
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",articleDtos);
+        map.put("showUrl","/articleList?sort=likes,DESC");
+        map.put("name","点赞最多");
+        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+        TemplateUtil.convertHtmlAndSave("components","likeArticle",map,template);
+    }
+
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "newInformation",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void newInformation(){
@@ -102,10 +116,10 @@ public class ArticleJob {
         }
     }
 
-    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
-    public List<Article> carousel(){
-        return articleService.carousel();
-    }
+//    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
+//    public List<Article> carousel(Set<Integer> ids){
+//        return articleService.listByIds(ids);
+//    }
 
     @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
     public Page<ArticleDto> articleShowLatest(){

@@ -12,6 +12,7 @@
         <module>cms-service</module>
         <module>cms-model</module>
         <module>cms-schedule</module>
+        <module>cms-weixin</module>
     </modules>
 
     <parent>
@@ -379,6 +380,19 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
+        </dependency>
+
+        <!--        微信xml util-->
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+<!--        xml2bean-->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.11.1</version>
         </dependency>
 
 

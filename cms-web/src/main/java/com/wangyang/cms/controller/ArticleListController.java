@@ -50,7 +50,7 @@ public class ArticleListController {
     IHtmlService htmlService;
 
     @ResponseBody
-    @GetMapping("/{categoryPath}/{categoryViewName}/page-{page}.html")
+    @RequestMapping(value = "/{categoryPath}/{categoryViewName}/page-{page}.html",produces = "text/html")
     public String articleListBy(HttpServletRequest request, @PathVariable("categoryPath") String categoryPath, @PathVariable("categoryViewName") String categoryViewName, @PathVariable("page") Integer page){
 
         File file = new File(CmsConst.WORK_DIR+"/html/"+categoryPath+"/"+categoryViewName+"/"+page+".html");
@@ -76,7 +76,7 @@ public class ArticleListController {
     }
 
     @ResponseBody
-    @GetMapping("/articleList")
+    @RequestMapping(value = "/articleList",produces = "text/html")
     public String articleListBySort(HttpServletRequest request,  ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
 
         StringBuffer sb = new StringBuffer();
@@ -122,7 +122,7 @@ public class ArticleListController {
         System.out.println(ex.getMessage());
     }
 
-    @GetMapping("/category/{categoryId}")
+    @RequestMapping(value = "/category/{categoryId}",produces = "text/html")
     public ModelAndView articleListByCategory(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
         if(categoryId==null){
             return new ModelAndView("error");
@@ -160,7 +160,7 @@ public class ArticleListController {
         return articles;
     }
 
-    @GetMapping("/option/like/{id}")
+    @GetMapping("/option/increaseLikeCount/{id}")
     @ResponseBody
     public BaseResponse increaseLikes(@PathVariable("id") int id) {
         int likes = articleService.increaseLikes(id);
@@ -172,9 +172,16 @@ public class ArticleListController {
         }
     }
 
-    @GetMapping("/option/visit/{id}")
+    @GetMapping("/option/getLikeCount/{id}")
     @ResponseBody
-    public BaseResponse increaseVisits(@PathVariable("id") int id) {
+    public BaseResponse getLikesCount(@PathVariable("id") int id) {
+        Integer likesNumber = articleService.getLikesNumber(id);
+        return BaseResponse.ok("操作成功",likesNumber);
+    }
+
+    @GetMapping("/option/increaseViewCount/{id}")
+    @ResponseBody
+    public BaseResponse increaseVisitsCount(@PathVariable("id") int id) {
         int visits = articleService.increaseVisits(id);
         Integer visitsNumber = articleService.getVisitsNumber(id);
         if(visits!=0&visitsNumber!=null){
@@ -184,15 +191,23 @@ public class ArticleListController {
         }
     }
 
-    @GetMapping("/getLike/{id}")
+    @GetMapping("/option/getVisitsCount/{id}")
     @ResponseBody
-    public  BaseResponse getLikesNumber(@PathVariable("id") int id){
-        Integer likesNumber = articleService.getLikesNumber(id);
-        if(likesNumber!=null){
-            return BaseResponse.ok("成功获取文章浏览量",likesNumber);
-        }
-        return BaseResponse.error("获取文章浏览量失败");
+    public BaseResponse getVisitsCount(@PathVariable("id") int id) {
+        Integer visitsNumber = articleService.getVisitsNumber(id);
+        return BaseResponse.ok("操作成功",visitsNumber);
     }
+
+//    @GetMapping("/option/like/{id}")
+//    @ResponseBody
+//    public  BaseResponse getLikesNumber(@PathVariable("id") int id){
+//        int likes = articleService.increaseLikes(id);
+//        Integer likesNumber = articleService.getLikesNumber(id);
+//        if(likes!=0|| likesNumber!=null){
+//            return BaseResponse.ok("点赞成功！",likesNumber);
+//        }
+//        return BaseResponse.error("点赞失败！");
+//    }
 
 
 }

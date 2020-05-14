@@ -143,6 +143,14 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Page<Article>  pageBy(Pageable pageable, ArticleQuery articleQuery);
 
+    List<ArticleDto> listByTitle(String title);
+
+    List<Article> listByIds(Set<Integer> ids);
+
+    List<ArticleDto> listByComponentsId(int componentsId);
+
+    Article findByViewName(String viewName);
+
 
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);
 

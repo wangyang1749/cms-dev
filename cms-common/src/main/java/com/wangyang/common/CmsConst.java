@@ -51,6 +51,9 @@ public class CmsConst {
     public final static String TAGS_RECOMMEND = "推荐";//分类列表
 
 
+    public final static String ARTICLE_DATA = "@Article";//文章的Components标识
+
+
     public static final String MARKDOWN_REVEAL_START = "<p>@=";
     public static final String MARKDOWN_REVEAL_END = "=@</p>";
     public static final String LABEL_SECTION_START = "<section>";

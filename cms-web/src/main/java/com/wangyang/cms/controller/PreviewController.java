@@ -8,6 +8,7 @@ import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -97,15 +98,12 @@ public class PreviewController {
     }
 
     @GetMapping("/component/{id}")
-    public ModelAndView previewComponent(@PathVariable("id") Integer id){
-        ModelAndView modelAndView = new ModelAndView();
-        Components templatePage = componentsService.findById(id);
-
-        Object o = componentsService.getModel(templatePage.getDataName());
-        modelAndView.addObject("view",o);
-        modelAndView.addObject("template",templatePage);
-        modelAndView.setViewName(templatePage.getTemplateValue());
-        return  modelAndView;
+    public String previewComponent(@PathVariable("id") Integer id, Model model){
+        Components components = componentsService.findById(id);
+        Object o = componentsService.getModel(components);
+        model.addAttribute("view",o);
+        model.addAttribute("template",components);
+        return  "@cms";
     }
 
     @GetMapping("/pdf/{articleId}")

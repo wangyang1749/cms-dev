@@ -18,7 +18,7 @@ public class MyCustomViewResolver implements ViewResolver, Ordered {
     public View resolveViewName(String ViewName, Locale arg1) throws Exception {
         // TODO Auto-generated method stub
         //如果ModelAndView的视图名字是以download:或sql:开头的，那么创建一个 MyCustomView()视图对象
-        if(ViewName.startsWith("download:")||ViewName.startsWith("sql:")){
+        if(ViewName.startsWith("@cms")){
             //返回视图对象，该视图对象为自定义的
             return new MyCustomView();
         }
