@@ -144,6 +144,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         componentsList.add( new Components("点赞最多","components","templates/components/@articleListAndLike","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
         componentsList.add( new Components("热门文章","components","templates/components/@articleListAndVisit","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
         componentsList.add( new Components("当下流行","components","templates/components/@articleListAndVisit","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
+        componentsList.add( new Components("最新文章","components","templates/components/@articleListAndVisit","newArticleIndex",CmsConst.ARTICLE_DATA_SORT+"createDate,DESC","",true));
         componentsList.add( new Components("推荐标签","components","templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
         componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
 

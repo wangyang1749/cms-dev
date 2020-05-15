@@ -309,7 +309,7 @@ public class ArticleController {
     @GetMapping("/generateHtml/{id}")
     public ArticleDetailVO generateHtml(@PathVariable("id") Integer id){
 
-        TestStatic.test();
+//        TestStatic.test();
         Article article = articleService.findArticleById(id);
         ArticleDetailVO articleDetailVO = articleService.updateArticleDetailVo(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);

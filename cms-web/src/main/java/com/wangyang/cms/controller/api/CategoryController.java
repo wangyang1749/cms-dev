@@ -126,7 +126,7 @@ public class CategoryController {
     public Category recommendOrCancelHome(@PathVariable("id") Integer id){
         Category category = categoryService.recommendOrCancelHome(id);
 //        htmlService.generateHome();
-        htmlService.convertArticleListBy(category);
+//        htmlService.convertArticleListBy(category);
         //只需要在推荐时刷新主页
         htmlService.generateHome();
         return category;

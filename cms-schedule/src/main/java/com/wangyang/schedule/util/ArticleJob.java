@@ -133,10 +133,10 @@ public class ArticleJob {
 //        return articleService.listByIds(ids);
 //    }
 
-    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
-    public Page<ArticleDto> articleShowLatest(){
-        return articleService.articleShowLatest();
-    }
+//    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
+//    public Page<ArticleDto> articleShowLatest(){
+//        return articleService.articleShowLatest();
+//    }
 
 
     @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer",path = "components")
@@ -145,13 +145,11 @@ public class ArticleJob {
     }
 
     @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
-    public IndexVo index() {
-//        List<CategoryDto> recommend = categoryService.listRecommend();
-//        List<Template> templates = templateService.listByAndStatusTrue(TemplateType.CATEGORY);
-        IndexVo indexVo = new IndexVo();
-//        indexVo.setTemplates(templates);
-//        indexVo.setRecommend(recommend);
-        return indexVo;
+    public Map<String,Object> index() {
+        Map<String,Object> map = new HashMap<>();
+        List<CategoryDto> categoryDtos = categoryService.listRecommend();
+        map.put("category",categoryDtos);
+        return map;
     }
 
     @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")

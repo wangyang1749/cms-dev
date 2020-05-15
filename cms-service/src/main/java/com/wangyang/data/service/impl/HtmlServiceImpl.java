@@ -65,8 +65,7 @@ public class HtmlServiceImpl implements IHtmlService {
             Category category = articleVO.getCategory();
             //生成文章列表，文章列表依赖分类列表
             convertArticleListBy(category);
-            // 生成首页文章最新文章
-            generateNewArticle();
+
             //判断评论文件是否存在
             if(!TemplateUtil.componentsExist(articleVO.getViewName())){
                 generateCommentHtmlByArticleId(articleVO.getId());
@@ -74,6 +73,10 @@ public class HtmlServiceImpl implements IHtmlService {
             //生成文章详情页面,依赖文章评论(在栏目页面文章详情依赖文章列表)
             covertHtml(articleVO);
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
+
+
+            // 生成首页文章最新文章
+            generateNewArticle();
             //创建/更新 文章-删除文章分页的缓存文件
             FileUtils.removeCategoryPageTemp(articleVO.getCategory());
             //移除临时文章分类
@@ -177,8 +180,8 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     public void generateNewArticle(){
-        Components components = componentsService.findByDataName("articleJob.articleShowLatest");
-        Object data = getData(components.getDataName());
+        Components components = componentsService.findByViewName("newArticleIndex");
+        Object data = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(data,components);
     }
 
@@ -210,7 +213,7 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public Components generateHome(){
         Components components = componentsService.findByDataName("articleJob.index");
-        Object data = getData(components.getDataName());
+        Object data = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(data,components);
         return components;
     }
@@ -239,7 +242,7 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public void generateMenuListHtml() {
         Components components = componentsService.findByDataName("articleJob.listMenu");
-        Object data = getData(components.getDataName());
+        Object data = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(data,components);
     }
 
