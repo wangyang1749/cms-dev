@@ -32,10 +32,11 @@ public class QuartzUtils {
 
     public  SysTask startJob(Scheduler scheduler,SysTask sysTask) throws Exception {
         checkAlreadyStart(scheduler,sysTask.getJobName(),sysTask.getJobGroup());
-        Class<?> clz = Class.forName(sysTask.getBeanClass());
-        Class<? extends Job> jobClass =  (Class<? extends Job>)(clz.newInstance().getClass());
-        JobDetail jobDetail = JobBuilder.newJob(jobClass)
+//        Class<?> clz = Class.forName(sysTask.getBeanClass());
+//        Class<? extends Job> jobClass =  (Class<? extends Job>)(clz.newInstance().getClass());
+        JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class)
                 .withIdentity(sysTask.getJobName(), sysTask.getJobGroup())
+                .usingJobData("jobClass",sysTask.getBeanClass())
                 .usingJobData("jobMethod",sysTask.getMethodName())
                 .usingJobData("jobArgs",sysTask.getArgs())
                 .build();

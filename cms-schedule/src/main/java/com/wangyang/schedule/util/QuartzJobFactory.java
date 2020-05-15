@@ -12,17 +12,20 @@ import java.lang.reflect.Method;
 public class QuartzJobFactory implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        String jobClass = (String)jobExecutionContext.getMergedJobDataMap().get("jobClass");
         String jobMethod = (String)jobExecutionContext.getMergedJobDataMap().get("jobMethod");
         String jobArgs = (String)jobExecutionContext.getMergedJobDataMap().get("jobArgs");
 
         try {
-            Object bean = SpringContextUtil.getBean("articleJob");
+            Object bean = SpringContextUtil.getBean(jobClass);
+//            Object newInstance = Class.forName(jobClass).newInstance();
             Method method = bean.getClass().getMethod(jobMethod);
-            if(jobArgs!=null&&!"".equals(jobArgs)){
-                method.invoke(bean,jobArgs);
-            }else {
-                method.invoke(bean);
-            }
+            method.invoke(bean);
+//            if(jobArgs!=null&&!"".equals(jobArgs)){
+//                method.invoke(newInstance,jobArgs);
+//            }else {
+//                method.invoke(newInstance);
+//            }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

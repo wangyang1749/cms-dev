@@ -4,6 +4,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.data.service.ISysTaskService;
 import com.wangyang.model.pojo.entity.SysTask;
 import com.wangyang.model.pojo.enums.ScheduleStatus;
+import com.wangyang.model.pojo.support.ScheduleOption;
 import com.wangyang.model.pojo.support.TemplateOption;
 import com.wangyang.schedule.util.ArticleJob;
 import com.wangyang.schedule.util.ArticleJobAnnotation;
@@ -11,6 +12,7 @@ import com.wangyang.schedule.util.QuartzUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
@@ -54,31 +56,35 @@ public class ScheduleListener  implements ApplicationListener<ApplicationStarted
     private void initTask( List<SysTask> taskList,ApplicationStartedEvent applicationStartedEvent){
 
         List<SysTask> sysTasks  = new ArrayList<>();
-
-        Method[] methods = ArticleJob.class.getDeclaredMethods();
-        for (Method method : methods){
-            if(method.isAnnotationPresent(ArticleJobAnnotation.class)){
-                Annotation[] annotations = method.getAnnotations();
-                for(Annotation annotation : annotations){
-                    if(annotation instanceof  ArticleJobAnnotation){
-                        ArticleJobAnnotation articleJobAnnotation = (ArticleJobAnnotation)annotation;
-                        String methodName = method.getName();
+        Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(ScheduleOption.class);
+        beans.forEach((k,v)->{
+            Class<?> targetClass = AopUtils.getTargetClass(v);
+            Method[] methods = targetClass.getDeclaredMethods();
+            for (Method method : methods){
+                if(method.isAnnotationPresent(ArticleJobAnnotation.class)){
+                    Annotation[] annotations = method.getAnnotations();
+                    for(Annotation annotation : annotations){
+                        if(annotation instanceof  ArticleJobAnnotation){
+                            ArticleJobAnnotation articleJobAnnotation = (ArticleJobAnnotation)annotation;
+                            String methodName = method.getName();
 //                        System.out.println(methodName);
-                        SysTask sysTask = new SysTask();
+                            SysTask sysTask = new SysTask();
 
-                        sysTask.setMethodName(method.getName());
-                        sysTask.setJobName(articleJobAnnotation.jobName());
-                        sysTask.setJobGroup(articleJobAnnotation.jobGroup());
-                        sysTask.setBeanClass(articleJobAnnotation.beanClass());
-                        sysTask.setDescription(articleJobAnnotation.description());
-                        sysTask.setScheduleStatus(articleJobAnnotation.scheduleStatus());
-                        sysTask.setCornExpression(articleJobAnnotation.cornExpression());
+                            sysTask.setMethodName(method.getName());
+                            sysTask.setJobName(articleJobAnnotation.jobName());
+                            sysTask.setJobGroup(articleJobAnnotation.jobGroup());
+                            sysTask.setBeanClass(k);
+                            sysTask.setDescription(articleJobAnnotation.description());
+                            sysTask.setScheduleStatus(articleJobAnnotation.scheduleStatus());
+                            sysTask.setCornExpression(articleJobAnnotation.cornExpression());
 
-                        sysTasks.add(sysTask);
+                            sysTasks.add(sysTask);
+                        }
                     }
                 }
             }
-        }
+        });
+
 
         Set<String> findJobMethods = ServiceUtil.fetchProperty(taskList, SysTask::getMethodName);
         Set<String> jobMethods = ServiceUtil.fetchProperty(sysTasks, SysTask::getMethodName);

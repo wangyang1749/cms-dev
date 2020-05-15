@@ -9,6 +9,7 @@ import com.wangyang.model.pojo.dto.CategoryDto;
 import com.wangyang.model.pojo.entity.*;
 import com.wangyang.model.pojo.enums.TemplateType;
 import com.wangyang.model.pojo.params.CategoryQuery;
+import com.wangyang.model.pojo.support.ScheduleOption;
 import com.wangyang.model.pojo.support.TemplateOption;
 import com.wangyang.model.pojo.support.TemplateOptionMethod;
 import com.wangyang.model.pojo.vo.IndexVo;
@@ -29,6 +30,7 @@ import java.util.*;
 @Component
 @Slf4j
 @TemplateOption
+@ScheduleOption
 public class ArticleJob {
 
     @Autowired
