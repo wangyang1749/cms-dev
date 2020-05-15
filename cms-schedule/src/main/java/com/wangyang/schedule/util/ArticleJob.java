@@ -1,5 +1,6 @@
 package com.wangyang.schedule.util;
 
+import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.*;
@@ -41,43 +42,52 @@ public class ArticleJob {
 
     @Autowired
     IMenuService menuService;
+    @Autowired
+    IComponentsService componentsService;
 
     @Autowired
     ITemplateService templateService;
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "hotArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void hotArticle(){
-        System.out.println("生成最新文章！！");
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return null;
-            }
-        };
-        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits"))));
-        Map<String,Object> map = new HashMap<>();
-        map.put("view",articleDtos);
-        map.put("showUrl","/articleList?sort=visits,DESC");
-        map.put("name","热门文章");
-        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-        TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
+
+        Components components = componentsService.findByViewName("hotArticle");
+        Object o = componentsService.getModel(components);
+        TemplateUtil.convertHtmlAndSave(o, components);
+//        Specification<Article> specification = new Specification<Article>() {
+//            @Override
+//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+//                return null;
+//            }
+//        };
+//        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits"))));
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("view",articleDtos);
+//        map.put("showUrl","/articleList?sort=visits,DESC");
+//        map.put("name","热门文章");
+//        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+//        TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
     }
 
     @ArticleJobAnnotation(jobName = "likeArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void likeArticle(){
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return null;
-            }
-        };
-        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("likes"))));
-        Map<String,Object> map = new HashMap<>();
-        map.put("view",articleDtos);
-        map.put("showUrl","/articleList?sort=likes,DESC");
-        map.put("name","点赞最多");
-        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-        TemplateUtil.convertHtmlAndSave("components","likeArticle",map,template);
+        Components components = componentsService.findByViewName("likeArticle");
+        Object o = componentsService.getModel(components);
+        TemplateUtil.convertHtmlAndSave(o, components);
+
+//        Specification<Article> specification = new Specification<Article>() {
+//            @Override
+//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+//                return null;
+//            }
+//        };
+//        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("likes"))));
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("view",articleDtos);
+//        map.put("showUrl","/articleList?sort=likes,DESC");
+//        map.put("name","点赞最多");
+//        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+//        TemplateUtil.convertHtmlAndSave("components","likeArticle",map,template);
     }
 
     //每天凌晨执行
@@ -129,7 +139,7 @@ public class ArticleJob {
 
     @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer",path = "components")
     public Map<String, String> footer() {
-        return null;
+        return new HashMap<>();
     }
 
     @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU")
@@ -151,5 +161,6 @@ public class ArticleJob {
     public List<Menu> listMenu(){
         return menuService.list();
     }
+
 
 }

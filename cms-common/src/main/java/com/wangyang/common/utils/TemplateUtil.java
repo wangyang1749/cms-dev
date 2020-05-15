@@ -97,9 +97,16 @@ public class TemplateUtil {
         return html;
     }
 
-    public static String convertHtmlAndPreview(Map<String,Object> map, BaseTemplate template){
+    public static String convertHtmlAndPreview(Object object, BaseTemplate template){
         Assert.notNull(template,"template can't null");
-//        map.put("template",template);
+        Map<String,Object> map;
+        if(object instanceof  Map){
+            map = (Map<String,Object> )object;
+        }else {
+            map = new HashMap<>();
+            map.put("view",object);
+            map.put("template",template);
+        }
         map.put("isSave",true);
         Context context = new Context();
         context.setVariables(map);
@@ -108,14 +115,27 @@ public class TemplateUtil {
 //        return html;
     }
 
+//    public static String convertHtmlAndSave(Map<String,Object> map, BaseTemplate template){
+//        map.put("isSave",true);
+//        Context context = new Context();
+//        context.setVariables(map);
+//        return  convertHtml(template,context,map,true);
+//    }
+
     public static String convertHtmlAndSave(Object object, BaseTemplate template){
-        Map<String,Object> map = new HashMap<>();
-        map.put("view",object);
-        map.put("template",template);
+        Map<String,Object> map;
+        if(object instanceof Map){
+           map= (Map<String,Object> )object;
+        }else {
+            map = new HashMap<>();
+            map.put("view",object);
+            map.put("template",template);
+        }
         map.put("isSave",true);
         Context context = new Context();
         context.setVariables(map);
         return  convertHtml(template,context,object,true);
+
     }
 
 

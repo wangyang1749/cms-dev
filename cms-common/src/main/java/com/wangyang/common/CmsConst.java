@@ -52,6 +52,9 @@ public class CmsConst {
 
 
     public final static String ARTICLE_DATA = "@Article";//文章的Components标识
+    public final static String ARTICLE_DATA_SORT = "@SortArticle:";//文章的Components标识
+    public final static String ARTICLE_DATA_KEYWORD = "@KeywordArticle:";//文章的Components标识
+    public final static String ARTICLE_DATA_TAGS = "@TagsArticle:";//文章的Components标识
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

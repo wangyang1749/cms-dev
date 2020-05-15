@@ -515,15 +515,15 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             return articleDto;
         });
     }
-    @Override
-    public List<ArticleDto> articleShow(Specification<Article> specification,Sort sort){
-        List<Article> articles = articleRepository.findAll(specification,sort);
-        return articles.stream().map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article,articleDto);
-            return articleDto;
-        }).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ArticleDto> articleShow(Specification<Article> specification,Sort sort){
+//        List<Article> articles = articleRepository.findAll(specification,sort);
+//        return articles.stream().map(article -> {
+//            ArticleDto articleDto = new ArticleDto();
+//            BeanUtils.copyProperties(article,articleDto);
+//            return articleDto;
+//        }).collect(Collectors.toList());
+//    }
 
 
     /**
@@ -876,6 +876,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public Page<Article>  pageBy(Pageable pageable,ArticleQuery articleQuery){
         return  articleRepository.findAll(buildSpecByQuery(articleQuery),pageable);
     }
+
+    @Override
+    public Page<ArticleDto>  pageDtoBy(Pageable pageable,ArticleQuery articleQuery){
+        return  convertToSimple(pageBy(pageable,articleQuery));
+    }
+
 
     @Override
     public List<ArticleDto> listByTitle(String title){

@@ -139,7 +139,14 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
 
         List<Components> componentsList = new ArrayList<>();
-        componentsList.add( new Components("Carousel","components","templates/components/@carousel","carousel","@Article","",true));
+        componentsList.add( new Components("Carousel","components","templates/components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("myArticle","components","templates/components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("点赞最多","components","templates/components/@articleListAndLike","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
+        componentsList.add( new Components("热门文章","components","templates/components/@articleListAndVisit","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
+        componentsList.add( new Components("当下流行","components","templates/components/@articleListAndVisit","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
+        componentsList.add( new Components("推荐标签","components","templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
+        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
+
         Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(TemplateOption.class);
         beans.forEach((k,v)->{
             Class<?> targetClass = AopUtils.getTargetClass(v);

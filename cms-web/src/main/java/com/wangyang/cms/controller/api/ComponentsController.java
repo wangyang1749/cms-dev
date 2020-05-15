@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -61,6 +63,8 @@ public class ComponentsController {
         Components components = componentsService.findById(id);
         Object o = componentsService.getModel(components);
         return BaseResponse.ok(TemplateUtil.convertHtmlAndSave(o, components));
+
+
     }
 
 

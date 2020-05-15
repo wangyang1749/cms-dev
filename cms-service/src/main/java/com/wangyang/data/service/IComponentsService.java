@@ -30,4 +30,6 @@ public interface IComponentsService {
     Object getModel(Components components);
 
     Components findByDataName(String dataName);
+
+    Components findByViewName(String viewName);
 }

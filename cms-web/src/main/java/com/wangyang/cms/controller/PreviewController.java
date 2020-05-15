@@ -1,6 +1,8 @@
 package com.wangyang.cms.controller;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.*;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -98,12 +101,13 @@ public class PreviewController {
     }
 
     @GetMapping("/component/{id}")
-    public String previewComponent(@PathVariable("id") Integer id, Model model){
+    @ResponseBody
+    public String previewComponent(@PathVariable("id") Integer id){
         Components components = componentsService.findById(id);
         Object o = componentsService.getModel(components);
-        model.addAttribute("view",o);
-        model.addAttribute("template",components);
-        return  "@cms";
+        String html = TemplateUtil.convertHtmlAndPreview(o, components);
+        String convertHtml = FileUtils.convertByString(html);
+        return  convertHtml;
     }
 
     @GetMapping("/pdf/{articleId}")

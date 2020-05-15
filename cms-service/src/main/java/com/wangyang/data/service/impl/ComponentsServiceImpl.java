@@ -6,23 +6,27 @@ import com.wangyang.common.exception.TemplateException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.ApplicationBean;
 import com.wangyang.data.repository.ArticleRepository;
 import com.wangyang.data.repository.ComponentsArticleRepository;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.IComponentsService;
+import com.wangyang.data.service.ITagsService;
 import com.wangyang.model.pojo.dto.ArticleDto;
-import com.wangyang.model.pojo.entity.Article;
-import com.wangyang.model.pojo.entity.Components;
+import com.wangyang.model.pojo.entity.*;
 import com.wangyang.data.repository.ComponentsRepository;
-import com.wangyang.model.pojo.entity.ComponentsArticle;
+import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.model.pojo.params.ComponentsParam;
 
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -48,6 +52,8 @@ public class ComponentsServiceImpl implements IComponentsService {
     @Autowired
     IArticleService articleService;
 
+    @Autowired
+    ITagsService tagsService;
 
 
     @Override
@@ -153,7 +159,7 @@ public class ComponentsServiceImpl implements IComponentsService {
     @Override
     public Object getModel(Components components) {
         try {
-            if(components.getDataName().startsWith("@")){
+            if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA)){
 
                 return  articleService.listByComponentsId(components.getId());
 
@@ -175,6 +181,59 @@ public class ComponentsServiceImpl implements IComponentsService {
                 Object o = method.invoke(bean);
                 return o;
 
+            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
+                Specification<Article> specification = new Specification<Article>() {
+                    @Override
+                    public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                        return null;
+                    }
+                };
+                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT.length());
+                Sort sort;
+                if(args!=null||!"".equals(args)){
+                    String[] argsArray = args.split(",");
+                    String directionStr = argsArray[argsArray.length-1];
+                    if(directionStr.equals("DESC")||directionStr.equals("ASC")){
+                        Sort.Direction direction = Sort.Direction.valueOf(directionStr);
+                        sort = Sort.by(direction, Arrays.copyOf(argsArray,argsArray.length-1));
+                    }else {
+                        sort = Sort.by( argsArray);
+                    }
+                }else {
+                    sort = Sort.by(Sort.Order.desc("id"));
+                }
+
+                Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5,sort ));
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",articleDtos);
+                map.put("showUrl","/articleList?sort="+args); //likes,DESC
+                map.put("name",components.getName());
+                return map;
+//                Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+//                TemplateUtil.convertHtmlAndSave();
+            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_KEYWORD)){
+
+                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_KEYWORD.length());
+                ArticleQuery articleQuery = new ArticleQuery();
+                articleQuery.setKeyword(args);
+                Page<ArticleDto> pageDto = articleService.pageDtoBy(PageRequest.of(0, 5, Sort.by(Sort.Order.desc("updateDate"))), articleQuery);
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",pageDto);
+                map.put("showUrl","/articleList?keyword="+args); //
+                map.put("name",components.getName());
+                return map;
+            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_TAGS)) {
+                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_TAGS.length());
+                Optional<Tags> tags = tagsService.findBy(args);
+                if(tags.isPresent()){
+                    Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
+                    Map<String,Object> map = new HashMap<>();
+                    map.put("view",articleDtos);
+                    map.put("showUrl","/articleList?tagsId="+tags.get().getId());
+                    map.put("name",components.getName());
+                    return map;
+                }
             }else {
 
             }
@@ -206,4 +265,10 @@ public class ComponentsServiceImpl implements IComponentsService {
 
         return templatePages.get(0);
     }
+
+    @Override
+    public Components findByViewName(String viewName){
+        return componentsRepository.findByViewName(viewName);
+    }
+
 }

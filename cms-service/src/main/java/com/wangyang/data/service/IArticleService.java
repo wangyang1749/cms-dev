@@ -87,7 +87,7 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable);
 
-    List<ArticleDto> articleShow(Specification<Article> specification, Sort sort);
+//    List<ArticleDto> articleShow(Specification<Article> specification, Sort sort);
 
     Page<ArticleDto> articleShowLatest();
 
@@ -142,6 +142,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
     Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery);
 
     Page<Article>  pageBy(Pageable pageable, ArticleQuery articleQuery);
+
+    Page<ArticleDto>  pageDtoBy(Pageable pageable, ArticleQuery articleQuery);
 
     List<ArticleDto> listByTitle(String title);
 

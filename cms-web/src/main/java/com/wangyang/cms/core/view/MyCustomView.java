@@ -19,6 +19,7 @@ public class MyCustomView implements View {
         response.setContentType("text/html");
         Map<String,Object> objectMap = (Map<String,Object>)map;
         BaseTemplate baseTemplate = (BaseTemplate) map.get("template");
+//        map.get("view");
         String html = TemplateUtil.convertHtmlAndPreview(objectMap, baseTemplate);
         String convertHtml = FileUtils.convertByString(html, request);
         response.getWriter().write(convertHtml);

@@ -172,6 +172,25 @@ public class FileUtils {
         return  result;
     }
 
+    public static String convertByString(String content){
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(content);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+//            System.out.println("Found value: " + m.group(0) );
+//            System.out.println("Found value: " + m.group(1) );
+            String components = m.group(1);
+            String componentsContent = openFile( CmsConst.WORK_DIR+"/html/"+components);
+            componentsContent = java.util.regex.Matcher.quoteReplacement(componentsContent);
+            m.appendReplacement(sb,componentsContent);
+        }
+
+        m.appendTail(sb);
+        String result = sb.toString();
+
+        return  result;
+    }
+
     public static String convert(File file, HttpServletRequest request){
         String content = openFile(file);
         return  convertByString(content,request);
