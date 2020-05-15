@@ -16,6 +16,7 @@ import com.wangyang.data.service.ITagsService;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.entity.*;
 import com.wangyang.data.repository.ComponentsRepository;
+import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.model.pojo.params.ComponentsParam;
 
@@ -185,7 +186,7 @@ public class ComponentsServiceImpl implements IComponentsService {
                 Specification<Article> specification = new Specification<Article>() {
                     @Override
                     public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                        return null;
+                        return criteriaQuery.where(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED)).getRestriction();
                     }
                 };
                 String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT.length());
@@ -217,6 +218,7 @@ public class ComponentsServiceImpl implements IComponentsService {
                 String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_KEYWORD.length());
                 ArticleQuery articleQuery = new ArticleQuery();
                 articleQuery.setKeyword(args);
+                articleQuery.setStatus(ArticleStatus.PUBLISHED);
                 Page<ArticleDto> pageDto = articleService.pageDtoBy(PageRequest.of(0, 5, Sort.by(Sort.Order.desc("updateDate"))), articleQuery);
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",pageDto);
