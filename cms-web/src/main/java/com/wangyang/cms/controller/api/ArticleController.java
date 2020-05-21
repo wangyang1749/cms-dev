@@ -190,11 +190,11 @@ public class ArticleController {
 //        NodeJsUtil.execNodeJs("node","templates/nodejs/generatePdf.js",url,generatePath);
         return BaseResponse.ok("生成成功");
     }
-    @GetMapping("/download/{id}")
-    public String downloadPdf(@PathVariable("id") Integer id){
-        String generatePdf = articleService.generatePdf(id);
-        return generatePdf;
-    }
+//    @GetMapping("/download/{id}")
+//    public String downloadPdf(@PathVariable("id") Integer id){
+//        String generatePdf = articleService.generatePdf(id);
+//        return generatePdf;
+//    }
 
 
 

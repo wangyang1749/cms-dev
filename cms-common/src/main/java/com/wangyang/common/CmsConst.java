@@ -26,6 +26,8 @@ public class CmsConst {
     public final static String ARTICLE_DETAIL_PATH = "article";
 
 
+    public final static String DEFAULT_ARTICLE_PDF_TEMPLATE = "DEFAULT_ARTICLE_PDF_TEMPLATE";
+
 
     public final static String DEFAULT_ARTICLE_TEMPLATE = "DEFAULT_ARTICLE";
     public final static String DEFAULT_ARTICLE_CHANNEL_TEMPLATE = "DEFAULT_ARTICLE_CHANNEL";

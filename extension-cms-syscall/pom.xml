@@ -17,6 +17,12 @@
             <artifactId>cms-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wangyang.cms</groupId>
+            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>cms-service</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

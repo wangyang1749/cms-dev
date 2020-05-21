@@ -98,7 +98,7 @@ public interface IArticleService extends IBaseArticleService<Article> {
     int increaseLikes(int id);
 
 
-    String  generatePdf(Integer articleId);
+//    String  generatePdf(Integer articleId);
 
 
 

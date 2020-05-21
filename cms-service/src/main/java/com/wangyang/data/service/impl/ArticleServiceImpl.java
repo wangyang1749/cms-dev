@@ -177,33 +177,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
 
 
-    @Override
-    public String  generatePdf(Integer articleId) {
 
-        Article article = findArticleById(articleId);
-        if(article.getStatus()!=ArticleStatus.PUBLISHED){
-            throw new ArticleException("文章没有发布不能生成PDF!!");
-        }
-        String pdfPath= article.getPath()+"/"+article.getViewName()+".pdf";
-        String absolutePath = workDir+"/html/"+pdfPath;
-        File file = new File(absolutePath);
-        if(file.exists()){
-            if(!pdfPath.equals(article.getPdfPath())){
-                article.setPdfPath(pdfPath);
-                Article updateArticle = articleRepository.save(article);
-                return updateArticle.getPdfPath();
-            }
-            return article.getPdfPath();
-        }else {
-//            String url = "http://localhost:8080/preview/pdf/"+articleId;
-//            String result = NodeJsUtil.execNodeJs("node", workDir+"/templates/nodejs/generatePdf.js", url, workDir + "/html/" + pdfPath);
-//            System.out.println(result);
-//            article.setPdfPath(pdfPath);
-//            Article saveArticle = articleRepository.save(article);
-//            return  saveArticle.getPdfPath();
-            return "";
-        }
-    }
 
 
 

@@ -111,18 +111,18 @@ public class PreviewController {
     }
 
     @GetMapping("/pdf/{articleId}")
-    public ModelAndView previewPdf(@PathVariable("articleId")Integer articleId){
+    public String previewPdf(@PathVariable("articleId")Integer articleId){
         ArticleDetailVO articleDetailVo = articleService.findArticleAOById(articleId);
 //        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());
 //        if(!templateOptional.isPresent()){
 //            throw new TemplateException("Template not found in preview !!");
 //        }
-        Template template = templateService.findByEnName(articleDetailVo.getTemplateName());
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("view",articleDetailVo);
-        modelAndView.addObject("notPdf",true);
-        modelAndView.setViewName(template.getTemplateValue());
-        return modelAndView;
+        Template template = templateService.findByEnName(CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE);
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.addObject("view",articleDetailVo);
+//        modelAndView.addObject("notPdf",true);
+//        modelAndView.setViewName(template.getTemplateValue());
+        return TemplateUtil.convertHtmlAndPreview(articleDetailVo,template);
     }
 
 }

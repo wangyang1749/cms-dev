@@ -75,6 +75,13 @@ public class ArticleListController {
 //        return "1111"+categoryViewName+page;
     }
 
+    /**
+     * 根据条件查询文章并且缓存，直到增删改文章
+     * @param request
+     * @param articleQuery
+     * @param pageable
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/articleList",produces = "text/html")
     public String articleListBySort(HttpServletRequest request,  ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){

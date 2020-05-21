@@ -40,9 +40,9 @@ public class ArticleDetailController {
         return "Page is not found!";
     }
 
-    @GetMapping("/article/{viewName}")
+    @GetMapping("/article/{viewName}.html")
     public String showArticle(@PathVariable("viewName") String viewName, HttpServletRequest request){
-        String convert = FileUtils.convert("article/" + viewName,request);
+        String convert = FileUtils.convert("article/" + viewName+".html",request);
         if(convert!=null){
             return convert;
         }
