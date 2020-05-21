@@ -111,6 +111,7 @@ public class PreviewController {
     }
 
     @GetMapping("/pdf/{articleId}")
+    @ResponseBody
     public String previewPdf(@PathVariable("articleId")Integer articleId){
         ArticleDetailVO articleDetailVo = articleService.findArticleAOById(articleId);
 //        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());

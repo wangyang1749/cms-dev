@@ -44,7 +44,7 @@ public class DownloadController {
             }
         }else {
             String url = "http://localhost:8080/preview/pdf/"+articleId;
-            NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR+"/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR + "/html/" + pdfPath);
+            String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR + "/html/" + pdfPath);
             article.setPdfPath(pdfPath);
             Article saveArticle = articleService.save(article);
             result =  saveArticle.getPdfPath();
