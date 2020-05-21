@@ -218,6 +218,9 @@ public class ArticleController {
                 if(article.getOpenComment()==null){
                     article.setOpenComment(false);
                 }
+                if(article.getPicPath()==null){
+                    article.setPicPath(ImageUtils.getImgSrc(article.getFormatContent()));
+                }
                 Category category = categoryService.findById(article.getCategoryId());
                 article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
                 article.setTemplateName(category.getArticleTemplateName());
