@@ -126,4 +126,13 @@ public class PreviewController {
         return TemplateUtil.convertHtmlAndPreview(articleDetailVo,template);
     }
 
+    @GetMapping("/simpleArticle/{articleId}")
+    @ResponseBody
+    public String previewSimpleArticle(@PathVariable("articleId")Integer articleId){
+//        ArticleDetailVO articleDetailVo = articleService.findArticleAOById(articleId);
+        Article article = articleService.findArticleById(articleId);
+//        Template template = templateService.findByEnName(CmsConst.DEFAULT_ARTICLE_PREVIEW_TEMPLATE);
+        return article.getFormatContent();
+    }
+
 }
