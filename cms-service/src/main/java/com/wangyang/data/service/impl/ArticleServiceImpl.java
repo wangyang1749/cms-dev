@@ -2,10 +2,7 @@ package com.wangyang.data.service.impl;
 
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
-import com.wangyang.common.utils.CMSUtils;
-import com.wangyang.common.utils.JpaUtils;
-import com.wangyang.common.utils.MarkdownUtils;
-import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.common.utils.*;
 import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
@@ -219,6 +216,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             log.debug("!!! view name not found, use "+viewName);
             article.setViewName(viewName);
         }
+
+
         //设置评论模板
         if(article.getCommentTemplateName()==null){
             article.setCommentTemplateName(CmsConst.DEFAULT_COMMENT_TEMPLATE);
@@ -229,7 +228,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
         article.setTemplateName(category.getArticleTemplateName());
         article = super.createOrUpdate(article);
+        //图片展示
+        if(article.getPicPath()==null|| "".equals(article.getPicPath())){
+            String imgSrc = ImageUtils.getImgSrc(article.getFormatContent());
+            article.setPicPath(imgSrc);
+        }
         generateSummary(article);
+
 //        保存文章
         Article saveArticle = articleRepository.saveAndFlush(article);
         articleDetailVO.setCategory(category);

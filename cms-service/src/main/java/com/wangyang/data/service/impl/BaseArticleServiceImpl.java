@@ -22,9 +22,7 @@ public abstract class BaseArticleServiceImpl<ARTICLE extends BaseArticle> implem
 
 //        if(article.getStatus()== ArticleStatus.PUBLISHED){
             String[] renderHtml = MarkdownUtils.renderHtml(article.getOriginalContent());
-
             article.setFormatContent(renderHtml[1]);
-
             article.setToc(renderHtml[0]);
 //        }
 
