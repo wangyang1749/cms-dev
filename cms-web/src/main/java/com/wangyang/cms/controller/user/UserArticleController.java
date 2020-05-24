@@ -54,7 +54,7 @@ public class UserArticleController {
         ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",articleDetailVO);
-        return "templates/user/edit";
+        return "templates/user/write";
     }
 
     @GetMapping("/info")

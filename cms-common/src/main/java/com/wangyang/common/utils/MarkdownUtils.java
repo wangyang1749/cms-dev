@@ -37,9 +37,10 @@ public class MarkdownUtils {
                     MediaTagsExtension.create(),
                     FootnoteExtension.create()
 
-            )).set(TocExtension.LEVELS, 255)
+            ))
+            .set(TocExtension.LEVELS, 255)
             .set(TocExtension.LIST_CLASS,"toc")
-            .set(TocExtension.IS_NUMBERED,true)
+            .set(TocExtension.IS_NUMBERED,false)
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 

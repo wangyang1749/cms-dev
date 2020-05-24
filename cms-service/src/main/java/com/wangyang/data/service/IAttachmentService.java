@@ -13,6 +13,10 @@ public interface IAttachmentService {
     Attachment add(Attachment attachment);
     Attachment upload(@NonNull MultipartFile file);
 
+    Attachment uploadStrContent(String content);
+
+    Attachment uploadStrContent(int attachmentId, String content);
+
     Page<Attachment> list(Pageable pageable);
 
     Attachment deleteById(int id);

@@ -17,6 +17,14 @@ public interface FileHandler {
 
     UploadResult upload(String url, String name);
 
+    /**
+     * 上传字符串文件
+     * @param content
+     * @param strName
+     * @return
+     */
+    UploadResult uploadStrContent(String content,String strName);
+
     void delete(@NonNull String key);
 
     static boolean isImageType(@Nullable MediaType mediaType) {

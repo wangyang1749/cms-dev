@@ -147,6 +147,12 @@ public class LocalFileHandler implements FileHandler{
         }
     }
 
+
+    @Override
+    public UploadResult uploadStrContent(String content, String strName) {
+        return null;
+    }
+
     @Override
     public UploadResult upload(String url, String name) {
         Calendar date = Calendar.getInstance();

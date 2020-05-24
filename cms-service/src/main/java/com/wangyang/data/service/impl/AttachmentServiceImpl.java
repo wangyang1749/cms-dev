@@ -62,6 +62,43 @@ public class AttachmentServiceImpl implements IAttachmentService {
     }
 
 
+    @Override
+    public Attachment uploadStrContent(String content){
+        UploadResult uploadResult = fileHandlers.uploadStrContent(content,null, getAttachmentType());
+        Attachment attachment = new Attachment();
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
+        attachment.setPath(uploadResult.getFilePath());
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
+        attachment.setFileKey(uploadResult.getKey());
+        //image/png
+//        attachment.setMediaType(uploadResult.getMediaType().toString());
+        //png
+        attachment.setSuffix(uploadResult.getSuffix());
+        attachment.setName(uploadResult.getFilename());
+        attachment.setSize(uploadResult.getSize());
+        attachment.setType( getAttachmentType());
+        return attachmentRepository.save(attachment);
+    }
+
+    @Override
+    public Attachment uploadStrContent(int attachmentId,String content){
+        Attachment attachment = findById(attachmentId);
+
+        UploadResult uploadResult = fileHandlers.uploadStrContent(content,attachment.getName(), getAttachmentType());
+//        Attachment attachment = new Attachment();
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
+//        attachment.setPath(uploadResult.getFilePath());
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
+//        attachment.setFileKey(uploadResult.getKey());
+
+//        attachment.setSuffix(uploadResult.getSuffix());
+
+        attachment.setSize(uploadResult.getSize());
+        attachment.setType( getAttachmentType());
+        return attachmentRepository.save(attachment);
+    }
+
+
 
     @Override
     public Page<Attachment> list(Pageable pageable){

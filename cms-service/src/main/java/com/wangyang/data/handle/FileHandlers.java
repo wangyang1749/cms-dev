@@ -41,6 +41,17 @@ public class FileHandlers {
         throw new FileOperationException("No available file handler to upload the file").setErrorData(attachmentType);
     }
 
+    public UploadResult uploadStrContent(@NonNull String content, String strName,@NonNull AttachmentType attachmentType) {
+
+        for (FileHandler fileHandler : fileHandlers) {
+            if (fileHandler.supportType(attachmentType)) {
+                return fileHandler.uploadStrContent(content,strName);
+            }
+        }
+
+        throw new FileOperationException("No available file handler to upload the file").setErrorData(attachmentType);
+    }
+
     public UploadResult upload(@NonNull String url,@NonNull String name,@NonNull AttachmentType attachmentType){
         for (FileHandler fileHandler : fileHandlers) {
             if (fileHandler.supportType(attachmentType)) {

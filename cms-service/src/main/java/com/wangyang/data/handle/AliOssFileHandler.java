@@ -113,11 +113,67 @@ public class AliOssFileHandler implements FileHandler {
 
     /**
      * 上传公式的svg到阿里云
-     * @param math
      * @return
      */
-    public UploadResult uploadMath(String math,String name){
-       return null;
+    @Override
+    public UploadResult uploadStrContent(String content,String strName){
+
+        // Get config
+        String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
+        String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
+        String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
+        String domain = optionService.getPropertyStringValue(PropertyEnum.OSS_DOMAIN);
+        String source = optionService.getPropertyStringValue(PropertyEnum.OSS_SOURCE);
+
+        StringBuilder basePath = new StringBuilder(domain);
+        basePath.append(bucketName)
+                .append(".")
+                .append(endPoint)
+                .append("/");
+
+        OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);
+        try {
+            String basename ;//FilenameUtils.getBasename(Objects.requireNonNull(file.getOriginalFilename()));
+            String extension;//FilenameUtils.getExtension(file.getOriginalFilename());
+            String timestamp = String.valueOf(System.currentTimeMillis());
+
+            if (strName!=null){
+                basename = strName;
+                extension = "";
+            }else {
+                basename = "imgSvg-"+timestamp+".svg";
+                extension = "svg";
+            }
+
+
+            StringBuilder upFilePath = new StringBuilder();
+            if (StringUtils.isNotEmpty(source)) {
+                upFilePath.append(source)
+                        .append("/");
+            }
+            upFilePath.append(basename);
+            String filePath = StringUtils.join(basePath.toString(), upFilePath.toString());
+            log.info(basePath.toString());
+
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, upFilePath.toString(),new ByteArrayInputStream(content.getBytes()) );
+            if(putObjectResult==null){
+                throw  new FileOperationException("File upload failed!!");
+            }
+            UploadResult uploadResult = new UploadResult();
+            uploadResult.setFilename(basename);
+            uploadResult.setFilePath(filePath);
+            uploadResult.setKey(upFilePath.toString());
+//            uploadResult.setMediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())));
+            uploadResult.setSuffix(extension);
+            uploadResult.setSize(Long.valueOf((content.getBytes().length)));
+            log.info("Uploaded file: [{}] successfully", upFilePath.toString());
+            return uploadResult;
+
+        }finally {
+            ossClient.shutdown();
+        }
+
     }
     /**
      * 通过网络url上传文件

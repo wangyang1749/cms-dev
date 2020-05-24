@@ -1,7 +1,9 @@
 package com.wangyang.cms.controller.api;
 
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.data.service.IAttachmentService;
 import com.wangyang.model.pojo.entity.Attachment;
+import org.jpmml.model.annotations.Required;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,25 @@ public class AttachmentController {
     public Attachment upload(@RequestPart("file") MultipartFile file){
         return  attachmentService.upload(file);
     }
+
+    @RequestMapping(value = "/uploadStrContent")
+    public Attachment uploadStrContent(@RequestBody  String strContent){
+        if(strContent==null||"".equals(strContent)){
+            throw new ObjectException("strContent不能为空！！");
+        }
+
+        return  attachmentService.uploadStrContent(strContent);
+    }
+
+    @RequestMapping(value = "/uploadStrContent/{attachmentId}")
+    public Attachment updateStrContent(@PathVariable("attachmentId")Integer attachmentId,@RequestBody  String strContent){
+        if(strContent==null||"".equals(strContent)){
+            throw new ObjectException("strContent不能为空！！");
+        }
+
+        return  attachmentService.uploadStrContent(attachmentId,strContent);
+    }
+
 
     @GetMapping
     public Page<Attachment> list(@PageableDefault (sort = {"id"},direction = DESC)Pageable pageable){
