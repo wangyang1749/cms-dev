@@ -3,6 +3,7 @@ package com.wangyang.cms.controller.api;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.data.service.IAttachmentService;
 import com.wangyang.model.pojo.entity.Attachment;
+import com.wangyang.model.pojo.params.AttachmentParam;
 import org.jpmml.model.annotations.Required;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,21 +31,20 @@ public class AttachmentController {
     }
 
     @RequestMapping(value = "/uploadStrContent")
-    public Attachment uploadStrContent(@RequestBody  String strContent){
-        if(strContent==null||"".equals(strContent)){
-            throw new ObjectException("strContent不能为空！！");
-        }
+    public Attachment uploadStrContent(@RequestBody AttachmentParam attachmentParam){
 
-        return  attachmentService.uploadStrContent(strContent);
+        return  attachmentService.uploadStrContent(attachmentParam);
     }
 
-    @RequestMapping(value = "/uploadStrContent/{attachmentId}")
-    public Attachment updateStrContent(@PathVariable("attachmentId")Integer attachmentId,@RequestBody  String strContent){
-        if(strContent==null||"".equals(strContent)){
-            throw new ObjectException("strContent不能为空！！");
-        }
+    @RequestMapping(value = "/find/{id}")
+    public Attachment findById(@PathVariable("id") Integer id){
+       return  attachmentService.findById(id);
+    }
 
-        return  attachmentService.uploadStrContent(attachmentId,strContent);
+
+    @RequestMapping(value = "/uploadStrContent/{attachmentId}")
+    public Attachment updateStrContent(@PathVariable("attachmentId")Integer attachmentId,@RequestBody  AttachmentParam attachmentParam){
+        return  attachmentService.uploadStrContent(attachmentId,attachmentParam);
     }
 
 

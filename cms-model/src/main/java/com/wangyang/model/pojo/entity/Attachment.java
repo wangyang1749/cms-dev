@@ -4,10 +4,7 @@ import com.wangyang.model.pojo.entity.base.BaseEntity;
 import com.wangyang.model.pojo.enums.AttachmentType;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -27,5 +24,9 @@ public class Attachment extends BaseEntity {
     private Integer height;
     private String thumbPath;
     private String latex;
-
+    @Column( columnDefinition = "longtext")
+    private String formatContent;
+    @Column( columnDefinition = "longtext")
+    private String originContent;
+    private String renderType;
 }

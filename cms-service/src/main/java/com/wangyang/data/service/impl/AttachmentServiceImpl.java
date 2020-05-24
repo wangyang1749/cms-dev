@@ -8,6 +8,7 @@ import com.wangyang.model.pojo.enums.AttachmentType;
 import com.wangyang.model.pojo.enums.PropertyEnum;
 import com.wangyang.data.repository.AttachmentRepository;
 import com.wangyang.model.pojo.entity.Attachment;
+import com.wangyang.model.pojo.params.AttachmentParam;
 import com.wangyang.model.pojo.support.UploadResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +64,10 @@ public class AttachmentServiceImpl implements IAttachmentService {
 
 
     @Override
-    public Attachment uploadStrContent(String content){
-        UploadResult uploadResult = fileHandlers.uploadStrContent(content,null, getAttachmentType());
+    public Attachment uploadStrContent(AttachmentParam attachmentParam){
+        UploadResult uploadResult = fileHandlers.uploadStrContent(attachmentParam.getFormatContent(),null, getAttachmentType());
         Attachment attachment = new Attachment();
+        attachment.setOriginContent(attachmentParam.getOriginContent());
         ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
         attachment.setPath(uploadResult.getFilePath());
         ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
@@ -73,6 +75,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
         //image/png
 //        attachment.setMediaType(uploadResult.getMediaType().toString());
         //png
+        attachment.setRenderType(attachmentParam.getRenderType());
+
         attachment.setSuffix(uploadResult.getSuffix());
         attachment.setName(uploadResult.getFilename());
         attachment.setSize(uploadResult.getSize());
@@ -81,18 +85,13 @@ public class AttachmentServiceImpl implements IAttachmentService {
     }
 
     @Override
-    public Attachment uploadStrContent(int attachmentId,String content){
+    public Attachment uploadStrContent(int attachmentId,AttachmentParam attachmentParam){
         Attachment attachment = findById(attachmentId);
 
-        UploadResult uploadResult = fileHandlers.uploadStrContent(content,attachment.getName(), getAttachmentType());
-//        Attachment attachment = new Attachment();
-        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
-//        attachment.setPath(uploadResult.getFilePath());
-        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
-//        attachment.setFileKey(uploadResult.getKey());
+        UploadResult uploadResult = fileHandlers.uploadStrContent(attachmentParam.getFormatContent(),attachment.getName(), getAttachmentType());
 
-//        attachment.setSuffix(uploadResult.getSuffix());
-
+        attachment.setOriginContent(attachmentParam.getOriginContent());
+        attachment.setRenderType(attachmentParam.getRenderType());
         attachment.setSize(uploadResult.getSize());
         attachment.setType( getAttachmentType());
         return attachmentRepository.save(attachment);
