@@ -2,6 +2,7 @@ package com.wangyang.model.pojo.enums;
 
 public enum  PropertyEnum {
     END_POINT("oss_ali_end_point","","END_POINT",0,false),
+    END_POINT_PUBLIC("oss_ali_end_point_public","","END_POINT_PUBLIC",0,false),
     ACCESS_KEY("oss_ali_access_key","","ACCESS_KEY",0,false),
     ACCESS_SECRET("oss_ali_access_secret","","ACCESS_SECRET",0,false),
     BUCKET_NAME("oss_ali_bucket_name","","BUCKET_NAME",0,false),

@@ -42,6 +42,7 @@ public class AliOssFileHandler implements FileHandler {
 
         // Get config
         String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String endPointPublic = optionService.getPropertyStringValue(PropertyEnum.END_POINT_PUBLIC);
         String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
         String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
         String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
@@ -53,7 +54,7 @@ public class AliOssFileHandler implements FileHandler {
         StringBuilder basePath = new StringBuilder(domain);
         basePath.append(bucketName)
                 .append(".")
-                .append(endPoint)
+                .append(endPointPublic)
                 .append("/");
 
         OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);
@@ -120,6 +121,8 @@ public class AliOssFileHandler implements FileHandler {
 
         // Get config
         String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String endPointPublic = optionService.getPropertyStringValue(PropertyEnum.END_POINT_PUBLIC);
+
         String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
         String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
         String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
@@ -129,7 +132,7 @@ public class AliOssFileHandler implements FileHandler {
         StringBuilder basePath = new StringBuilder(domain);
         basePath.append(bucketName)
                 .append(".")
-                .append(endPoint)
+                .append(endPointPublic)
                 .append("/");
 
         OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);
