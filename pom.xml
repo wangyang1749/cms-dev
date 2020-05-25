@@ -259,6 +259,11 @@
             <artifactId>flexmark-ext-footnotes</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-admonition</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
 
 
 

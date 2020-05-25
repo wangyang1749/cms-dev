@@ -3,6 +3,7 @@ package com.wangyang.common.utils;
 
 //import com.vladsch.flexmark.ext.tables.TablesExtension;
 //import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
 import com.vladsch.flexmark.ext.emoji.EmojiShortcutType;
@@ -35,9 +36,11 @@ public class MarkdownUtils {
                     GitLabExtension.create(),
                     TocExtension.create(),
                     MediaTagsExtension.create(),
-                    FootnoteExtension.create()
+                    FootnoteExtension.create(),
+                    AdmonitionExtension.create()
 
             ))
+//            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
             .set(TocExtension.LEVELS, 255)
             .set(TocExtension.LIST_CLASS,"toc")
             .set(TocExtension.IS_NUMBERED,false)
