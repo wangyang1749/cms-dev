@@ -20,7 +20,10 @@ public enum  ArticleStatus implements ValueEnum<Integer> {
     /**
      * Intimate status
      */
-    INTIMATE(3);
+    INTIMATE(3),
+
+    MODIFY(4); //修改的
+
 
     private final int value;
 

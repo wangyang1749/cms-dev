@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableJms
@@ -14,6 +15,7 @@ import org.springframework.jms.annotation.EnableJms;
 @EnableJpaRepositories(basePackages = {"com.wangyang.data.repository"})
 @EntityScan(basePackages = {"com.wangyang.model.pojo.entity"})
 @EnableCaching
+@EnableAsync
 public class CmsApplication {
 
 	public static void main(String[] args) {

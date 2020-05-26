@@ -82,7 +82,7 @@ public class UserArticleController {
         model.addAttribute("categories",categories);
 
 
-        System.out.println(userId);
+//        System.out.println(userId);
         return "templates/user/articleList";
     }
 

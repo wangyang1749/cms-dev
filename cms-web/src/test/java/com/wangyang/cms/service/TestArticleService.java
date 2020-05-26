@@ -22,32 +22,6 @@ public class TestArticleService extends AbstractServiceTest{
 
 
     @Test
-    public void testTags(){
-//        Page<Article> page = articleService.pageByTagId(4, 2);
-//        System.out.println(page);
-    }
-
-    @Test
-    public void testUpdateCommentNum(){
-//        articleRepository.updateCommentNum(10,-1);
-//        System.out.println(articleRepository.getCommentNum(10));
-    }
-
-    public void save(){
-        Article article = articleService.saveOrUpdateArticleDraft(addArticle());
-        Assert.assertEquals(ArticleStatus.DRAFT,article.getStatus());
-    }
-    @Test
-    public void testSave(){
-        Article article = articleService.saveOrUpdateArticleDraft(addArticle());
-        Assert.assertEquals("Title",article.getTitle());
-        Assert.assertEquals(ArticleStatus.DRAFT,article.getStatus());
-//        Article updateArticle = articleService.saveOrUpdateArticleDraft(updateArticle());
-//        Assert.assertEquals("updateTitle",updateArticle.getTitle());
-//        Assert.assertEquals(ArticleStatus.DRAFT,updateArticle.getStatus());
-    }
-
-    @Test
     public void testAddCategory(){
         Category category = categoryService.save(addCategory());
 
@@ -115,47 +89,8 @@ public class TestArticleService extends AbstractServiceTest{
     }
 
 
-    @Test
-    public void testAddHtml(){
-        ArticleDetailVO article = articleService.createArticleDetailVo(addArticle(), null);
-        htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
-        File file = new File(path);
-        Assert.assertEquals(true,file.exists());
-        file.delete();
-    }
-    @Test
-    public void testAddHtmlAndViewName(){
-        Article articleParams = addArticle();
-        articleParams.setViewName("1749748955");
-        ArticleDetailVO article = articleService.createArticleDetailVo(articleParams, null);
-        htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
-        File file = new File(path);
-        Assert.assertEquals(true,file.exists());
-        Assert.assertEquals("1749748955",article.getViewName());
-        file.delete();
-    }
 
-    @Test
-    public void testAddArticleAndCategoryHtml(){
-        Category category = categoryService.addOrUpdate(addCategory());
-//        category.setPath("articleList");
-        Article articleParams = addArticle();
-        articleParams.setCategoryId(category.getId());
-        ArticleDetailVO article = articleService.createArticleDetailVo(articleParams, null);
 
-        htmlService.conventHtml(article);
-        String path = CmsConst.WORK_DIR+"/html/"+article.getPath()+"/"+article.getViewName()+".html";
-        File file = new File(path);
-        Assert.assertEquals(true,file.exists());
-        file.delete();
-
-        String path2 = CmsConst.WORK_DIR+"/html/"+category.getPath()+"/"+category.getViewName()+".html";
-        File file2 = new File(path2);
-        Assert.assertEquals(true,file2.exists());
-        file2.delete();
-    }
 
 //    @Test
     public void testUpdateController(){
@@ -213,15 +148,7 @@ public class TestArticleService extends AbstractServiceTest{
 //        file2.delete();
     }
 
-    @Test
-    public void test(){
-        int beforeSize = articleRepository.findAllId().size();
-        testCreate();
-        save();
-        int afterSize = articleRepository.findAllId().size();
-        Assert.assertEquals(beforeSize+1,afterSize);
-        
-    }
+
 
     @Test
     public void testListByCategory(){

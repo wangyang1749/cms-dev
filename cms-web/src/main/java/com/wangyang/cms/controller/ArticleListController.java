@@ -68,8 +68,8 @@ public class ArticleListController {
         if (request!=null){
             return result;
         }
-        System.out.println(categoryViewName);
-        System.out.println(page);
+//        System.out.println(categoryViewName);
+//        System.out.println(page);
         return  "Page is not found!";
 
 //        return "1111"+categoryViewName+page;

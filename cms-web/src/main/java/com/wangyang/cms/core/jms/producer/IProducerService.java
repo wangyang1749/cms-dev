@@ -7,5 +7,4 @@ import com.wangyang.model.pojo.vo.ArticleDetailVO;
 public interface IProducerService {
 
     void sendMessage(ArticleDetailVO articleDetailVO);
-    void commonTemplate(String option);
 }

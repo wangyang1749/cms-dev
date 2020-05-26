@@ -6,9 +6,11 @@ import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+
+@Component
 @Slf4j
 public class ArticleConsumerServiceImpl {
 

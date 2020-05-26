@@ -153,7 +153,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //        if(article.getCategoryId()==null){
 //            throw new ArticleException("文章类别不能为空!!");
 //        }
-        article.setHaveHtml(false);
+
+
         // 获取默认文章模板Id
 //        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
 //            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
@@ -164,7 +165,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             log.debug("!!! view name not found, use "+viewName);
             article.setViewName(viewName);
         }
-        article.setStatus(ArticleStatus.DRAFT);
+//        article.setStatus(ArticleStatus.DRAFT);
         return  articleRepository.save(article);
     }
 

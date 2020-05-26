@@ -3,6 +3,8 @@ package com.wangyang.cms.listener;
 import com.wangyang.data.service.IOptionService;
 import com.wangyang.data.service.ISheetService;
 import com.wangyang.data.service.ITagsService;
+import com.wangyang.data.service.impl.PermissionServiceImpl;
+import com.wangyang.model.pojo.dto.PermissionDto;
 import com.wangyang.model.pojo.dto.TagsDto;
 import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.entity.Option;
@@ -64,11 +66,19 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     ISheetService sheetService;
     @Autowired
     StringCacheStore stringCacheStore;
+    @Autowired
+    PermissionServiceImpl permissionService;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         initCms();
         initDatabase(applicationStartedEvent);
+
+        log.info("加载用户权限！！");
+        List<PermissionDto> permissionDtos = permissionService.listAll();
+        permissionDtos.forEach(permissionDto -> {
+            log.info(permissionDto.getUrl()+"需要权限"+permissionDto.getEnName());
+        });
 //        if(!isInit()){
 //            log.info("### init database!!!");
 //            initDatabase(applicationStartedEvent);

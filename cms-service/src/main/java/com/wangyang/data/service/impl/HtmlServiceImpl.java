@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,7 @@ public class HtmlServiceImpl implements IHtmlService {
     ICommentService commentService;
 
     @Override
+    @Async
     public void conventHtml(ArticleDetailVO articleVO){
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
 

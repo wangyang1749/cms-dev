@@ -1,5 +1,6 @@
 package com.wangyang.cms.config;
 
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -7,9 +8,10 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 
 import javax.jms.ConnectionFactory;
 
-//@Configuration
-@Deprecated
+@Configuration
 public class JmsConfig {
+
+
 
 //    @Bean
 //    public JmsListenerContainerFactory<?> topicListenerFactory(ConnectionFactory connectionFactory){
