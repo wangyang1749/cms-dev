@@ -136,6 +136,9 @@ public class ArticleController {
     @PostMapping("/save/{id}")
     public Article updateArticle( @PathVariable("id") Integer id,@Valid @RequestBody ArticleParams articleParams){
         Article article = articleService.findArticleById(id);
+        if(article.getOriginalContent().equals(articleParams.getOriginalContent())){
+            return article;
+        }
         BeanUtils.copyProperties(articleParams,article,"picPath");
         Boolean haveHtml = Optional.ofNullable(article.getHaveHtml()).orElse(false);
         if(haveHtml){
