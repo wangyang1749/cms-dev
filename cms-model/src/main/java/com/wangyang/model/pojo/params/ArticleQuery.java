@@ -26,4 +26,6 @@ public class ArticleQuery {
 
     public Integer tagsId;
 
+    private Boolean haveHtml;
+
 }

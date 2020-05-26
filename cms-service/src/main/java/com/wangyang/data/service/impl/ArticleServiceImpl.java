@@ -824,7 +824,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
                 Subquery<Article> subquery = criteriaQuery.subquery(Article.class);
                 Root<ArticleTags> subRoot = subquery.from(ArticleTags.class);
                 subquery = subquery.select(subRoot.get("articleId")).where(criteriaBuilder.equal(subRoot.get("tagsId"),tagId));
-                return criteriaBuilder.in(root.get("id")).value(subquery);
+                return criteriaQuery.where(criteriaBuilder.in(root.get("id")).value(subquery),criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
             }
         };
         Page<Article> articles = articleRepository.findAll(specification, pageable);
@@ -906,7 +906,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
                 predicates.add(criteriaBuilder.or(titleLike, originalContentLike));
             }
-
+            if(articleQuery.getHaveHtml()!=null){
+                predicates.add(criteriaBuilder.equal(root.get("haveHtml"),articleQuery.getHaveHtml()));
+            }
             if(articleQuery.getUserId()!=null){
                 predicates.add(criteriaBuilder.equal(root.get("userId"), articleQuery.getUserId()));
             }
@@ -920,6 +922,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
                 subquery = subquery.select(subRoot.get("articleId")).where(criteriaBuilder.equal(subRoot.get("tagsId"),articleQuery.getTagsId()));
                 predicates.add(criteriaBuilder.in(root.get("id")).value(subquery));
             }
+
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
     }
