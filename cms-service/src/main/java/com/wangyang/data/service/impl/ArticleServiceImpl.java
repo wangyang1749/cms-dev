@@ -719,6 +719,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
+
+
     @Override
     public List<ArticleDto> listBy(int categoryId){
         return  articleRepository.findAll(queryByCategory(categoryId)).stream().map(article -> {

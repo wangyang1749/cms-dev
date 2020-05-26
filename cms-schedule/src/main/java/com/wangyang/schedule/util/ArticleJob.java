@@ -56,19 +56,7 @@ public class ArticleJob {
         Components components = componentsService.findByViewName("hotArticle");
         Object o = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(o, components);
-//        Specification<Article> specification = new Specification<Article>() {
-//            @Override
-//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-//                return null;
-//            }
-//        };
-//        Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits"))));
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("view",articleDtos);
-//        map.put("showUrl","/articleList?sort=visits,DESC");
-//        map.put("name","热门文章");
-//        Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-//        TemplateUtil.convertHtmlAndSave("components","hotArticle",map,template);
+
     }
 
     @ArticleJobAnnotation(jobName = "likeArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
@@ -163,4 +151,20 @@ public class ArticleJob {
     }
 
 
+
+    //每天凌晨执行
+    @ArticleJobAnnotation(jobName = "categoryArticleRecommend",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
+    public void categoryArticleRecommend(){
+        List<Category> categories = categoryService.list();
+        categories.forEach(category -> {
+            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits")));
+            Page<ArticleDto> articleDtos = articleService.pageDtoBy(category.getId(),pageRequest );
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleDtos);
+            map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
+            map.put("name",category.getName()+"推荐");
+            Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+            TemplateUtil.convertHtmlAndSave("components","recommend-"+category.getViewName(),map,template);
+        });
+    }
 }
