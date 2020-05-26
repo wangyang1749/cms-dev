@@ -108,10 +108,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         article.setStatus(ArticleStatus.PUBLISHED);
         article.setHaveHtml(true);
         article.setUpdateDate(new Date());
-        // 文章发布默认生成HTML
-        if(article.getHaveHtml()==null){
-            article.setHaveHtml(true);
-        }
+
 
         //TODO temp delete all tags and category before update
         articleTagsRepository.deleteByArticleId(article.getId());
@@ -217,7 +214,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             log.debug("!!! view name not found, use "+viewName);
             article.setViewName(viewName);
         }
-
+        article.setHaveHtml(true);
 
         //设置评论模板
         if(article.getCommentTemplateName()==null){
