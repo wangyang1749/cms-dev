@@ -11,10 +11,7 @@ import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -33,7 +30,8 @@ public class PreviewController {
     ITemplateService templateService;
 
     @GetMapping("/article/{articleId}")
-    public ModelAndView previewArticle(@PathVariable("articleId")Integer articleId){
+    @ResponseBody
+    public String previewArticle(@PathVariable("articleId")Integer articleId){
         Article article = articleService.findArticleById(articleId);
         if(article.getStatus()!= ArticleStatus.PUBLISHED){
             article = articleService.createOrUpdate(article);
@@ -53,10 +51,12 @@ public class PreviewController {
             articleDetailVo.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
         }
         Template template = templateService.findByEnName(articleDetailVo.getTemplateName());
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("view",articleDetailVo);
-        modelAndView.setViewName(template.getTemplateValue());
-        return modelAndView;
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.addObject("view",articleDetailVo);
+//        modelAndView.setViewName(template.getTemplateValue());
+        String html = TemplateUtil.convertHtmlAndPreview(articleDetailVo, template);
+        String convertHtml = FileUtils.convertByString(html);
+        return convertHtml;
     }
 
     @GetMapping("/save/{articleId}")
@@ -76,16 +76,19 @@ public class PreviewController {
     }
 
     @GetMapping("/category/{id}")
-    public ModelAndView previewCategory(@PathVariable("id") Integer id){
+    @ResponseBody
+    public String previewCategory(@PathVariable("id") Integer id){
         ModelAndView modelAndView = new ModelAndView();
         Category category = categoryService.findById(id);
         //预览
         CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,0);
 
         Template template = templateService.findByEnName(category.getTemplateName());
-        modelAndView.addObject("view", articleListVo);
-        modelAndView.setViewName(template.getTemplateValue());
-        return modelAndView;
+        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
+        String convertHtml = FileUtils.convertByString(html);
+//        modelAndView.addObject("view", articleListVo);
+//        modelAndView.setViewName(template.getTemplateValue());
+        return convertHtml;
     }
     @GetMapping("/sheet/{id}")
     public ModelAndView previewSheet(@PathVariable("id") Integer id){

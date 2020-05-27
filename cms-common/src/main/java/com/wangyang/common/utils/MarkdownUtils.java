@@ -39,7 +39,7 @@ public class MarkdownUtils {
                     FootnoteExtension.create(),
                     AdmonitionExtension.create()
 
-            ))
+            )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
             .set(TocExtension.LEVELS, 255)
             .set(TocExtension.LIST_CLASS,"toc")
