@@ -9,7 +9,6 @@ import com.vladsch.flexmark.ext.emoji.EmojiImageType;
 import com.vladsch.flexmark.ext.emoji.EmojiShortcutType;
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
-import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -20,6 +19,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.flexmark.media.MediaTagsExtension;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

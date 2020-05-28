@@ -79,10 +79,10 @@
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-admonition</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-media-tags</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-media-tags</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-ext-toc</artifactId>
