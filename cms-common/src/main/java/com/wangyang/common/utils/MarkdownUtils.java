@@ -19,6 +19,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.flexmark.attribute.AttributeExtension;
 import com.wangyang.common.flexmark.media.MediaTagsExtension;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +38,8 @@ public class MarkdownUtils {
                     TocExtension.create(),
                     MediaTagsExtension.create(),
                     FootnoteExtension.create(),
-                    AdmonitionExtension.create()
+                    AdmonitionExtension.create(),
+                    AttributeExtension.create()
 
             )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)

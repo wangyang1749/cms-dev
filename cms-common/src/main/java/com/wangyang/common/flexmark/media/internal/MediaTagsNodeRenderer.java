@@ -81,9 +81,13 @@ public class MediaTagsNodeRenderer implements NodeRenderer {
             if (last >= 0) {
                 String source = sources[last];
                 String encoded = context.getHtmlOptions().percentEncodeUrls ? context.encodeUrl(source) : source;
-                html.attr("data-original", encoded)
+//                html.attr("data-original", encoded)
+//                        .attr("alt", node.getText())
+//                        .attr("class","lazy")
+//                        .withAttr()
+//                        .tag("img", true);
+                html.attr("src", encoded)
                         .attr("alt", node.getText())
-                        .attr("class","lazy")
                         .withAttr()
                         .tag("img", true);
             }
