@@ -111,6 +111,75 @@ public class AliOssFileHandler implements FileHandler {
 
     }
 
+    @Override
+    public UploadResult upload(MultipartFile file, String name) {
+        // Get config
+        String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
+        String endPointPublic = optionService.getPropertyStringValue(PropertyEnum.END_POINT_PUBLIC);
+        String accessKey = optionService.getPropertyStringValue(PropertyEnum.ACCESS_KEY);
+        String accessSecret = optionService.getPropertyStringValue(PropertyEnum.ACCESS_SECRET);
+        String bucketName = optionService.getPropertyStringValue(PropertyEnum.BUCKET_NAME);
+        String domain = optionService.getPropertyStringValue(PropertyEnum.OSS_DOMAIN);
+        String source = optionService.getPropertyStringValue(PropertyEnum.OSS_SOURCE);
+        String styleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_STYLE_RULE);
+        String thumbnailStyleRule = optionService.getPropertyStringValue(PropertyEnum.OSS_THUMBNAIL_STYLE_RULE);
+
+        StringBuilder basePath = new StringBuilder(domain);
+        basePath.append(bucketName)
+                .append(".")
+                .append(endPointPublic)
+                .append("/");
+
+        OSS ossClient = new OSSClientBuilder().build(endPoint, accessKey, accessSecret);
+        try {
+//            String basename = FilenameUtils.getBasename(Objects.requireNonNull(file.getOriginalFilename()));
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+//            String timestamp = String.valueOf(System.currentTimeMillis());
+            StringBuilder upFilePath = new StringBuilder();
+            if (StringUtils.isNotEmpty(source)) {
+                upFilePath.append(source)
+                        .append("/");
+            }
+            upFilePath.append(name)
+                    .append(".")
+                    .append(extension);
+
+            String filePath = StringUtils.join(basePath.toString(), upFilePath.toString());
+            log.info(basePath.toString());
+
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, upFilePath.toString(), file.getInputStream());
+            if(putObjectResult==null){
+                throw  new FileOperationException("File upload failed!!");
+            }
+            UploadResult uploadResult = new UploadResult();
+            uploadResult.setFilename(name);
+            uploadResult.setFilePath(StringUtils.isBlank(styleRule) ? filePath : filePath + styleRule);
+            uploadResult.setKey(upFilePath.toString());
+            uploadResult.setMediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())));
+            uploadResult.setSuffix(extension);
+            uploadResult.setSize(file.getSize());
+            uploadResult.setSize(file.getSize());
+
+            // Handle thumbnail
+            if (FileHandler.isImageType(uploadResult.getMediaType())) {
+                BufferedImage image = ImageUtils.getImageFromFile(file.getInputStream(), extension);
+                uploadResult.setWidth(image.getWidth());
+                uploadResult.setHeight(image.getHeight());
+                if (ImageUtils.EXTENSION_ICO.equals(extension)) {
+                    uploadResult.setThumbPath(filePath);
+                } else {
+                    uploadResult.setThumbPath(StringUtils.isBlank(thumbnailStyleRule) ? filePath : filePath + thumbnailStyleRule);
+                }
+            }
+
+            log.info("Uploaded file: [{}] successfully", file.getOriginalFilename());
+            return uploadResult;
+        } catch (IOException e) {
+            throw  new FileOperationException("File upload failed!!");
+        }finally {
+            ossClient.shutdown();
+        }
+    }
 
     /**
      * 上传公式的svg到阿里云

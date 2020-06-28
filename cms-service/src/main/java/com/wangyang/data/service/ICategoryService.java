@@ -4,6 +4,7 @@ import com.wangyang.model.pojo.dto.CategoryDto;
 import com.wangyang.model.pojo.entity.Category;
 import com.wangyang.model.pojo.params.CategoryQuery;
 import com.wangyang.model.pojo.support.TemplateOptionMethod;
+import com.wangyang.model.pojo.vo.CategoryVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +22,6 @@ public interface ICategoryService{
      */
     Category addOrUpdate(Category category);
 
-//    CategoryArticleListDao getArticleListByCategory(Category category);
 
     Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
 
@@ -40,9 +40,6 @@ public interface ICategoryService{
     Category deleteById(int id);
 
 
-//    Category update(Category category);
-
-//    void generateListHtml();
 
     /**
      * find category by id
@@ -50,12 +47,7 @@ public interface ICategoryService{
      * @return
      */
     Category findById(int id);
-//    CategoryArticleListDao findCategoryDetailVOByID(int id);
-    /**
-     * category page
-     * @return
-     */
-//    Page<CategoryVO> list(Pageable pageable);
+
 
 
 
@@ -68,6 +60,13 @@ public interface ICategoryService{
     List<CategoryDto> listAllDto();
 
     List<Category> listAll();
+
+    /**
+     * 生成菜单树
+     * @return
+     */
+    List<CategoryVO> listTree();
+
 
     List<Category> list();
 

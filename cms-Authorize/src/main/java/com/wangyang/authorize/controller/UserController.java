@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Controller
-@RequestMapping()
+@RequestMapping
 public class UserController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/user/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
-//获取cookie
+    //获取cookie
         Cookie[] cookies=request.getCookies();
         for(Cookie cookie: cookies){
             cookie.setMaxAge(0);

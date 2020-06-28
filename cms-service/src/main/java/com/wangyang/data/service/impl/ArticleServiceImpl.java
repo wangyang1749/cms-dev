@@ -953,7 +953,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }).collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<Article>listByUserId(int userId){
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setUserId(userId);
+        return articleRepository.findAll(buildSpecByQuery(articleQuery));
+    }
     @Override
     public Article findByViewName(String viewName){
         return articleRepository.findByViewName(viewName);

@@ -15,6 +15,7 @@ import com.wangyang.model.pojo.params.CategoryQuery;
 import com.wangyang.common.CmsConst;
 import com.wangyang.model.pojo.support.TemplateOption;
 import com.wangyang.model.pojo.support.TemplateOptionMethod;
+import com.wangyang.model.pojo.vo.CategoryVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -289,7 +290,15 @@ public class CategoryServiceImpl implements ICategoryService {
         return categoryRepository.findAll(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
     }
 
-
+    @Override
+    public List<CategoryVO> listTree() {
+        List<Category> categories = listAll();
+        return categories.stream().map(category -> {
+                CategoryVO categoryVO = new CategoryVO();
+                BeanUtils.copyProperties(category,categoryVO);
+                return categoryVO;
+        }).collect(Collectors.toList());
+    }
 
     public List<CategoryDto> convertTo(List<Category> categories){
         return  categories.stream().map(category -> {

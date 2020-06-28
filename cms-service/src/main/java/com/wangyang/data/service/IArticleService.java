@@ -38,14 +38,10 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     List<ArticleDto> listBy(int categoryId);
 
-//    Article updateCategory(int articleId, int categoryId);
-
-
 
 
     Article deleteByArticleId(int id);
 
-//    ArticleDetailVO createOrUpdateArticleVo(Article article, Set<Integer> tagsIds);
 
 
     /**
@@ -150,6 +146,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
     List<Article> listByIds(Set<Integer> ids);
 
     List<ArticleDto> listByComponentsId(int componentsId);
+
+    List<Article>listByUserId(int userId);
 
     Article findByViewName(String viewName);
 

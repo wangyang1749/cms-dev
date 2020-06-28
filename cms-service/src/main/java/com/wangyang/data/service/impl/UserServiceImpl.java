@@ -69,4 +69,7 @@ public class UserServiceImpl implements IUserService {
     public List<User> findAllById(Collection<Integer> ids){
         return userRepository.findAllById(ids);
     }
+
+
+
 }

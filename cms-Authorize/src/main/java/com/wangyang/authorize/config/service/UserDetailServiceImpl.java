@@ -3,11 +3,19 @@ package com.wangyang.authorize.config.service;
 
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
 import com.wangyang.authorize.utils.SecurityUtils;
+import com.wangyang.common.exception.ObjectException;
+import com.wangyang.data.handle.FileHandlers;
 import com.wangyang.data.repository.UserRepository;
+import com.wangyang.data.service.IArticleService;
+import com.wangyang.data.service.IAttachmentService;
 import com.wangyang.data.service.IRoleService;
 import com.wangyang.data.service.IUserService;
+import com.wangyang.model.pojo.dto.UserDto;
+import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.entity.Attachment;
 import com.wangyang.model.pojo.entity.Role;
 import com.wangyang.model.pojo.entity.User;
+import com.wangyang.model.pojo.params.UserParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +26,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +48,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
     UserRepository userRepository;
 
     @Autowired
+    IArticleService articleService;
+    @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    IAttachmentService attachmentService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,26 +61,36 @@ public class UserDetailServiceImpl implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User("admin","123456",
                     Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
         }
-
-//        User user = userService.findByUsername(username);
-//        if(user==null){
-//            throw  new UsernameNotFoundException("用户名不存在!!");
-//        }
-//        if(user!=null){
-//            List<Role> roles = roleService.findByUserId(user.getId());
-//            if(CollectionUtils.isEmpty(roles)){
-//                return null;
-//            }
-//            user.setRoles(roles);
-//        }
         return findByUsername(username);
     }
 
-    public User addUser(User user){
+    public User addUser(UserParam userParam, MultipartFile file){
+        User user = new User();
+        BeanUtils.copyProperties(userParam,user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(file!=null){
+            Attachment attachment = attachmentService.upload(file,  user.getUsername());
+            user.setAvatar(attachment.getPath());
+        }
         User saveUser = userService.add(user);
+
         return saveUser;
     }
+
+    public User updateUser(int id,UserParam userParam,MultipartFile file){
+        User user = userService.findById(id);
+        BeanUtils.copyProperties(userParam,user,"password","avatar");
+        if(userParam.getPassword()!=null||!"".equals(userParam.getPassword())){
+            user.setPassword(passwordEncoder.encode(userParam.getPassword()));
+        }
+
+        if(file!=null){
+            Attachment attachment = attachmentService.upload(file, user.getUsername());
+            user.setAvatar(attachment.getPath());
+        }
+        return userRepository.save(user);
+    }
+
 
     public SpringUserDto findByUsername(String username) {
         User user = userRepository.findByUsername(username);
@@ -83,14 +108,21 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
 
-    public SpringUserDto findById(int id){
+    public User delete(int id){
         User user = userService.findById(id);
-        user.setPassword(null);
-        SpringUserDto springUserDto = new SpringUserDto();
-        BeanUtils.copyProperties(user, springUserDto);
-        List<Role> roles = roleService.findByUserId(user.getId());
-        springUserDto.setRoles(roles);
-        return springUserDto;
+        if(user.getUsername()=="admin"){
+            throw  new ObjectException("管理员不能删除");
+        }
+        List<Article> articleList = articleService.listByUserId(id);
+        if(articleList.size()!=0){
+            throw  new ObjectException("用户"+user.getUsername()+"有文章"+articleList.size()+"篇不能删除！");
+        }
+        userRepository.delete(user);
+        return user;
+    }
+
+    public UserDto findById(int id){
+       return userService.findUserDaoById(id);
     }
 
     public SpringUserDto getCurrentUser() {

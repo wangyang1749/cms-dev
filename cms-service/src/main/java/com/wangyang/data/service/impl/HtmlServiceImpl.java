@@ -12,6 +12,7 @@ import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import com.wangyang.model.pojo.entity.*;
 import com.wangyang.common.CmsConst;
+import com.wangyang.model.pojo.vo.CategoryVO;
 import com.wangyang.model.pojo.vo.CommentVo;
 import com.wangyang.data.repository.ArticleRepository;
 import com.wangyang.data.repository.ComponentsRepository;
@@ -221,23 +222,16 @@ public class HtmlServiceImpl implements IHtmlService {
     }
 
 
+    /**
+     * 生成分类树的Html
+     * @param category
+     */
     @Override
     public void generateCategoryListHtml(Category category) {
-
         //获取该列表所在的组
-        List<CategoryDto> categoryDtos = categoryService.listBy(category.getTemplateName());
-
+        List<CategoryVO> categoryVOS = categoryService.listTree();
         Template template = templateService.findByEnName(CmsConst.DEFAULT_CATEGORY_LIST);
-//        if(StringUtils.isEmpty(category.getPath())){
-//            throw  new TemplateException(category.getName()+"的路径不能为空！");
-//        }
-
-        //这里的viewName是父类维护的该组列表的viewName
-        TemplateUtil.convertHtmlAndSave(CmsConst.COMPONENTS_PATH,category.getTemplateName(),categoryDtos,template);
-
-//        Components components = componentsService.findByDataName("categoryServiceImpl.list");
-//        Object data = getData(components.getDataName());
-//        TemplateUtil.convertHtmlAndSave(data, components);
+        TemplateUtil.convertHtmlAndSave(CmsConst.COMPONENTS_PATH,CmsConst.CATEGORY_MENU,categoryVOS,template);
     }
 
 
@@ -247,10 +241,6 @@ public class HtmlServiceImpl implements IHtmlService {
         Object data = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(data,components);
     }
-
-
-
-
 
 
     @Override
@@ -286,21 +276,6 @@ public class HtmlServiceImpl implements IHtmlService {
         }
         return null;
     }
-
-
-//    @Override
-//    public void generateSheetListByChannelId(int id) {
-//        Optional<Channel> channel = channelRepository.findById(id);
-//        if(channel.isPresent()){
-//            ChannelVo channelVo = channelService.convent(channel.get());
-////            Template template = templateService.findById(channelVo.getTemplateId());
-//            Template template = templateService.findByEnName(channelVo.getTemplateName());
-//            //生成列表
-//            TemplateUtil.convertHtmlAndSave(channelVo,template);
-//        }
-//
-//    }
-
 
 
     /**

@@ -149,6 +149,11 @@ public class LocalFileHandler implements FileHandler{
 
 
     @Override
+    public UploadResult upload(MultipartFile file, String name) {
+        return null;
+    }
+
+    @Override
     public UploadResult uploadStrContent(String content, String strName) {
         return null;
     }

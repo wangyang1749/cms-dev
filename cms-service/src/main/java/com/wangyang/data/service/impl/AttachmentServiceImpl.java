@@ -62,6 +62,28 @@ public class AttachmentServiceImpl implements IAttachmentService {
         return attachmentRepository.save(attachment);
     }
 
+    @Override
+    public Attachment upload(MultipartFile file,String name) {
+        //TODO AttachmentType.LOCAL from databases
+        UploadResult uploadResult = fileHandlers.upload(file, getAttachmentType(),name);
+        Attachment attachment = new Attachment();
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
+        attachment.setPath(uploadResult.getFilePath());
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
+        attachment.setFileKey(uploadResult.getKey());
+        ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
+        attachment.setThumbPath(uploadResult.getThumbPath());
+        //image/png
+        attachment.setMediaType(uploadResult.getMediaType().toString());
+        //png
+        attachment.setSuffix(uploadResult.getSuffix());
+        attachment.setWidth(uploadResult.getWidth());
+        attachment.setHeight(uploadResult.getHeight());
+        attachment.setSize(uploadResult.getSize());
+        attachment.setType( AttachmentType.LOCAL);
+        return attachmentRepository.save(attachment);
+    }
+
 
     @Override
     public Attachment uploadStrContent(AttachmentParam attachmentParam){

@@ -14,6 +14,8 @@ public interface IAttachmentService {
     Attachment add(Attachment attachment);
     Attachment upload(@NonNull MultipartFile file);
 
+    Attachment upload(MultipartFile file, String name);
+
     Attachment uploadStrContent(AttachmentParam attachmentParam);
 
     Attachment uploadStrContent(int attachmentId, AttachmentParam attachmentParam);
