@@ -19,4 +19,13 @@ public class DocumentUtil {
         Element row = rows.get(0);
         return row.html();
     }
+
+    public static  String addDebugLabel(String html){
+        Document doc = Jsoup.parse(html);
+        doc.body().append("<div style='    position: fixed;\n" +
+                "    top: 118px;\n" +
+                "    left: 5px;\n" +
+                "    color: red;'>Debug!!</div>");
+        return doc.html();
+    }
 }

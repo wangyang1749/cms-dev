@@ -49,4 +49,8 @@ public interface ArticleRepository extends JpaRepository<Article,Integer>
     Article findByIdAndUserId(int id,int userId);
 
     Article findByViewName(String viewName);
+
+    Article findTopByOrderByIdDesc();
+
+    int countBycategoryId(int id);
 }

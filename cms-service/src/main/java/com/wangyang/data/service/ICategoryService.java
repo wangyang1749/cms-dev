@@ -65,7 +65,7 @@ public interface ICategoryService{
      * 生成菜单树
      * @return
      */
-    List<CategoryVO> listTree();
+    List<CategoryVO> listCategoryVo();
 
 
     List<Category> list();

@@ -1,11 +1,17 @@
 package com.wangyang.cms.controller.api;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wangyang.cms.core.jms.producer.IProducerService;
 import com.wangyang.common.utils.*;
+import com.wangyang.data.event.EntityCreatedEvent;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.model.pojo.dto.ArticleDto;
+import com.wangyang.model.pojo.dto.ArticleMindDto;
+import com.wangyang.model.pojo.dto.MindJs;
 import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
@@ -20,16 +26,19 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -70,8 +79,6 @@ public class ArticleController {
     }
 
 
-
-
     @PostMapping
     public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams, HttpServletRequest request){
         int userId = (Integer)request.getAttribute("userId");
@@ -80,17 +87,25 @@ public class ArticleController {
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article, articleParams.getTagIds());
         if(article.getHaveHtml()){
-//            htmlService.receiveArticleDetailVO(articleDetailVO);
-            //使用JMS生成文章,文章列表
-//            producerService.sendMessage(articleDetailVO);
             htmlService.conventHtml(articleDetailVO);
-//            producerService.commonTemplate("AC");
-//            covertHtml(articleDetailVO);
-//            if(articleDetailVO.getUpdateChannelFirstName()){
-//                htmlService.generateChannelListHtml();
-//            }
         }
+        return articleDetailVO;
+    }
 
+
+    @GetMapping("/simpleCreate/{categoryId}")
+    public ArticleDetailVO createArticleDetailVO(@PathVariable("categoryId") Integer categoryId,
+                                                 @RequestParam(required = true) String title, HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
+        Article article = new Article();
+        article.setCategoryId(categoryId);
+        article.setTitle(title);
+        article.setOriginalContent("# 开始写文章["+title+"]...");
+        article.setUserId(userId);
+        ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article,null);
+        if(article.getHaveHtml()){
+            htmlService.conventHtml(articleDetailVO);
+        }
         return articleDetailVO;
     }
 
@@ -130,7 +145,7 @@ public class ArticleController {
         article.setUserId(userId);
         article.setStatus(ArticleStatus.DRAFT);
         article.setHaveHtml(false);
-        return  articleService.saveOrUpdateArticleDraft(article);
+        return  articleService.saveArticleDraft(article);
     }
 
     @PostMapping("/save/{id}")
@@ -146,7 +161,7 @@ public class ArticleController {
         }else {
             article.setStatus(ArticleStatus.DRAFT);
         }
-        return  articleService.saveOrUpdateArticleDraft(article);
+        return  articleService.updateArticleDraft(article);
     }
 
     @RequestMapping("/delete/{id}")
@@ -226,6 +241,15 @@ public class ArticleController {
                 }
                 if(article.getPicPath()==null){
                     article.setPicPath(ImageUtils.getImgSrc(article.getFormatContent()));
+                }
+                if(article.getParentId()==null){
+                    article.setParentId(0);
+                }
+                if(article.getOrder()==null){
+                    article.setOrder(0);
+                }
+                if(article.getDirection()==null){
+                    article.setDirection("right");
                 }
                 Category category = categoryService.findById(article.getCategoryId());
                 article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
@@ -358,4 +382,113 @@ public class ArticleController {
     public List<ArticleDto> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
         return  articleService.listByComponentsId(componentsId);
     }
+
+    @GetMapping("/listArticleMindDto/{categoryId}")
+    public String listArticleMindDto(@PathVariable("categoryId") int categoryId){
+        return  articleService.jsMindFormat( articleService.listArticleMindDto(categoryId));
+    }
+
+
+    @PostMapping("/saveMindJs/{categoryId}")
+    public BaseResponse saveArticleMindJs(@PathVariable("categoryId") int categoryId
+            ,@RequestBody  List<MindJs> mindJss
+            ,HttpServletRequest request) {
+        int userId = (Integer)request.getAttribute("userId");
+        List<Article> articles = articleService.listArticleBy(categoryId);
+
+        mindJss.remove(0);
+        for (int i=0;i<mindJss.size();i++){
+            mindJss.get(i).setOrder(mindJss.size()-i);
+        }
+        Map<String, MindJs> mindJsMap = ServiceUtil.convertToMap(mindJss, MindJs::getId);
+        Map<String, Article> articleMap = ServiceUtil.convertToMap(articles, a -> String.valueOf(a.getId()));
+        Map<String, MindJs> copyMindJsMap = new HashMap<>(mindJsMap);
+
+        mindJsMap.keySet().removeAll(articleMap.keySet());
+        articleMap.keySet().removeAll(copyMindJsMap.keySet());
+
+
+
+
+        if(articleMap.size()!=0){
+            //删除的节点
+            articleMap.forEach((k,v)->{
+                v.setHaveHtml(false);
+                v.setStatus(ArticleStatus.DRAFT);
+                articleService.save(v);
+                articles.removeIf(article -> article.getId()==v.getId());
+            });
+
+        }
+        if(mindJsMap.size()!=0){
+            mindJsMap.forEach((k,v)->{
+                //新增节点
+
+                Article article = new Article();
+                article.setTitle(v.getTopic());
+                article.setParentId(v.getParentid());
+                article.setExpanded(v.getExpanded());
+                article.setDirection(v.getDirection());
+                article.setOrder(v.getOrder());
+                article.setCategoryId(categoryId);
+                article.setUserId(userId);
+                article.setOriginalContent("开始创作文章["+v.getTopic()+"]...");
+                ArticleDetailVO articleDetailVo = articleService.createArticleDetailVo(article, null);
+                htmlService.conventHtmlNoCategoryList(articleDetailVo);
+                BeanUtils.copyProperties(articleDetailVo,article);
+                articles.add(mindJss.size()-articleDetailVo.getOrder(),article);
+            });
+
+        }
+//        if(mindJsMap.size()!=0||articleMap.size()!=0){
+//            articles.add();
+//        }
+
+        //整合顺序
+        for(int i =0;i<mindJss.size();i++){
+            MindJs mindJs = mindJss.get(i);
+            Article article = articles.get(i);
+            if(mindJsMap.containsKey(mindJs.getId())){
+                continue;
+            }
+            int id = Integer.parseInt(mindJs.getId());;
+            int dbId = article.getId();
+
+            if(dbId==id){
+                if(isChange(mindJs,article)||article.getOrder()!=mindJss.size()-i){
+                    article.setOrder(mindJss.size()-i);
+                    article.setParentId(mindJs.getParentid());
+                    article.setTitle(mindJs.getTopic());
+                    article.setExpanded(mindJs.getExpanded());
+                    article.setDirection(mindJs.getDirection());
+
+                    articleService.save(article);
+                }
+
+            }else {
+                Article updateArticle = articleService.findArticleById(id);
+                updateArticle.setOrder(mindJss.size()-i);
+                updateArticle.setParentId(mindJs.getParentid());
+                updateArticle.setTitle(mindJs.getTopic());
+                updateArticle.setExpanded(mindJs.getExpanded());
+                updateArticle.setDirection(mindJs.getDirection());
+                articleService.save(updateArticle);
+            }
+        }
+
+        Category category = categoryService.findById(categoryId);
+        htmlService.deleteTempFileByCategory(category);
+        htmlService.convertArticleListBy(category);
+        return BaseResponse.ok("更新成功!!");
+    }
+
+
+    private boolean isChange(MindJs mindJs, Article article) {
+        return  !mindJs.getTopic().equals(article.getTitle())||
+                !mindJs.getParentid().equals(article.getParentId())||
+                !mindJs.getExpanded().equals(article.getExpanded())||
+                !(mindJs.getDirection()==null?true:mindJs.getDirection().equals(article.getDirection()));
+    }
+
+
 }

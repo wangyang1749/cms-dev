@@ -35,7 +35,7 @@ public class Category extends BaseEntity implements Serializable {
     private Boolean existNav=false;
     private String articleTemplateName;
 
-
+    // 每页显示文章的数量
     private Integer articleListSize=10;
 //    private Integer articleListPage=0;
     private Boolean isDesc=true;

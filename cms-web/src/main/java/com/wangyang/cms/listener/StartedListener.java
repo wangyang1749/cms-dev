@@ -133,7 +133,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("文章幻灯片模板","REVEAL","templates/@articleReveal", TemplateType.ARTICLE,11),
 
                 new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"templates/@articleList", TemplateType.ARTICLE_LIST,12),
-                new Template("文章列表分页",CmsConst.ARTICLE_PAGE,"templates/@articlePage", TemplateType.ARTICLE_LIST,12)
+                new Template("文章列表分页",CmsConst.ARTICLE_PAGE,"templates/@articlePage", TemplateType.ARTICLE_LIST,12),
+                new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"templates/@jsMind", TemplateType.ARTICLE_MIND,12)
 
         );
         List<Template> findTemplates = templateRepository.findAll();

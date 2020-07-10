@@ -2,12 +2,14 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
+import com.wangyang.model.pojo.dto.ArticleMindDto;
 import com.wangyang.model.pojo.dto.CategoryDto;
 import com.wangyang.model.pojo.entity.Category;
 import com.wangyang.model.pojo.params.CategoryParam;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.model.pojo.vo.CategoryVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +41,12 @@ public class CategoryController {
     @PostMapping
     public Category add(@Valid @RequestBody CategoryParam categoryParam){
         Category category = new Category();
+        category.setParentId(0);
 
         BeanUtils.copyProperties(categoryParam,category);
         Category saveCategory = categoryService.addOrUpdate(category);
         //生成category列表Html
-        htmlService.generateCategoryListHtml(saveCategory);
+        htmlService.generateCategoryListHtml();
         if(saveCategory.getHaveHtml()){
             //生成文章第一页的列表
             htmlService.convertArticleListBy(saveCategory);
@@ -63,7 +66,7 @@ public class CategoryController {
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.addOrUpdate(category);
         //更新Category列表
-        htmlService.generateCategoryListHtml(updateCategory);
+        htmlService.generateCategoryListHtml();
         if(updateCategory.getHaveHtml()){
             //生成文章第一页的列表
             htmlService.convertArticleListBy(category);
@@ -78,7 +81,7 @@ public class CategoryController {
         TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
         log.info("### delete category" + category.getName());
         //重新生成分类的列表
-        htmlService.generateCategoryListHtml(category);
+        htmlService.generateCategoryListHtml();
         return category;
     }
     @RequestMapping("/find/{id}")
@@ -142,10 +145,10 @@ public class CategoryController {
         Category category = categoryService.haveHtml(id);
         if(category.getHaveHtml()){
             htmlService.convertArticleListBy(category);
-            htmlService.generateCategoryListHtml(category);
+            htmlService.generateCategoryListHtml();
         }else{
             TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-            htmlService.generateCategoryListHtml(category);
+            htmlService.generateCategoryListHtml();
         }
 //        if(category.getRecommend()){
 //            //有可能更改首页排序
@@ -172,6 +175,11 @@ public class CategoryController {
         Category category = categoryService.findById(id);
         htmlService.convertArticleListBy(category);
         return category;
+    }
+
+    @GetMapping("/listCategoryVo")
+    public List<CategoryVO> listCategoryVo(){
+        return categoryService.listCategoryVo();
     }
 
 

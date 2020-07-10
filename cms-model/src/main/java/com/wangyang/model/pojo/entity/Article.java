@@ -1,11 +1,13 @@
 package com.wangyang.model.pojo.entity;
 
 import com.wangyang.model.pojo.entity.base.BaseArticle;
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue(value = "0")
+@Data
 public class Article extends BaseArticle {
 
 
@@ -24,89 +26,11 @@ public class Article extends BaseArticle {
     private Integer order;
     @Column(name = "article_top",columnDefinition = "bit(1) default false")
     private Boolean top;
+    private Integer parentId; // 父亲id 0是只没有父亲 此时指向category
+    private Boolean expanded; // 节点是否展开
+    private String direction; //节点的方向
 //    @Column( columnDefinition = "int default 0")
 //    private Integer templateId;
-
-
-    public Boolean getTop() {
-        return top;
-    }
-
-    public void setTop(Boolean top) {
-        this.top = top;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-    public Integer getVisits() {
-        return visits;
-    }
-
-    public void setVisits(Integer visits) {
-        this.visits = visits;
-    }
-
-    public Integer getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(Integer commentNum) {
-        this.commentNum = commentNum;
-    }
-
-    public Boolean getHaveHtml() {
-        return haveHtml;
-    }
-
-    public void setHaveHtml(Boolean haveHtml) {
-        this.haveHtml = haveHtml;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getPicPath() {
-        return picPath;
-    }
-
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
-    }
-
-    public String getPdfPath() {
-        return pdfPath;
-    }
-
-    public void setPdfPath(String pdfPath) {
-        this.pdfPath = pdfPath;
-    }
 
 
 }

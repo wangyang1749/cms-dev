@@ -13,7 +13,8 @@ public enum  TemplateType implements ValueEnum<Integer>  {
 //    ARTICLE_CHANNEL(4),// 文章栏目模板
     COMMENT(3,"评论模板"),
     CATEGORY_LIST(4,"分类名称列表"),
-    ARTICLE_LIST(5,"文章组件列表");
+    ARTICLE_LIST(5,"文章组件列表"),
+    ARTICLE_MIND(6,"文章思维导图");
 
     private final int value;
     private final String name;

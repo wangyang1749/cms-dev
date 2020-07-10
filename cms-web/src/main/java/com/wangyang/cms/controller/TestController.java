@@ -1,5 +1,8 @@
 package com.wangyang.cms.controller;
 
+import com.wangyang.cms.util.HtmlFileRender;
+import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.TemplateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.context.Context;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,5 +81,8 @@ public class TestController {
 ////        mv.setView(view); //注意: 这里是将实例化的自定义视图对象当做参数传进入, 而不是视图名字
         return null;
     }
+
+
+
 
 }

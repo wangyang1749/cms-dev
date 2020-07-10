@@ -191,9 +191,15 @@ public class FileUtils {
         return  result;
     }
 
+
+
     public static String convert(File file, HttpServletRequest request){
         String content = openFile(file);
         return  convertByString(content,request);
+    }
+    public static String convert(File file){
+        String content = openFile(file);
+        return  convertByString(content);
     }
 
     public static String convert(String viewPath, HttpServletRequest request){

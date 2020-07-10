@@ -2,6 +2,7 @@ package com.wangyang.cms.controller;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.*;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
@@ -116,18 +117,13 @@ public class PreviewController {
     @GetMapping("/pdf/{articleId}")
     @ResponseBody
     public String previewPdf(@PathVariable("articleId")Integer articleId){
-        ArticleDetailVO articleDetailVo = articleService.findArticleAOById(articleId);
-//        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());
-//        if(!templateOptional.isPresent()){
-//            throw new TemplateException("Template not found in preview !!");
-//        }
+        Article article = articleService.findArticleById(articleId);
+        article.setFormatContent(MarkdownUtils.renderHtmlOutput(article.getOriginalContent()));
         Template template = templateService.findByEnName(CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE);
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.addObject("view",articleDetailVo);
-//        modelAndView.addObject("notPdf",true);
-//        modelAndView.setViewName(template.getTemplateValue());
-        return TemplateUtil.convertHtmlAndPreview(articleDetailVo,template);
+        return TemplateUtil.convertHtmlAndPreview(article,template);
     }
+
+
 
     @GetMapping("/simpleArticle/{articleId}")
     @ResponseBody

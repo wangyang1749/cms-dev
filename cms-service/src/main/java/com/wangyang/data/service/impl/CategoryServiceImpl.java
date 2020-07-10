@@ -44,19 +44,11 @@ public class CategoryServiceImpl implements ICategoryService {
     ITemplateService templateService;
     @Autowired
     IArticleService articleService;
-//    @Autowired
-//    ArticleCategoryRepository articleCategoryRepository;
-
 
     @Autowired
     IOptionService optionService;
     @Autowired
     MenuRepository menuRepository;
-    @Autowired
-    IComponentsService templatePageService;
-
-
-
 
 
     @Override
@@ -65,26 +57,12 @@ public class CategoryServiceImpl implements ICategoryService {
     }
     @Override
     public Category addOrUpdate(Category category) {
-//        Category category = new Category();
-//        BeanUtils.copyProperties(categoryParam, category);
-//        if(category.getParentId()==null){
-////            throw  new ObjectException(category.getName()+"的父Id不能为空！！");
-//            category.setPath("articleList");
-//            category.setSelfListViewName("DEFAULT_ARTICLE_LIST");
-//            category.setParentId(-1);
-//        }
 
         if (StringUtils.isEmpty(category.getViewName())) {
             String viewName = CMSUtils.randomViewName();
             category.setViewName(viewName);
         }
 
-//        if (category.getParentId()==0){
-//            if(category.getPath()==null){
-//                throw new ObjectException(category.getName()+"的路径不能为空！");
-//            }
-//            return categoryRepository.save(category);
-//        }
         if(category.getHaveHtml()==null){
             category.setHaveHtml(true);
         }
@@ -95,21 +73,9 @@ public class CategoryServiceImpl implements ICategoryService {
         if(category.getArticleTemplateName()==null||"".equals(category.getArticleTemplateName())){
             category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
         }
-        //从父类获取该列表组的生成路径和视图名称
-//        if(category.getParentId()!=0&&category.getParentId()!=-1){
-//            Optional<Category> optionalCategory = findOptionalById(category.getParentId());
-//            if(!optionalCategory.isPresent()){
-//                throw  new ObjectException(category.getName()+"的父分类不存在！");
-//            }
-//            category.setPath(optionalCategory.get().getPath());
-//            category.setSelfListViewName(optionalCategory.get().getViewName());
-//        }
+
 
         category.setPath(CmsConst.CATEGORY_LIST_PATH);
-//        category.setSelfListViewName(category.getTemplateName());
-        //摘除文章列表，用于其它页面组装
-//        category.setArticleListViewName("__"+category.getViewName());
-        //页面本身的viewName，这个不应该依赖于category.getViewName()文章列表
 
         Category saveCategory = categoryRepository.save(category);
         return saveCategory;
@@ -291,7 +257,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public List<CategoryVO> listTree() {
+    public List<CategoryVO> listCategoryVo() {
         List<Category> categories = listAll();
         return categories.stream().map(category -> {
                 CategoryVO categoryVO = new CategoryVO();

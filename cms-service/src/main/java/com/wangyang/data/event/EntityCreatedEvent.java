@@ -1,4 +1,4 @@
-package com.wangyang.cms.core.event;
+package com.wangyang.data.event;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.core.ResolvableType;

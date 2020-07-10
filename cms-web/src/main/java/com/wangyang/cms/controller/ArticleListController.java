@@ -1,12 +1,15 @@
 package com.wangyang.cms.controller;
 
+import com.wangyang.cms.util.HtmlFileRender;
+import com.wangyang.cms.util.HtmlFileRenderHandler;
+import com.wangyang.cms.util.HtmlFileRenderMap;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
-import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.ITemplateService;
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.Article;
@@ -16,18 +19,17 @@ import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +54,6 @@ public class ArticleListController {
     @ResponseBody
     @RequestMapping(value = "/{categoryPath}/{categoryViewName}/page-{page}.html",produces = "text/html")
     public String articleListBy(HttpServletRequest request, @PathVariable("categoryPath") String categoryPath, @PathVariable("categoryViewName") String categoryViewName, @PathVariable("page") Integer page){
-
         File file = new File(CmsConst.WORK_DIR+"/html/"+categoryPath+"/"+categoryViewName+"/"+page+".html");
         String result = null;
         if(file.exists()){
@@ -68,11 +69,49 @@ public class ArticleListController {
         if (request!=null){
             return result;
         }
-//        System.out.println(categoryViewName);
-//        System.out.println(page);
         return  "Page is not found!";
+    }
 
-//        return "1111"+categoryViewName+page;
+    @GetMapping("/mind/{categoryId}.html")
+    @ResponseBody
+    public String listArticleMindDto(@PathVariable("categoryId") int categoryId){
+
+//        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
+//        return FileUtils.convertByString(TemplateUtil.convertHtmlAndPreview(mindFormat,template));
+
+        return  HtmlFileRenderHandler.render(new HtmlFileRenderMap() {
+//            @Override
+//            public boolean isDebug() {
+//                return true;
+//            }
+
+            @Override
+            public String path() {
+                return "mind";
+            }
+
+            @Override
+            public String viewName() {
+                return String.valueOf(categoryId);
+            }
+
+            @Override
+            public Map<String, Object> data() {
+                ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
+                Category category = articleAndCategoryMindDto.getCategory();
+                String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
+                Map<String,Object> map = new HashMap<>();
+                map.put("mind",mindFormat);
+                map.put("category",category);
+                return map;
+            }
+
+            @Override
+            public Template template() {
+                Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
+                return template;
+            }
+        });
     }
 
     /**
@@ -204,6 +243,9 @@ public class ArticleListController {
         Integer visitsNumber = articleService.getVisitsNumber(id);
         return BaseResponse.ok("操作成功",visitsNumber);
     }
+
+
+
 
 //    @GetMapping("/option/like/{id}")
 //    @ResponseBody

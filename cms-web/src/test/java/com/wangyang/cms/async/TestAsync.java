@@ -1,6 +1,6 @@
 package com.wangyang.cms.async;
 
-import com.wangyang.cms.core.event.HtmlListener;
+import com.wangyang.data.event.HtmlListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +14,7 @@ public class TestAsync {
     @Test
     public void  test1(){
         System.out.println("before");
-        htmlListener.asyn1();
+//        htmlListener.asyn1();
         System.out.println("after");
     }
 }

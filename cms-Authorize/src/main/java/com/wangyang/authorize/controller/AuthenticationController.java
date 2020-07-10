@@ -36,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String authorize(@Valid User loginDto,HttpServletResponse response) {
+    public String authorize(@Valid User loginDto,HttpServletResponse response,HttpServletRequest request) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
@@ -71,6 +71,10 @@ public class AuthenticationController {
 //        }else {
 //            resUrl = resUrl+"/user/loginSuccess";
 //        }
+        String redirect = request.getParameter("redirect");
+        if(redirect!=null){
+            return "redirect:"+redirect;
+        }
         return "redirect:/user/info";
 //        return new ResponseEntity<>(new AuthenticationController.JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }

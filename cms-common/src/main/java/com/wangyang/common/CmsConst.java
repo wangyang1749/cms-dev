@@ -13,6 +13,11 @@ public class CmsConst {
     }
     public static  String WORK_DIR;
 
+    @Value("${cms.isDebug}")
+    private  void setsDebug(Boolean isDebug) {
+        this.IS_DEBUG = isDebug;
+    }
+    public static  Boolean IS_DEBUG ;
 
     public static final String SYSTEM_TEMPLATE_PATH="templates";
     public static final String SYSTEM_HTML_PATH="html";
@@ -50,6 +55,9 @@ public class CmsConst {
 
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
     public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
+
+
+    public final static String ARTICLE_JS_MIND = "ARTICLE_JS_MIND";//文章思维导图
 
     public final static String TAGS_INFORMATION = "资讯";//分类列表
     public final static String TAGS_RECOMMEND = "推荐";//分类列表

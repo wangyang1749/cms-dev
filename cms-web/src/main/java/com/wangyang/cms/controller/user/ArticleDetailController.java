@@ -2,9 +2,24 @@ package com.wangyang.cms.controller.user;
 
 
 import com.google.common.base.Joiner;
+import com.wangyang.cms.util.HtmlFileRender;
+import com.wangyang.cms.util.HtmlFileRenderHandler;
+import com.wangyang.cms.util.HtmlFileRenderObj;
+import com.wangyang.common.utils.DocumentUtil;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.data.service.IArticleService;
+import com.wangyang.data.service.ICategoryService;
+import com.wangyang.data.service.ITemplateService;
 import com.wangyang.data.service.IUserService;
 import com.wangyang.common.CmsConst;
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
+import com.wangyang.model.pojo.dto.CategoryArticleListDao;
+import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.entity.Template;
+import com.wangyang.model.pojo.vo.ArticleDetailVO;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,7 +43,14 @@ import java.util.stream.Collectors;
 public class ArticleDetailController {
     @Autowired
     IUserService userService;
+    @Autowired
+    ITemplateService templateService;
 
+    @Autowired
+    ICategoryService categoryService;
+
+    @Autowired
+    IArticleService articleService;
     @GetMapping("/")
     public String index(HttpServletRequest request){
 
@@ -42,11 +67,38 @@ public class ArticleDetailController {
 
     @GetMapping("/article/{viewName}.html")
     public String showArticle(@PathVariable("viewName") String viewName, HttpServletRequest request){
-        String convert = FileUtils.convert("article/" + viewName+".html",request);
-        if(convert!=null){
-            return convert;
-        }
-        return "Page is not found!";
+        return  HtmlFileRenderHandler.render(new HtmlFileRenderObj<ArticleDetailVO>() {
+            @Override
+            public ArticleDetailVO data() {
+                Article article = articleService.findByViewName(viewName);
+                ArticleDetailVO articleDetailVO = articleService.convert(article);
+                return articleDetailVO;
+            }
+
+
+            @Override
+            public Template template(ArticleDetailVO articleDetailVO) {
+                return templateService.findByEnName(articleDetailVO.getTemplateName());
+            }
+
+            @Override
+            public String path() {
+                return "article";
+            }
+
+            @Override
+            public String viewName() {
+                return viewName;
+            }
+        });
+
+
+
+//        String convert = FileUtils.convert("article/" + viewName+".html",request);
+//        if(convert!=null){
+//            return convert;
+//        }
+//        return "Page is not found!";
     }
 
     @GetMapping("/sheet/{viewName}")
@@ -58,13 +110,46 @@ public class ArticleDetailController {
         return "Page is not found!";
     }
 
-    @GetMapping("/articleList/{viewName}")
+
+
+
+
+
+
+
+    @GetMapping("/articleList/{viewName}.html")
     public String showArticleList(@PathVariable("viewName") String viewName,HttpServletRequest request){
-        String convert = FileUtils.convert("articleList/" + viewName,request);
-        if(convert!=null){
-            return convert;
-        }
-        return "Page is not found!";
+        return  HtmlFileRenderHandler.render(new HtmlFileRenderObj<CategoryArticleListDao>() {
+            @Override
+            public CategoryArticleListDao data() {
+                Category category = categoryService.findByViewName(viewName);
+                CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
+                return categoryArticle;
+            }
+
+
+            @Override
+            public Template template(CategoryArticleListDao categoryArticleListDao) {
+                return templateService.findByEnName(categoryArticleListDao.getCategory().getTemplateName());
+            }
+
+            @Override
+            public String path() {
+                return "articleList";
+            }
+
+            @Override
+            public String viewName() {
+                return viewName;
+            }
+        });
+
+//
+//        String convert = FileUtils.convert("articleList/" + viewName,request);
+//        if(convert!=null){
+//            return convert;
+//        }
+//        return "Page is not found!";
     }
 
 

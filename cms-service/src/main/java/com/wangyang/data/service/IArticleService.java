@@ -1,6 +1,8 @@
 package com.wangyang.data.service;
 
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.model.pojo.dto.ArticleDto;
+import com.wangyang.model.pojo.dto.ArticleMindDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.entity.Category;
@@ -20,6 +22,7 @@ import java.util.Set;
 @TemplateOption
 public interface IArticleService extends IBaseArticleService<Article> {
 
+
     ArticleDetailVO updateArticleDetailVo(Article article, Set<Integer> tagsIds);
     ArticleDetailVO createArticleDetailVo(Article article,Set<Integer> tagsIds);
 
@@ -32,9 +35,10 @@ public interface IArticleService extends IBaseArticleService<Article> {
      * @param article
      * @return
      */
-    Article saveOrUpdateArticleDraft(Article article);
+    Article updateArticleDraft(Article article);
+    Article saveArticleDraft(Article article);
 
-    Page<ArticleDto> pageDtoBy(int categoryId, int page, int size);
+//    Page<ArticleDto> pageDtoBy(int categoryId, int page, int size);
 
     List<ArticleDto> listBy(int categoryId);
 
@@ -119,6 +123,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     Page<ArticleDto> pageDtoBy(int categoryId, int page);
 
+    List<Article> listArticleBy(int categoryId);
+
     Page<ArticleDto> pageDtoBy(Category category, int page);
 
     Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable);
@@ -150,6 +156,10 @@ public interface IArticleService extends IBaseArticleService<Article> {
     List<Article>listByUserId(int userId);
 
     Article findByViewName(String viewName);
+
+    ArticleAndCategoryMindDto listArticleMindDto(int categoryId);
+
+    String jsMindFormat( ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
 
 //    ArticleDetailVO addArticleToChannel(Article article, int channelId);

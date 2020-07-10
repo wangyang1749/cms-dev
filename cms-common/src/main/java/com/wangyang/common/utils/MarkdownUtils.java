@@ -49,8 +49,23 @@ public class MarkdownUtils {
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
+    private static final DataHolder OPTIONS_OUTPUT = new MutableDataSet()
+            .set(Parser.EXTENSIONS,Arrays.asList(
+                    EmojiExtension.create(),
+                    TablesExtension.create(),
+                    GitLabExtension.create(),
+                    MediaTagsExtension.create(),
+                    FootnoteExtension.create(),
+                    AdmonitionExtension.create()
+
+            )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
+            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
+            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
+
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
+    private static final Parser PARSER_OUTPUT = Parser.builder(OPTIONS_OUTPUT).build();
+    private static final HtmlRenderer RENDERER_OUTPUT = HtmlRenderer.builder(OPTIONS_OUTPUT).build();
 
     public static String[] renderHtml(String markdown) {
         if(StringUtils.isBlank(markdown)){
@@ -63,6 +78,16 @@ public class MarkdownUtils {
 
         return split;
     }
+
+    public static String renderHtmlOutput(String markdown) {
+        if(StringUtils.isBlank(markdown)){
+            return null;
+        }
+        Node document = PARSER_OUTPUT.parse(markdown);
+        String render = RENDERER_OUTPUT.render(document);
+        return render;
+    }
+
     public  static String getText(String content){
         if(content==null){
             return StringUtils.EMPTY;

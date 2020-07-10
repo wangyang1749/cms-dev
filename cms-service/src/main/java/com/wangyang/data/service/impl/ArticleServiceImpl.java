@@ -1,13 +1,12 @@
 package com.wangyang.data.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
 import com.wangyang.data.service.*;
-import com.wangyang.model.pojo.dto.ArticleDto;
-import com.wangyang.model.pojo.dto.CategoryArticleListDao;
-import com.wangyang.model.pojo.dto.CategoryDto;
-import com.wangyang.model.pojo.dto.TagsDto;
+import com.wangyang.model.pojo.dto.*;
 import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import com.wangyang.model.pojo.vo.ArticleVO;
@@ -16,10 +15,9 @@ import com.wangyang.model.pojo.entity.User;
 import com.wangyang.model.pojo.entity.*;
 import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.common.CmsConst;
-import com.wangyang.model.pojo.support.TemplateOption;
-import com.wangyang.model.pojo.support.TemplateOptionMethod;
 import com.wangyang.data.repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.AnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,15 +38,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-//@TemplateOption
 public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implements IArticleService {
 
-    @Value("${cms.workDir}")
-    private String workDir;
+
     @Autowired
     ArticleRepository articleRepository;
-    @Autowired
-    ITemplateService templateService;
+
     @Autowired
     ArticleTagsRepository articleTagsRepository;
     @Autowired
@@ -58,25 +53,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     ICategoryService categoryService;
     @Autowired
     CommentRepository commentRepository;
-
-
     @Autowired
     ComponentsArticleRepository componentsArticleRepository;
-
-    @Autowired
-    IComponentsArticleService componentsArticleService;
-    @Autowired
-    IOptionService optionService;
-
     @Autowired
     IUserService userService;
 
-
-    @Autowired
-    ISheetService sheetService;
-
-    @Autowired
-    BaseCategoryRepository baseCategoryRepository;
 
     /**
      * create article
@@ -85,20 +66,25 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      */
     @Override
     public ArticleDetailVO createArticleDetailVo(Article article, Set<Integer> tagsIds) {
+        if(article.getOrder()==null){
+            int count = articleRepository.countBycategoryId(article.getCategoryId());
+            article.setOrder(count+1);
+        }
+        if(article.getParentId()==null){
+            article.setParentId(0);
+        }
+        if(article.getDirection()==null){
+            article.setDirection("right");// 脑图方向向左
+        }
+        if(article.getExpanded()== null){
+            article.setExpanded(false);// 脑图默认不展开
+        }
 
         article.setStatus(ArticleStatus.PUBLISHED);
-        article.setOrder(0);
-        // 文章发布默认生成HTML
         article.setHaveHtml(true);
-//        if(article.getHaveHtml()==null){
-//
-//        }
-
         ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds);
         return articleDetailVO;
-
     }
-
 
 
 
@@ -142,20 +128,12 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      * @return
      */
     @Override
-    public Article saveOrUpdateArticleDraft(Article article){
-        article.setOrder(0);
+    public Article updateArticleDraft(Article article){
+
         if(article.getUserId()==null){
             throw new ArticleException("文章用户不能为空!!");
         }
-//        if(article.getCategoryId()==null){
-//            throw new ArticleException("文章类别不能为空!!");
-//        }
 
-
-        // 获取默认文章模板Id
-//        if(article.getTemplateName()==null|| "".equals(article.getTemplateName())){
-//            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
-//        }
         String viewName = article.getViewName();
         if(viewName==null||"".equals(viewName)){
             viewName = CMSUtils.randomViewName();
@@ -166,16 +144,35 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  articleRepository.save(article);
     }
 
+    @Override
+    public Article saveArticleDraft(Article article){
+        if(article.getOrder()==null){
+            int count = articleRepository.countBycategoryId(article.getCategoryId());
+            article.setOrder(count+1);
+        }
+        if(article.getParentId()==null){
+            article.setParentId(0);
+        }
+        if(article.getDirection()==null){
+            article.setDirection("right");// 脑图方向向左
+        }
+        if(article.getExpanded()== null){
+            article.setExpanded(false);// 脑图默认不展开
+        }
 
+        if(article.getUserId()==null){
+            throw new ArticleException("文章用户不能为空!!");
+        }
 
-
-
-
-
-
-
-
-
+        String viewName = article.getViewName();
+        if(viewName==null||"".equals(viewName)){
+            viewName = CMSUtils.randomViewName();
+            log.debug("!!! view name not found, use "+viewName);
+            article.setViewName(viewName);
+        }
+//        article.setStatus(ArticleStatus.DRAFT);
+        return  articleRepository.save(article);
+    }
 
 
 
@@ -234,7 +231,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         generateSummary(article);
 
 //        保存文章
-        Article saveArticle = articleRepository.saveAndFlush(article);
+        Article saveArticle = articleRepository.save(article);
         articleDetailVO.setCategory(category);
         articleDetailVO.setUpdateChannelFirstName(true);
         BeanUtils.copyProperties(saveArticle,articleDetailVO);
@@ -345,8 +342,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         Specification<Article> specification = new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("status"),ArticleStatus.PUBLISHED),
-                                        criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
+                return criteriaQuery.where(criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
             }
         };
         List<Article> articles = articleRepository.findAll(specification);
@@ -368,6 +364,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         }
         return optionalArticle.get();
     }
+
+
 
 
     @Override
@@ -707,16 +705,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
-    /**
-     * 分类页文章展示设置,可以通过Option动态设置分页大小, 排序
-     * @param categoryId
-     * @param page
-     * @return
-     */
-    @Override
-    public Page<ArticleDto> pageDtoBy(int categoryId, int page, int size) {
-        return pageDtoBy(categoryId,PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-    }
+
+//    @Override
+//    public Page<ArticleDto> pageDtoBy(int categoryId, int page, int size) {
+//        return pageDtoBy(categoryId,PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+//    }
 
 
 
@@ -728,12 +721,16 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             BeanUtils.copyProperties(article,articleDto);
             return articleDto;
         }).collect(Collectors.toList());
+    }
 
+    @Override
+    public List<Article> listArticleBy(int categoryId){
+        return  articleRepository.findAll(queryByCategory(categoryId));
     }
 
     @Override
     public Page<ArticleDto> pageDtoBy(Category category, int page){
-        return  pageDtoBy(category.getId(), JpaUtils.articleListPageRequest(page,category));
+        return  pageDtoBy(category.getId(), PageRequest.of(page,category.getArticleListSize()));
     }
 
 
@@ -745,15 +742,15 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      */
     @Override
     public Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable) {
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
-                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
-                ).getRestriction();
-            }
-        };
-        Page<Article> articles = articleRepository.findAll(specification, pageable);
+//        Specification<Article> specification = new Specification<Article>() {
+//            @Override
+//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+//                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+//                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
+//                ).getRestriction();
+//            }
+//        };
+        Page<Article> articles = articleRepository.findAll(queryByCategory(categoryId), pageable);
         return  convertToSimple(articles);
     }
 
@@ -773,9 +770,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
                         ,criteriaBuilder.isTrue(root.get("haveHtml"))
-                ).getRestriction();
+                );
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                return  criteriaQuery.getRestriction();
             }
         };
         return specification;
@@ -962,5 +961,47 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public Article findByViewName(String viewName){
         return articleRepository.findByViewName(viewName);
+    }
+
+    @Override
+    public ArticleAndCategoryMindDto listArticleMindDto(int categoryId){
+
+        ArticleAndCategoryMindDto articleAndCategoryMindDto = new ArticleAndCategoryMindDto();
+        List<ArticleMindDto> articleMindDtoList = articleRepository.findAll(queryByCategory(categoryId)).stream().map(article -> {
+            ArticleMindDto articleMindDto = new ArticleMindDto();
+            BeanUtils.copyProperties(article, articleMindDto);
+            return articleMindDto;
+        }).collect(Collectors.toList());
+        Category category = categoryService.findById(categoryId);
+
+        articleAndCategoryMindDto.setCategory(category);
+        articleAndCategoryMindDto.setList(articleMindDtoList);
+        return  articleAndCategoryMindDto;
+    }
+
+
+    @Override
+    public String jsMindFormat( ArticleAndCategoryMindDto articleAndCategoryMindDto ){
+        JSONArray root = new JSONArray();
+        Category category = articleAndCategoryMindDto.getCategory();
+        JSONObject item = new JSONObject();
+        item.put("id",String.valueOf(0));
+        item.put("topic",category.getName());
+        item.put("isroot",true);
+        root.add(item);
+        for (ArticleMindDto articleMindDto:articleAndCategoryMindDto.getList()){
+            item = new JSONObject();
+            item.put("id",String.valueOf(articleMindDto.getId()));
+            item.put("topic",articleMindDto.getTitle());
+            item.put("direction",articleMindDto.getDirection());
+            item.put("expanded",articleMindDto.getExpanded());
+            item.put("parentid",String.valueOf(articleMindDto.getParentId()));
+            item.put("data","/"+articleMindDto.getPath()+"/"+articleMindDto.getViewName()+".html");
+            root.add(item);
+        }
+
+//        articleMindDtoList.add(new ArticleMindDto(0,category.getName(),category.getViewName(),
+//                category.getPath(),-1));
+        return  root.toString();
     }
 }

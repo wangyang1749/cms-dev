@@ -7,6 +7,7 @@ import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.entity.Sheet;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Async;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +37,12 @@ public interface IHtmlService {
 
 //    void updateCategoryPage(Integer oldCategoryId);
 
+    void deleteTempFileByCategory(Category category);
+
+    @Async
+        //异步执行
+    void conventHtmlNoCategoryList(ArticleDetailVO articleVO);
+
     void addOrRemoveArticleToCategoryListByCategoryId(int baseCategoryId);
 
 //    void generateCategoryArticleListByCategory(Integer id);
@@ -43,7 +50,7 @@ public interface IHtmlService {
     /**
      * 生成分类列表的html, 用于首页显示
      */
-    void generateCategoryListHtml(Category category);
+    void generateCategoryListHtml();
 
 
     /**

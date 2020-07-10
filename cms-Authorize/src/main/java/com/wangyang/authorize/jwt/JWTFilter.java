@@ -19,7 +19,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
 public class JWTFilter extends GenericFilterBean {
 
@@ -66,11 +68,15 @@ public class JWTFilter extends GenericFilterBean {
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/api")){
-            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-                return bearerToken.substring(7);
-            }
-        }else {
+        String header = request.getHeader("accept");
+        String headerAccept = header.split(",")[0];
+        String type = "";
+        if(request.getHeader("AuthorizeType")!=null){
+            type = request.getHeader("AuthorizeType");
+        }
+//        headerAccept.equals("application/json")
+       ;
+        if(headerAccept.equals("text/html")||type.equals("Cookie")){
             Cookie[] cookies = request.getCookies();
             if(cookies!=null){
                 for (int i = 0;i<cookies.length;i++){
@@ -79,6 +85,11 @@ public class JWTFilter extends GenericFilterBean {
                         return cookie.getValue();
                     }
                 }
+            }
+        } else{
+
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+                return bearerToken.substring(7);
             }
         }
         return null;

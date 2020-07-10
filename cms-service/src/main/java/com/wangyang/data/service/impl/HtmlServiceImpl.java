@@ -4,7 +4,9 @@ import com.wangyang.common.utils.DocumentUtil;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.data.ApplicationBean;
+import com.wangyang.data.event.EntityCreatedEvent;
 import com.wangyang.data.service.*;
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.model.pojo.dto.ArticleDto;
 import com.wangyang.model.pojo.dto.CategoryArticleListDao;
 import com.wangyang.model.pojo.dto.CategoryDto;
@@ -19,6 +21,7 @@ import com.wangyang.data.repository.ComponentsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -54,20 +57,55 @@ public class HtmlServiceImpl implements IHtmlService {
     @Autowired
     ISheetService sheetService;
 
-
+    @Autowired
+    private ApplicationEventPublisher publisher;
     @Autowired
     IComponentsService componentsService;
     @Autowired
     ICommentService commentService;
 
     @Override
-    @Async
+    @Async //异步执行
     public void conventHtml(ArticleDetailVO articleVO){
         if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
-
             Category category = articleVO.getCategory();
+//            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);
+//            publisher.publishEvent(createArticle);
+            deleteTempFileByCategory(category);
             //生成文章列表，文章列表依赖分类列表
             convertArticleListBy(category);
+            //判断评论文件是否存在
+            if(!TemplateUtil.componentsExist(articleVO.getViewName())){
+                generateCommentHtmlByArticleId(articleVO.getId());
+            }
+            //生成文章详情页面,依赖文章评论(在栏目页面文章详情依赖文章列表)
+            covertHtml(articleVO);
+            log.info("!!### generate "+articleVO.getViewName()+" html success!!");
+            // 生成首页文章最新文章
+            generateNewArticle();
+        }
+    }
+
+    @Override
+    public void deleteTempFileByCategory(Category category){
+        FileUtils.removeCategoryPageTemp(category);
+        //移除临时文章分类
+        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
+        FileUtils.remove(CmsConst.WORK_DIR+"/html/mind/"+category.getId()+".html");
+    }
+
+    /**
+     * 从思维导图创建文章生成静态页面，之后统一生成文章首页列表
+     * @param articleVO
+     */
+    @Override
+    @Async //异步执行
+    public void conventHtmlNoCategoryList(ArticleDetailVO articleVO){
+        if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
+
+//            Category category = articleVO.getCategory();
+            //生成文章列表，文章列表依赖分类列表
+//            convertArticleListBy(category);
 
             //判断评论文件是否存在
             if(!TemplateUtil.componentsExist(articleVO.getViewName())){
@@ -105,7 +143,7 @@ public class HtmlServiceImpl implements IHtmlService {
     public CategoryArticleListDao convertArticleListBy(Category category) {
         //生成分类列表,用于首页文章列表右侧展示
         if(!TemplateUtil.componentsExist(category.getTemplateName())){
-                generateCategoryListHtml(category);
+                generateCategoryListHtml();
         }
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
         CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
@@ -147,6 +185,19 @@ public class HtmlServiceImpl implements IHtmlService {
         }
         return null;
     }
+
+    public String renderMindJs(int categoryId){
+        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
+        Category category = articleAndCategoryMindDto.getCategory();
+        String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
+        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
+        Map<String,Object> map = new HashMap<>();
+        map.put("mind",mindFormat);
+        map.put("category",category);
+        String viewName = "";
+        return  TemplateUtil.convertHtmlAndSave(category.getPath(),viewName,map,template);
+    }
+
 
 
     /**
@@ -224,12 +275,11 @@ public class HtmlServiceImpl implements IHtmlService {
 
     /**
      * 生成分类树的Html
-     * @param category
      */
     @Override
-    public void generateCategoryListHtml(Category category) {
+    public void generateCategoryListHtml() {
         //获取该列表所在的组
-        List<CategoryVO> categoryVOS = categoryService.listTree();
+        List<CategoryVO> categoryVOS = categoryService.listCategoryVo();
         Template template = templateService.findByEnName(CmsConst.DEFAULT_CATEGORY_LIST);
         TemplateUtil.convertHtmlAndSave(CmsConst.COMPONENTS_PATH,CmsConst.CATEGORY_MENU,categoryVOS,template);
     }

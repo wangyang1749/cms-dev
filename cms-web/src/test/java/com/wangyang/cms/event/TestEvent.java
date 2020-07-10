@@ -1,7 +1,7 @@
 package com.wangyang.cms.event;
 
 
-import com.wangyang.cms.core.event.EntityCreatedEvent;
+import com.wangyang.data.event.EntityCreatedEvent;
 import com.wangyang.model.pojo.entity.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

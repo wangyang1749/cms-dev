@@ -34,14 +34,8 @@ public class DownloadController {
         String absolutePath = CmsConst.WORK_DIR +"/html/"+pdfPath;
         File file = new File(absolutePath);
         String result;
-        if(file.exists()){
-            if(!pdfPath.equals(article.getPdfPath())){
-                article.setPdfPath(pdfPath);
-                Article updateArticle = articleService.save(article);
-                result =  updateArticle.getPdfPath();
-            }else {
-                result =  article.getPdfPath();
-            }
+        if(file.exists()&&article.getPdfPath()!=null){
+            result =  article.getPdfPath();
         }else {
             String url = "http://localhost:8080/preview/pdf/"+articleId;
             String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR + "/html/" + pdfPath);

@@ -1,12 +1,19 @@
 package com.wangyang.cms.controller.user;
 
 
+import com.wangyang.cms.util.HtmlFileRender;
+import com.wangyang.cms.util.HtmlFileRenderHandler;
+import com.wangyang.common.CmsConst;
 import com.wangyang.data.service.IArticleService;
 import com.wangyang.data.service.ICategoryService;
+import com.wangyang.data.service.ITemplateService;
 import com.wangyang.data.service.IUserService;
+import com.wangyang.model.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.model.pojo.dto.CategoryDto;
 import com.wangyang.model.pojo.dto.UserDto;
 import com.wangyang.model.pojo.entity.Article;
+import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.model.pojo.entity.Template;
 import com.wangyang.model.pojo.params.ArticleQuery;
 import com.wangyang.model.pojo.vo.ArticleDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -37,6 +46,8 @@ public class UserArticleController {
     @Autowired
     ICategoryService categoryService;
 
+
+
     @GetMapping("/write")
     public String writeArticle(HttpServletRequest request, Model model, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         int userId = (Integer)request.getAttribute("userId");
@@ -49,7 +60,7 @@ public class UserArticleController {
 
     @GetMapping("/edit/{id}")
     public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = (Integer)request.getAttribute("userId");//在授权时将userId存入request
         Article article = articleService.findByIdAndUserId(id, userId);
         ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
@@ -64,6 +75,18 @@ public class UserArticleController {
         model.addAttribute("view",userDto);
         return "templates/user/info";
     }
+
+
+    @GetMapping("/mindJs/{categoryId}")
+    public String mindJs(@PathVariable("categoryId") int categoryId,Model model){
+        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
+        Category category = articleAndCategoryMindDto.getCategory();
+        String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
+        model.addAttribute("mind",mindFormat);
+        model.addAttribute("category",category);
+        return "templates/user/mindJs";
+    }
+
 
     @GetMapping("/delete/{id}")
     public String deleteArticle(HttpServletRequest request,@PathVariable("id") Integer id){
