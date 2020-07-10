@@ -30,9 +30,14 @@ public class AttachmentController {
         return  attachmentService.upload(file);
     }
 
+
+    /**
+     * 上传文字内容到文件 SVG
+     * @param attachmentParam
+     * @return
+     */
     @RequestMapping(value = "/uploadStrContent")
     public Attachment uploadStrContent(@RequestBody AttachmentParam attachmentParam){
-
         return  attachmentService.uploadStrContent(attachmentParam);
     }
 
@@ -41,7 +46,12 @@ public class AttachmentController {
        return  attachmentService.findById(id);
     }
 
-
+    /**
+     * 更新文字内容
+     * @param attachmentId
+     * @param attachmentParam
+     * @return
+     */
     @RequestMapping(value = "/uploadStrContent/{attachmentId}")
     public Attachment updateStrContent(@PathVariable("attachmentId")Integer attachmentId,@RequestBody  AttachmentParam attachmentParam){
         return  attachmentService.uploadStrContent(attachmentId,attachmentParam);
@@ -57,6 +67,7 @@ public class AttachmentController {
     public  Attachment deleteById(@PathVariable("id") Integer id){
         return attachmentService.deleteById(id);
     }
+
     @RequestMapping("/delete")
     public List<Attachment> deleteByIds(Collection ids){
         return attachmentService.deleteByIds(ids);

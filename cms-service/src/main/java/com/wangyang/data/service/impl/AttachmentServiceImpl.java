@@ -58,7 +58,7 @@ public class AttachmentServiceImpl implements IAttachmentService {
         attachment.setWidth(uploadResult.getWidth());
         attachment.setHeight(uploadResult.getHeight());
         attachment.setSize(uploadResult.getSize());
-        attachment.setType( AttachmentType.LOCAL);
+        attachment.setType(  getAttachmentType());
         return attachmentRepository.save(attachment);
     }
 
@@ -129,8 +129,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
     @Override
     public Attachment deleteById(int id){
         Attachment attachment = findById(id);
-        attachmentRepository.deleteById(id);
         fileHandlers.delete(attachment);
+        attachmentRepository.deleteById(id);
         return attachment;
     }
     @Override
@@ -141,7 +141,7 @@ public class AttachmentServiceImpl implements IAttachmentService {
     @Override
     public Attachment findById(int id){
         Optional<Attachment> optionalAttachment = attachmentRepository.findById(id);
-        if(optionalAttachment==null){
+        if(!optionalAttachment.isPresent()){
             throw  new ObjectException("Attachment not found!!");
         }
         return optionalAttachment.get();
