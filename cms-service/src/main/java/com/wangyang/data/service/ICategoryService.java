@@ -23,9 +23,9 @@ public interface ICategoryService{
     Category addOrUpdate(Category category);
 
 
-    Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
+//    Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
 
-    Page<CategoryDto> pageBy(String categoryEnName, Pageable pageable);
+    Page<Category> pageBy(String categoryEnName, Pageable pageable);
 
     List<CategoryDto> listBy(String categoryEnName);
 

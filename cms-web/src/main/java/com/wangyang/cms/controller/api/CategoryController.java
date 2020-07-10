@@ -14,11 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("/api/category")
@@ -55,8 +59,8 @@ public class CategoryController {
     }
 
     @GetMapping("/template/{categoryEnName}")
-    public Page<CategoryDto> pageBy(@PathVariable("categoryEnName") String categoryEnName, @RequestParam(value = "page", defaultValue = "0")Integer page){
-        return categoryService.pageBy(categoryEnName,page,20);
+    public Page<Category> pageBy(@PathVariable("categoryEnName") String categoryEnName,@PageableDefault(size = 50)  Pageable pageable){
+        return categoryService.pageBy(categoryEnName,pageable);
     }
 
     @PostMapping("/update/{categoryId}")

@@ -81,26 +81,21 @@ public class CategoryServiceImpl implements ICategoryService {
         return saveCategory;
     }
 
-    @Override
-    public Page<CategoryDto> pageBy(String categoryEnName, int page, int size){
-        Sort sort = Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id")));
-        return  pageBy(categoryEnName,PageRequest.of(page,size,sort));
-    }
+
 
     @Override
-    public Page<CategoryDto> pageBy(String categoryEnName,Pageable pageable){
+    public Page<Category> pageBy(String categoryEnName,Pageable pageable){
 
         Specification<Category> specification = new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("templateName"),categoryEnName);
+                criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),categoryEnName));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")));
+
+                return criteriaQuery.getRestriction();
             }
         };
-        return  categoryRepository.findAll(specification,pageable).map(category -> {
-                CategoryDto categoryDto = new CategoryDto();
-                BeanUtils.copyProperties(category,categoryDto);
-                return categoryDto;
-        });
+        return  categoryRepository.findAll(specification,pageable);
     }
 
 
