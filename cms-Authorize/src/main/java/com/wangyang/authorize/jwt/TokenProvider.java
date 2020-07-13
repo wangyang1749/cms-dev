@@ -1,12 +1,15 @@
 package com.wangyang.authorize.jwt;
 
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
+import com.wangyang.data.service.IOptionService;
+import com.wangyang.model.pojo.enums.PropertyEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +32,9 @@ public class TokenProvider  implements InitializingBean {
     private final String base64Secret;
     private final long tokenValidityInMilliseconds;
     private final long tokenValidityInMillisecondsForRememberMe;
+
+    @Autowired
+    IOptionService optionService;
 
     private Key key;
 
@@ -89,7 +95,24 @@ public class TokenProvider  implements InitializingBean {
         springUserDto.setId(id);
         return new UsernamePasswordAuthenticationToken(springUserDto, token, authorities);
     }
-
+    public Authentication getAuthenticationCustomize(String token) {
+        Integer id = optionService.getPropertyIntegerValue(PropertyEnum.ADMIN_ID);
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(new String[]{"ROLE_ADMIN"})
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        SpringUserDto springUserDto = new SpringUserDto();
+        springUserDto.setId(id);
+        springUserDto.setUsername("API请求");
+        return new UsernamePasswordAuthenticationToken(springUserDto, token, authorities);
+    }
+    public boolean validateTokenCustomize(String token) {
+        String value = optionService.getPropertyStringValue(PropertyEnum.CMS_TOKEN);
+        if(token!=null&&token.equals(value)){
+            return true;
+        }
+        return false;
+    }
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(key).parseClaimsJws(authToken);

@@ -26,6 +26,7 @@ public class AttachmentController {
     IAttachmentService attachmentService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @RequestPart("file")
     public Attachment upload(@RequestPart("file") MultipartFile file){
         return  attachmentService.upload(file);
     }

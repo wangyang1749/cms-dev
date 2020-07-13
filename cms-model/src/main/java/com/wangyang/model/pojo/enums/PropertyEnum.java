@@ -12,7 +12,9 @@ public enum  PropertyEnum {
     OSS_THUMBNAIL_STYLE_RULE("oss_ali_thumbnail_style_rule","","OSS_THUMBNAIL_STYLE_RULE",0,true),
     ATTACHMENT_TYPE("attachment_type","","上传的附件类型",0,false),
 //    DEFAULT_ARTICLE_TEMPLATE_ID("default_article_template_id","","DEFAULT_ARTICLE_TEMPLATE_ID",0),
-    CATEGORY_PAGE_SIZE("category_page_size","10","分类的页面大小",1,false);
+    CATEGORY_PAGE_SIZE("category_page_size","10","分类的页面大小",1,false),
+    CMS_TOKEN("cms_token","123456","API访问",1,false),
+    ADMIN_ID("admin_id","1","管理员ID",1,false);
 
 
     private final String value;

@@ -1,13 +1,18 @@
 package com.wangyang.authorize.jwt;
 
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
+import com.wangyang.data.service.IOptionService;
+import com.wangyang.model.pojo.enums.PropertyEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -18,10 +23,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 public class JWTFilter extends GenericFilterBean {
 
@@ -30,6 +34,8 @@ public class JWTFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
     private TokenProvider tokenProvider;
+
+
 
     public JWTFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
@@ -41,9 +47,10 @@ public class JWTFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
-
-        //验证JWT
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+        String token = httpServletRequest.getHeader("Cms-Token");
+        if(tokenProvider.validateTokenCustomize(token)){
+            SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthenticationCustomize(token));
+        } else  if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) { //验证jwt
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             SpringUserDto springUserDto = (SpringUserDto)authentication.getPrincipal();
@@ -68,14 +75,21 @@ public class JWTFilter extends GenericFilterBean {
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String requestURI = request.getRequestURI();
+
+
         String header = request.getHeader("accept");
-        String headerAccept = header.split(",")[0];
+        String headerAccept =" ";
+        if(header!=null){
+          headerAccept= header.split(",")[0];
+        }
+
         String type = "";
         if(request.getHeader("AuthorizeType")!=null){
             type = request.getHeader("AuthorizeType");
+
         }
-//        headerAccept.equals("application/json")
-       ;
+
+
         if(headerAccept.equals("text/html")||type.equals("Cookie")){
             Cookie[] cookies = request.getCookies();
             if(cookies!=null){
