@@ -2,8 +2,11 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.ITemplateService;
+import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.enums.TemplateType;
 import com.wangyang.model.pojo.entity.Template;
+import com.wangyang.model.pojo.params.ComponentsParam;
+import com.wangyang.model.pojo.params.TemplateParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +36,17 @@ public class TemplateController {
 
         return templateService.findByTemplateType(type);
     }
+
+    @PostMapping("/update/{id}")
+    public Template update(@PathVariable("id") Integer id, @RequestBody TemplateParam templateParam){
+        return templateService.update(id,templateParam);
+    }
+
+    @GetMapping("/findDetailsById/{id}")
+    public Template findDetailsById(@PathVariable("id") Integer id){
+        return templateService.findDetailsById(id);
+    }
+
 
     @GetMapping
     public Page<Template> list(@PageableDefault(sort = {"id"},direction = DESC)Pageable pageable){

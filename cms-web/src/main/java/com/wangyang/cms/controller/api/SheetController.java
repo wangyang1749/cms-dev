@@ -2,7 +2,10 @@ package com.wangyang.cms.controller.api;
 
 import com.wangyang.data.service.IHtmlService;
 import com.wangyang.data.service.ISheetService;
+import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.entity.Sheet;
+import com.wangyang.model.pojo.enums.ArticleStatus;
+import com.wangyang.model.pojo.params.ArticleParams;
 import com.wangyang.model.pojo.vo.SheetVo;
 import com.wangyang.model.pojo.params.SheetParam;
 import com.wangyang.common.utils.TemplateUtil;
@@ -12,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Optional;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -32,6 +38,32 @@ public class SheetController {
         Sheet saveSheet = sheetService.addOrUpdate(sheet);
         htmlService.convertArticleListBy(saveSheet);
         return saveSheet;
+    }
+
+    @PostMapping("/save")
+    public Sheet save(@RequestBody SheetParam sheetParam){
+        Sheet sheet = new Sheet();
+        BeanUtils.copyProperties(sheetParam,sheet);
+        Sheet saveSheet = sheetService.save(sheet);
+//        htmlService.convertArticleListBy(saveSheet);
+        return saveSheet;
+    }
+
+    @PostMapping("/save/{id}")
+    public Sheet updateArticle(@PathVariable("id") Integer id, @Valid @RequestBody SheetParam sheetParam){
+        Sheet sheet= sheetService.findById(id);
+        if(sheet.getOriginalContent().equals(sheetParam.getOriginalContent())){
+            return sheet;
+        }
+        BeanUtils.copyProperties(sheetParam,sheet);
+//        Boolean haveHtml = Optional.ofNullable(sheetParam.getHaveHtml()).orElse(false);
+//        if(haveHtml){
+//            article.setStatus(ArticleStatus.MODIFY);
+//        }else {
+//            article.setStatus(ArticleStatus.DRAFT);
+//        }
+        sheet.setStatus(ArticleStatus.MODIFY);
+        return  sheetService.save(sheet);
     }
 
     @PostMapping("/update/{id}")

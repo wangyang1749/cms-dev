@@ -127,6 +127,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "templates/@categoryList", TemplateType.CATEGORY_LIST,7),
 
                 new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET,8),
+                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "templates/sheet/@customSheet", TemplateType.SHEET,8),
+
+
                 new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
 
                 new Template("基于AJAX分页的分类模板","CATEGORY_PAGE","templates/@categoryPage", TemplateType.CATEGORY,10),
@@ -149,6 +152,11 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 //                if(template.getName().equals("DEFAULT_ARTICLE")){
 //                    options.add(new Option(PropertyEnum.DEFAULT_ARTICLE_TEMPLATE_ID.getValue(),String.valueOf(template.getId())));
 //                }
+                File file = new File(workDir+"/"+template.getTemplateValue()+".html");
+                if(!file.exists()){
+                    FileUtils.saveFile(file,"abcddd");
+                    log.info("创建文件:"+file.getName());
+                }
                 log.info("添加 Template ["+name+"] ");
             });
         }

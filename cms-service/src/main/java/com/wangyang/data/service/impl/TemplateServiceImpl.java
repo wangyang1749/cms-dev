@@ -1,14 +1,19 @@
 package com.wangyang.data.service.impl;
 
 
+import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
+import com.wangyang.common.utils.FileUtils;
 import com.wangyang.data.service.ICategoryService;
 import com.wangyang.data.service.ITemplateService;
 import com.wangyang.model.pojo.dto.CategoryDto;
+import com.wangyang.model.pojo.entity.Components;
 import com.wangyang.model.pojo.enums.TemplateType;
 import com.wangyang.data.repository.TemplateRepository;
 import com.wangyang.model.pojo.entity.Template;
+import com.wangyang.model.pojo.params.ComponentsParam;
+import com.wangyang.model.pojo.params.TemplateParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +26,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,11 +54,46 @@ public class TemplateServiceImpl implements ITemplateService {
     }
 
     @Override
-    public Template update(int id,Template updateTemplate) {
+    public Template update(int id, TemplateParam templateParam) {
         Template template = findById(id);
-        BeanUtils.copyProperties(updateTemplate,template,"id");
+        BeanUtils.copyProperties(template,template);
+        convert(template,templateParam);
         return templateRepository.save(template);
     }
+
+    private void convert(Template template, TemplateParam templateParam){
+        BeanUtils.copyProperties(templateParam,template,"templateValue");
+        String templateValue =templateParam.getTemplateValue();
+        //判断是文件还是内容
+        if(templateValue.startsWith("templates")){
+            String templateValueName = templateValue.split("\n")[0];
+            String path = CmsConst.WORK_DIR+"/"+templateValueName+".html";
+            File file = new File(path);
+            String fileTemplateValue = templateParam.getTemplateValue();
+            template.setTemplateValue(templateValueName);
+            String replaceFileTemplateValue = fileTemplateValue.replace(templateValueName+"\n", "");
+            FileUtils.saveFile(file,replaceFileTemplateValue);
+        }else {
+            template.setTemplateValue(templateParam.getTemplateValue());
+        }
+    }
+
+    @Override
+    public Template findDetailsById(int id){
+        Template template = findById(id);
+        String templateValue = template.getTemplateValue();
+        if(templateValue.startsWith("templates")){
+            String path = CmsConst.WORK_DIR+"/"+templateValue+".html";
+            File file = new File(path);
+            if(file.exists()){
+                String openFile = FileUtils.openFile(file);
+                template.setTemplateValue(template.getTemplateValue()+"\n"+openFile);
+            }
+        }
+        return template;
+    }
+
+
 
     @Override
     public List<Template> findAll(){

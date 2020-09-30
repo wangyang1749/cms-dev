@@ -32,6 +32,9 @@ public class PreviewController {
 
     @GetMapping("/article/{articleId}")
     @ResponseBody
+    /**
+     * 使用自定义的公共头部引用语句
+     */
     public String previewArticle(@PathVariable("articleId")Integer articleId){
         Article article = articleService.findArticleById(articleId);
         if(article.getStatus()!= ArticleStatus.PUBLISHED){
@@ -60,7 +63,27 @@ public class PreviewController {
         return convertHtml;
     }
 
+    @GetMapping("/sheet/{id}")
+    @ResponseBody
+    public String previewSheet(@PathVariable("id") Integer id){
+        Sheet sheet = sheetService.findById(id);
+        if(sheet.getStatus()!= ArticleStatus.PUBLISHED){
+            sheet = sheetService.createOrUpdate(sheet);
+        }
+//        Template template = templateService.findById(sheetDetailVo.getChannel().getArticleTemplateId());
+        Template template = templateService.findByEnName(sheet.getTemplateName());
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        modelAndView.addObject("view", sheet);
+//        modelAndView.setViewName(template.getTemplateValue());
+        String html = TemplateUtil.convertHtmlAndPreview(sheet, template);
+        String convertHtml = FileUtils.convertByString(html);
+        return convertHtml;
+    }
+
     @GetMapping("/save/{articleId}")
+    @Deprecated
+    //未使用
     public ModelAndView previewSaveArticle(@PathVariable("articleId")Integer articleId){
         Article article = articleService.findArticleById(articleId);
         article = articleService.previewSave(article);
@@ -91,18 +114,18 @@ public class PreviewController {
 //        modelAndView.setViewName(template.getTemplateValue());
         return convertHtml;
     }
-    @GetMapping("/sheet/{id}")
-    public ModelAndView previewSheet(@PathVariable("id") Integer id){
-        Sheet sheet = sheetService.findById(id);
-
-//        Template template = templateService.findById(sheetDetailVo.getChannel().getArticleTemplateId());
-        Template template = templateService.findByEnName(sheet.getTemplateName());
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.addObject("view", sheet);
-        modelAndView.setViewName(template.getTemplateValue());
-        return modelAndView;
-    }
+//    @GetMapping("/sheet/{id}")
+//    public ModelAndView previewSheet(@PathVariable("id") Integer id){
+//        Sheet sheet = sheetService.findById(id);
+//
+////        Template template = templateService.findById(sheetDetailVo.getChannel().getArticleTemplateId());
+//        Template template = templateService.findByEnName(sheet.getTemplateName());
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        modelAndView.addObject("view", sheet);
+//        modelAndView.setViewName(template.getTemplateValue());
+//        return modelAndView;
+//    }
 
     @GetMapping("/component/{id}")
     @ResponseBody

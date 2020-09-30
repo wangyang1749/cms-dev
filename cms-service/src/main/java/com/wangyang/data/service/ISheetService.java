@@ -1,11 +1,12 @@
 package com.wangyang.data.service;
 
+import com.wangyang.model.pojo.entity.Article;
 import com.wangyang.model.pojo.entity.Sheet;
 import com.wangyang.model.pojo.vo.SheetVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ISheetService {
+public interface ISheetService extends IBaseArticleService<Sheet>{
 
 
     Sheet save(Sheet sheet);

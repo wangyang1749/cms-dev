@@ -1,7 +1,9 @@
 package com.wangyang.model.pojo.params;
 
 import com.wangyang.model.pojo.enums.ArticleStatus;
+import lombok.Data;
 
+@Data
 public class SheetParam {
 
     private ArticleStatus status ;//=ArticleStatus.PUBLISHED;
@@ -13,79 +15,7 @@ public class SheetParam {
     private String path;
     private Integer channelId;
     private String templateName;
+    private String cssContent;
+    private String jsContent;
 
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    public Integer getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
-    }
-
-    public SheetParam(){}
-
-
-    public ArticleStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ArticleStatus status) {
-        this.status = status;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getViewName() {
-        return viewName;
-    }
-
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
-    }
-
-    public String getOriginalContent() {
-        return originalContent;
-    }
-
-    public void setOriginalContent(String originalContent) {
-        this.originalContent = originalContent;
-    }
-
-    public String getFormatContent() {
-        return formatContent;
-    }
-
-    public void setFormatContent(String formatContent) {
-        this.formatContent = formatContent;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }

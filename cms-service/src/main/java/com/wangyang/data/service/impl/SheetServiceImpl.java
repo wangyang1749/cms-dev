@@ -6,6 +6,7 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.data.service.ISheetService;
 import com.wangyang.data.service.ITemplateService;
 import com.wangyang.model.pojo.entity.Sheet;
+import com.wangyang.model.pojo.enums.ArticleStatus;
 import com.wangyang.model.pojo.vo.SheetVo;
 import com.wangyang.data.repository.MenuRepository;
 import com.wangyang.data.repository.SheetRepository;
@@ -57,6 +58,7 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 //            channel.setFirstSheet(sheet.getViewName());
 //            channel = channelService.save(channel);
 //        }
+        sheet.setStatus(ArticleStatus.PUBLISHED);
         Sheet saveSheet = sheetRepository.save(sheet);
         return saveSheet;
 
