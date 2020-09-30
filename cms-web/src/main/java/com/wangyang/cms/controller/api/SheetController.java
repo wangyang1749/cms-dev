@@ -52,9 +52,9 @@ public class SheetController {
     @PostMapping("/save/{id}")
     public Sheet updateArticle(@PathVariable("id") Integer id, @Valid @RequestBody SheetParam sheetParam){
         Sheet sheet= sheetService.findById(id);
-        if(sheet.getOriginalContent().equals(sheetParam.getOriginalContent())){
-            return sheet;
-        }
+//        if(sheet.getOriginalContent().equals(sheetParam.getOriginalContent())sheetParam.getJsContent().equals()){
+//            return sheet;
+//        }
         BeanUtils.copyProperties(sheetParam,sheet);
 //        Boolean haveHtml = Optional.ofNullable(sheetParam.getHaveHtml()).orElse(false);
 //        if(haveHtml){
