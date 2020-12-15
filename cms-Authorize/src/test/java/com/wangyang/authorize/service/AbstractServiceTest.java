@@ -1,13 +1,13 @@
 package com.wangyang.authorize.service;
 
 import com.wangyang.authorize.Application;
-import com.wangyang.data.repository.UserRepository;
-import com.wangyang.data.repository.UserRoleRepository;
-import com.wangyang.data.service.IPermissionService;
-import com.wangyang.data.service.IRoleService;
-import com.wangyang.data.service.IUserService;
-import com.wangyang.model.pojo.entity.Role;
-import com.wangyang.model.pojo.entity.User;
+import com.wangyang.service.repository.UserRepository;
+import com.wangyang.service.repository.UserRoleRepository;
+import com.wangyang.service.service.IPermissionService;
+import com.wangyang.service.service.IRoleService;
+import com.wangyang.service.service.IUserService;
+import com.wangyang.pojo.entity.Role;
+import com.wangyang.pojo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;

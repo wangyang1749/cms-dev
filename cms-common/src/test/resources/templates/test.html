@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Test Html</h2>
+<span th:text='${name}'>Sebastian</span>
+<h5>h5</h5>
+<!--<h2 score:match-day-today th:text="#{title.leaguetable(${execInfo.now.time})}">-->
+<!--    League table for 07 July 2011-->
+<!--</h2>-->
+
+<div score:text="''" style="display: inline">
+</div>
+<score:select class="" id="testSelect" name="testSelect" dictType="字典类型"  headerLabel="请选择" headerValue="" ></score:select>
+
+<include href="/templates/header.html" isSaveFile="true"/>
+<!--#include file='/templates/header.html'-->
+<h1>after</h1>
+[[${#execInfo.templateName}]]
+[[${#objects.nullSafe(bj,default)}]]
+111
+<!--<textarea style="display:none;" id="textInput" th:value="#objects.nullSafe(${view.originalContent},'default')">-->
+</textarea>
+</body>
+</html>

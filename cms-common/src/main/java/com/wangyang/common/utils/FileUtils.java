@@ -2,7 +2,7 @@ package com.wangyang.common.utils;
 
 import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
-import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.pojo.entity.Category;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;

@@ -1,11 +1,9 @@
 package com.wangyang.schedule.controller;
 
 import com.wangyang.common.BaseResponse;
-import com.wangyang.model.pojo.entity.SysTask;
+import com.wangyang.pojo.entity.SysTask;
 import com.wangyang.schedule.util.QuartzUtils;
-import javafx.concurrent.Task;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

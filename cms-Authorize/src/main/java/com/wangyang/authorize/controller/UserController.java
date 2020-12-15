@@ -1,8 +1,7 @@
 package com.wangyang.authorize.controller;
 
 import com.wangyang.authorize.config.service.UserDetailServiceImpl;
-import com.wangyang.authorize.jwt.TokenProvider;
-import com.wangyang.data.service.IUserService;
+import com.wangyang.service.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,16 +1,11 @@
 package com.wangyang.schedule.util;
 
-import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
-import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.data.repository.ArticleRepository;
-import com.wangyang.data.service.IArticleService;
-import com.wangyang.model.pojo.entity.Article;
-import com.wangyang.model.pojo.entity.Components;
-import com.wangyang.model.pojo.enums.ArticleStatus;
-import com.wangyang.model.pojo.support.ScheduleOption;
-import com.wangyang.model.pojo.support.TemplateOption;
+import com.wangyang.service.repository.ArticleRepository;
+import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.enums.ArticleStatus;
+import com.wangyang.pojo.support.ScheduleOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,7 +17,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j

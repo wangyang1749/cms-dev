@@ -14,10 +14,15 @@
     <dependencies>
 
 <!--        <dependency>-->
-<!--            <groupId>com.wangyang.cms</groupId>-->
+<!--            <groupId>com.wangyang.web</groupId>-->
 <!--            <version>0.0.1-SNAPSHOT</version>-->
 <!--            <artifactId>cms-common</artifactId>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.wangyang.cms</groupId>
@@ -66,11 +71,11 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
-        <!--spring boot thymeleaf-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+<!--        spring boot thymeleaf-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--        </dependency>-->
 <!--        &lt;!&ndash;spring boot jpa&ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->

@@ -1,30 +1,21 @@
 package com.wangyang.schedule.util;
 
-import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.data.service.*;
-import com.wangyang.model.pojo.dto.ArticleDto;
-import com.wangyang.model.pojo.dto.CategoryDto;
-import com.wangyang.model.pojo.entity.*;
-import com.wangyang.model.pojo.enums.TemplateType;
-import com.wangyang.model.pojo.params.CategoryQuery;
-import com.wangyang.model.pojo.support.ScheduleOption;
-import com.wangyang.model.pojo.support.TemplateOption;
-import com.wangyang.model.pojo.support.TemplateOptionMethod;
-import com.wangyang.model.pojo.vo.IndexVo;
+import com.wangyang.service.service.*;
+import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.dto.CategoryDto;
+import com.wangyang.pojo.entity.*;
+import com.wangyang.pojo.support.ScheduleOption;
+import com.wangyang.pojo.support.TemplateOption;
+import com.wangyang.pojo.support.TemplateOptionMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Component

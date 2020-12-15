@@ -1,8 +1,8 @@
 package com.wangyang.authorize.jwt;
 
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
-import com.wangyang.data.service.IOptionService;
-import com.wangyang.model.pojo.enums.PropertyEnum;
+import com.wangyang.service.service.IOptionService;
+import com.wangyang.pojo.enums.PropertyEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

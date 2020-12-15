@@ -1,17 +1,13 @@
 package com.wangyang.schedule.listener;
 
 import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.data.service.ISysTaskService;
-import com.wangyang.model.pojo.entity.SysTask;
-import com.wangyang.model.pojo.enums.ScheduleStatus;
-import com.wangyang.model.pojo.support.ScheduleOption;
-import com.wangyang.model.pojo.support.TemplateOption;
-import com.wangyang.schedule.util.ArticleJob;
+import com.wangyang.service.service.ISysTaskService;
+import com.wangyang.pojo.entity.SysTask;
+import com.wangyang.pojo.enums.ScheduleStatus;
+import com.wangyang.pojo.support.ScheduleOption;
 import com.wangyang.schedule.util.ArticleJobAnnotation;
 import com.wangyang.schedule.util.QuartzUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.Scheduler;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;

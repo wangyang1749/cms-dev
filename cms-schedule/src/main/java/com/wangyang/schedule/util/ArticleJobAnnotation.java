@@ -1,6 +1,6 @@
 package com.wangyang.schedule.util;
 
-import com.wangyang.model.pojo.enums.ScheduleStatus;
+import com.wangyang.pojo.enums.ScheduleStatus;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

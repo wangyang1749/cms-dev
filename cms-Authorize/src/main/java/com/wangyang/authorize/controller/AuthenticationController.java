@@ -3,7 +3,7 @@ package com.wangyang.authorize.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wangyang.authorize.jwt.JWTFilter;
 import com.wangyang.authorize.jwt.TokenProvider;
-import com.wangyang.model.pojo.entity.User;
+import com.wangyang.pojo.entity.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

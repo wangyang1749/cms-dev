@@ -1,6 +1,6 @@
 package com.wangyang.common.utils;
 
-import com.wangyang.model.pojo.entity.Category;
+import com.wangyang.pojo.entity.Category;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 

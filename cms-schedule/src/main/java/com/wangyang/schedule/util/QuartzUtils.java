@@ -1,8 +1,8 @@
 package com.wangyang.schedule.util;
 
-import com.wangyang.data.service.ISysTaskService;
-import com.wangyang.model.pojo.entity.SysTask;
-import com.wangyang.model.pojo.enums.ScheduleStatus;
+import com.wangyang.service.service.ISysTaskService;
+import com.wangyang.pojo.entity.SysTask;
+import com.wangyang.pojo.enums.ScheduleStatus;
 import com.wangyang.schedule.exception.MyScheduleException;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -10,7 +10,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 @Component

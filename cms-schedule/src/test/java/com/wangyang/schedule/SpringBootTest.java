@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = {"com.wangyang.data.repository"})
-@EntityScan(basePackages = {"com.wangyang.model.pojo.entity"})
-@ComponentScan(basePackages = {"com.wangyang.schedule","com.wangyang.data"})
+@EntityScan(basePackages = {"com.wangyang.pojo.entity"})
+@ComponentScan(basePackages = {"com.wangyang.schedule","com.wangyang.service"})
 public class SpringBootTest {
 
     public static void main(String[] args) {

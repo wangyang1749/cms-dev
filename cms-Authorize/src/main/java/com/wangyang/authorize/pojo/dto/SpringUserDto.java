@@ -1,6 +1,6 @@
 package com.wangyang.authorize.pojo.dto;
 
-import com.wangyang.model.pojo.entity.Role;
+import com.wangyang.pojo.entity.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

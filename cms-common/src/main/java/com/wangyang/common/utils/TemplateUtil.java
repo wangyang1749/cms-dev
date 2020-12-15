@@ -3,9 +3,10 @@ package com.wangyang.common.utils;
 
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.TemplateException;
-import com.wangyang.model.pojo.entity.Components;
-import com.wangyang.model.pojo.entity.Template;
-import com.wangyang.model.pojo.entity.base.BaseTemplate;
+import com.wangyang.common.thymeleaf.CmsDialect;
+import com.wangyang.pojo.entity.Components;
+import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.entity.base.BaseTemplate;
 import com.wangyang.common.CmsConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.dialect.IDialect;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 
 import java.io.File;
@@ -27,28 +35,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @Slf4j
 public class TemplateUtil {
 
-    private static String workDir;
-
-    private  static TemplateEngine templateEngine;
+    private static String workDir="";
 
     @Value("${cms.workDir}")
-    private void setWorkDir(String workDir) {
+    public TemplateUtil setWorkDir(String workDir) {
         this.workDir = workDir;
+        return this;
     }
-
-    @Autowired
-    private void setTemplateEngine(TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
-    }
-
-
-
-
 
     public static void deleteTemplateHtml(String oldName,String path){
         if(StringUtils.isEmpty(oldName)){
@@ -185,19 +184,34 @@ public class TemplateUtil {
 
     }
 
-    private static String getHtml(String templateValue,Context context) {
+    public static String getHtml(String templateValue,Context context) {
         if(templateValue==null||"".equals(templateValue)){
             throw new TemplateException("Template value can't empty!!");
         }
-        String html;
-        if(templateValue.startsWith("@")) {
-            String templatePath = workDir + "/" + CmsConst.SYSTEM_TEMPLATE_PATH + "/" + templateValue + ".html";
-            if (!Files.exists(Paths.get(templatePath))) {
-                throw new TemplateException("Template does not exist!!");
-            }
-        }
-        html = templateEngine.process(templateValue, context);
+
+        String html = getFileEngine().process(templateValue, context);
         return html;
+    }
+
+    /**
+     *
+     * @param needInclude 是否需要引入header
+     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler) 
+     * @return
+     */
+    public static ITemplateEngine getWebEngine() {
+        TemplateEngine templateEngine = HtmlTemplateEngine.getWebInstance(workDir, ".html");
+        return templateEngine;
+    }
+    /**
+     *
+     * @param needInclude 是否需要引入header
+     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
+     * @return
+     */
+    public static ITemplateEngine getFileEngine() {
+        TemplateEngine templateEngine = HtmlTemplateEngine.getFileInstance(workDir, ".html");
+        return templateEngine;
     }
 
     public static String saveFile(String path,String viewName,String html) {

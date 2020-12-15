@@ -2,16 +2,15 @@ package com.wangyang.authorize.controller.api;
 
 import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
-import com.wangyang.data.service.IUserService;
-import com.wangyang.model.pojo.dto.UserDto;
-import com.wangyang.model.pojo.entity.User;
-import com.wangyang.model.pojo.params.UserParam;
+import com.wangyang.service.service.IUserService;
+import com.wangyang.pojo.dto.UserDto;
+import com.wangyang.pojo.entity.User;
+import com.wangyang.pojo.params.UserParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
