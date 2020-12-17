@@ -1,9 +1,0 @@
-
-
-<nav id="header" >
-  <ul class="nav">
-    <li class="nav-item" th:each="item : ${view}">
-      <a class="nav-link active" th:href="'/'+${item.urlName}" th:text="${item.name}"></a>
-    </li>
-  </ul>
-</nav>
