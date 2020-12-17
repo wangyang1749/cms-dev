@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head th:replace="'html/article/'+${viewName} ::head">
+</head>
+
+<body>
+    <div th:insert="html/components/header :: #header"></div>
+
+
+    <div  th:insert="'html/article/'+${viewName} ::body"></div>
+ 
+
+
+    <div th:if="${isSave== null && notPdf==null}" th:insert="html/components/footer :: #footer"></div>
+    
+</body>
+
+</html>

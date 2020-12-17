@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/templates/resources/themes/github.css">
+
+    <link rel="stylesheet" href="/templates/resources/css/index.css?v=1.01">
+
+    <link rel="stylesheet" type="text/css" href="/templates/resources/css/bootstrap-tags.css" />
+    <link rel="stylesheet" href="/templates/resources/css/user.css">
+    <link rel="stylesheet" href="/templates/resources/css/pagination.css">
+    <link rel="stylesheet" href="/templates/resources/css/editormd.css">
+
+    <title th:text="${view==null? '发布文章':view.title}"></title>
+    <style>
+        #header {
+            position: relative;
+        }
+
+
+        .article-option {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+
+
+        /*svg字符串上传面板*/
+        .fixed-card {
+            /* position: fixed; */
+            width: 60rem;
+            z-index: 99;
+            display: none;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        /*附件面板*/
+        .drawer-panel {
+            /* width: 30rem; */
+            position: fixed;
+            background: #fff;
+            z-index: 99999;
+            overflow-y: auto;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: none;
+            height: 100%;
+        }
+
+        .edit-input {
+            z-index: 9999;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div th:insert="templates/user/header"></div>
+    <div class="  ">
+
+        <div id="test-editormd" class="edit-input">
+            <textarea style="display:none;" id="textInput" th:text="${view==null?'':view.originalContent}">
+            </textarea>
+        </div>
+
+
+
+
+        <form class="article-option">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">文章标题</label>
+                <input class="form-control" th:value="${view==null?'':view.title}" id="title" type="text" placeholder="请输入文章标题" />
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">文章分类</label>
+                <select id="categories" class=" form-control">
+                    <option selected disabled hidden>请选择一个分类</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect2">文章标签</label>
+                <div id="my-tag-list" class=" tag-list  "></div>
+
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">文章摘要</label>
+                <textarea th:text="${view==null?'':view.summary}" id="summary" class="form-control" placeholder="请输入摘要（不输入，将自动从文章截取）"
+                    rows="3"></textarea>
+
+            </div>
+            <div class="d-flex justify-content-end form-group">
+                <button type="button" class="btn btn-success" id="attachment">附件</button>
+                <button type="button" class="btn btn-danger" id="save">保存</button>
+                <button type="button" class="btn btn-warning" id="previewNet">预览</button>
+                <!-- <button type="button" class="btn btn-warning" id="submitPanel">发布</button> -->
+
+                <button type="button" class="btn btn-info" id="submitCreate">首次发布</button>
+                <button type="button" class="btn btn-info" id="submitUpdate" style="display: none;">更新发布</button>
+
+            </div>
+
+        </form>
+
+
+
+        <div id="uploadPanel" class="uploadPanel" style="display: none;">
+            <div class="p-2">
+                <div>
+                    <input type="file" name="file" id="file">
+                </div>
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <!-- <progress value="22" max="100">
+                </progress> -->
+            </div>
+        </div>
+
+        <div class="drawer-panel drawer-attachment">
+            <div>
+                <a href="javascript:;" data-render="latex" class="openSvgPanel btn btn-light">latex</a>
+                <a href="javascript:;" data-render="mermaid" class="openSvgPanel btn btn-light">mermaid</a>
+                <a href="javascript:;" data-render="svg" class="openSvgPanel btn btn-light">svg</a>
+                <a href="javascript:;" id="uploadFile" class="btn btn-light">上传</a>
+
+            </div>
+            <div class="card fixed-card" id="fixed-card">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <span id="svg-header">选择渲染js</span>
+                        <a href="javascript:;" onclick="saveSvg()">保存</a>
+                        <a href="javascript:;" onclick="updateSvg()">更新</a>
+                    </div>
+
+                    <a href="javascript:;" id="closeBtn">&times;</a>
+                </div>
+                <div class="card-body ">
+                    <div class="">
+                        <textarea data-render="" class="form-control border border-primary" id="componentInput"
+                            rows="10"></textarea>
+                    </div>
+                    <div id="componentPreview" class="">
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="attachment-list"></div>
+            <div class="attachment m-style "></div>
+        </div>
+
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="mr-auto">消息</strong>
+                <button id="closeToast" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toast-body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+
+
+    </div>
+
+    <div th:insert="html/components/footer :: #footer" class="mt-3"></div>
+
+
+    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
+
+    <script>
+
+        /**
+     * 插入内容到光标处
+     */
+        (function ($) {
+            // "use strict";
+            $.fn.extend({
+                insertAtCaret: function (myValue) {
+                    var $t = $(this)[0];
+                    if (document.selection) {
+                        this.focus();
+                        var sel = document.selection.createRange();
+                        sel.text = myValue;
+                        this.focus();
+                    } else {
+                        if ($t.selectionStart || $t.selectionStart == '0') {
+                            var startPos = $t.selectionStart;
+                            var endPos = $t.selectionEnd;
+                            var scrollTop = $t.scrollTop;
+                            $t.value = $t.value.substring(0, startPos) + myValue + $t.value.substring(endPos, $t.value.length);
+                            this.focus();
+                            $t.selectionStart = startPos + myValue.length;
+                            $t.selectionEnd = startPos + myValue.length;
+                            $t.scrollTop = scrollTop;
+                        } else {
+                            this.value += myValue;
+                            this.focus();
+                        }
+                    }
+                }
+            });
+        })(jQuery);
+
+
+    </script>
+
+    <script src="/templates/resources/js/jquery.cookie.js"></script>
+
+    <script src="/templates/resources/js/markdown-it.min.js"></script>
+
+    <script src='/templates/resources/js/bootstrap-tags.min.js'></script>
+    <script src="/templates/resources/js/index.js"></script>
+    <script src="/templates/resources/js/user.js"></script>
+    <script src="/templates/resources/js/mermaid.min8.5.1.js"></script>
+    <script src="/templates/resources/js/jquery.pagination.js"></script>
+    <script src="/templates/resources/js/editormd.min.js"></script>
+    <script src="/templates/resources/js/uploadImg.js"></script>
+    <script>
+        var testEditor;
+
+        $(function () {
+            testEditor = editormd("test-editormd", {
+                width: "90%",
+                height: 640,
+                syncScrolling: "single",
+                path: "/templates/resources/lib/editor/",
+                htmlDecode: true,
+                imageUpload: true,
+                onload: function () {
+                    initPasteDragImg(this); //必须
+                }
+                // emoji:true
+            });
+
+            /*
+            // or
+            testEditor = editormd({
+                id      : "test-editormd",
+                width   : "90%",
+                height  : 640,
+                path    : "../lib/"
+            });
+            */
+        });
+    </script>
+    <script src="/templates/resources/js/write.js?v=1.2"></script>
+
+    <script>
+
+
+
+
+
+        cmsWrite.defaultCategoryId = [[${ view==null?'':view.categoryId }]]
+        setSelectTags([[${ view==null?'':view.tagIds }]])
+        cmsWrite.articleId = null
+        function setArticleId(param) {
+            cmsWrite.articleId = param
+        }
+        setArticleId([[${ view==null?'':view.id }]])
+        /**
+         * 判断是否在更新页面
+         */
+        if (cmsWrite.articleId) {
+            $("#submitCreate").css("display", "none")
+            $("#submitUpdate").css("display", "inline-block")
+        }
+        cmsWriteInit()
+
+        // formatHtml()
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

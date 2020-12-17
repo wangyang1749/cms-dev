@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="${view.title}"></title>
+    <link rel="stylesheet" href="/templates/resources/themes/github.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <!-- 公共样式文件 -->
+    <link rel="stylesheet" href="/templates/resources/css/index.css">
+    <style>
+        @media screen and (min-width: 1000px) {
+            .markdown {
+                /* width: 842px;
+                margin: 10px auto; */
+                /* padding: 2rem;
+                background: #fff; */
+            }
+        }
+
+.wrap-bg {
+            width: 100%;
+            height: 100%;
+           # background: blue;
+            position: absolute;
+            z-index: -3;
+        }
+
+
+.container-bg {
+	color: #fff;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradientBG 15s ease infinite;
+z-index: -2;
+ opacity:0.95;
+
+# background: rgba(0, 0, 0, 0.5);
+
+}
+
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.btn-audio {
+    width: 30px;
+    height: 30px;
+    background-image: url(http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/imgSvg-1601557721691.svg);
+    background-size: contain;
+
+position: absolute;
+
+  margin:10px 10px;
+}
+
+.rotate {
+    -webkit-animation: rotating 1.2s linear infinite;
+    -moz-animation: rotating 1.2s linear infinite;
+    -o-animation: rotating 1.2s linear infinite;
+    animation: rotating 1.2s linear infinite
+}
+
+@-webkit-keyframes rotating {
+    from { -webkit-transform: rotate(0) }
+    to { -webkit-transform: rotate(360deg) }
+}
+
+@keyframes rotating {
+    from { transform: rotate(0) }
+    to { transform: rotate(360deg) }
+}
+@-moz-keyframes rotating {
+    from { -moz-transform: rotate(0) }
+    to { -moz-transform: rotate(360deg) }
+}
+
+/*[(${view.cssContent})]*/
+  
+    </style>
+</head>
+
+<body>
+        <div cms:replace="/html/components/header"></div>
+
+
+                    <canvas id="canvas" width="" height="" class="canvas-bg canvas wrap-bg" ref="canvas"></canvas>
+
+    <div class="container">
+<div class="container-bg   shadow-lg  mb-3  rounded p-3" >
+<div>
+    [(${view.formatContent})]
+</div>
+    </div>
+</div>
+    <div cms:replace="/html/components/footer"></div>
+
+    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
+
+ <script src="/templates/resources/js/jquery.lazyload.min.js"></script>
+
+<script>
+
+$(function () {
+            $("img.lazy").lazyload({ effect: "fadeIn" });
+
+$("video.lazy").lazyload({ effect: "fadeIn" });
+
+        });
+
+
+function colorValue(min) {
+    return Math.floor(Math.random() * 255 + min);
+}
+function createColorStyle(r, g, b) {
+    return 'rgba(' + r + ',' + g + ',' + b + ', 0.8)';
+}
+function Color(min) {
+    min = min || 0;
+    this.r = colorValue(min);
+    this.g = colorValue(min);
+    this.b = colorValue(min);
+    this.style = createColorStyle(this.r, this.g, this.b);
+}
+canvasControler = [
+    {
+        canvasEffect: function (canvas) {
+            var dots = {
+                nb: 1000,//Dot的总数
+                distance: 50,
+                d_radius: 100,
+                array: []
+              };
+        
+              //创建Dot类以及一系列方法
+              function Dot() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+        
+                this.vx = -.5 + Math.random();
+                this.vy = -.5 + Math.random();
+        
+                this.radius = Math.random() * 2;
+        
+                this.color = new Color();
+              }
+        
+              Dot.prototype = {
+                draw: function () {
+                  ctx.beginPath();
+                  ctx.fillStyle = this.color.style;
+                  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                  ctx.fill();
+                }
+              };
+              for (var i = 0; i < dots.nb; i++) {
+                dots.array.push(new Dot());
+              }
+        
+              var ctx = canvas.getContext("2d");
+              function animateDots() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布，否则线条会连在一起
+                for (var i = 0; i < dots.nb; i++) {
+                  var dot = dots.array[i];
+                  if (dot.y < 0 || dot.y > canvas.height) {
+                    // dot.vx = dot.vx;
+                    dot.vy = - dot.vy;
+                  }
+                  else if (dot.x < 0 || dot.x > canvas.width) {
+                    dot.vx = - dot.vx;
+                    // dot.vy = dot.vy;
+                  }
+                  dot.x += dot.vx;
+                  dot.y += dot.vy;
+                }
+                for (i = 0; i < dots.nb; i++) {
+                  dots.array[i].draw();
+                }
+                requestAnimationFrame(animateDots)
+              }
+              animateDots()
+        }
+    }, {
+        canvasEffect: function (canvas) {
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "30px Verdana";
+            var gradient = ctx.createLinearGradient(50, 0, canvas.width, 50);
+            gradient.addColorStop("0", "magenta");
+            gradient.addColorStop("0.5", "blue");
+            gradient.addColorStop("1.0", "red");
+            // Fill with gradient
+            ctx.strokeStyle = gradient;
+            ctx.strokeText("Big smile!", 10, 60);
+        }
+    }
+]
+    
+    
+      document.getElementById("canvas").height=window.innerHeight
+        document.getElementById("canvas").width=window.innerWidth
+    canvasControler[0].canvasEffect(document.getElementById("canvas"))
+    
+
+
+
+
+	//alert("ddwedwef"+ $('#mp3Btn').html())
+        $(function(){
+     
+            //播放器控制
+            var audio = document.getElementById('mp3Btn');
+
+audio.volume = .3;
+
+
+            //播放完毕
+            $('#mp3Btn').on('ended', function() {
+                console.log("音频已播放完成");
+             audio.play();
+            })
+
+           
+  $(document).one('click',function(){
+   
+      $('.btn-audio').toggleClass("rotate");
+      audio.play();
+  })
+
+            $('.btn-audio').click(function() {
+                $(this).toggleClass("rotate");
+                event.stopPropagation();//防止冒泡
+               
+if($(this).hasClass("rotate") ){ //如果当前是暂停状态
+                   // $('.btn-audio').css({'background':'url(http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/imgSvg-1601552624518.svg) no-repeat center bottom','background-size':'cover'});
+                    audio.play(); //播放
+                    return;
+                }else{//当前是播放状态
+                  //  $('.btn-audio').css({'background':'url(http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/imgSvg-1601552311513.svg) no-repeat center bottom','background-size':'cover'});
+                    audio.pause(); //暂停
+                }
+            });
+        })
+    
+	</script>
+
+</body>
+
+</html>

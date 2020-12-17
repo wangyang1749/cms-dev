@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>文章编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://simplemde.com/stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="/templates/resources/css/selectpage.css">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Image and text -->
+    <nav class="navbar navbar-light bg-light ">
+        <a class="navbar-brand" href="#">
+            <img src="" width="30" height="30" class="d-inline-block align-top" alt="">
+            写文章
+        </a>
+        <span class="navbar-text">
+            <button>保存文章</button> |
+            <button id="submit">发布文章</button>
+        </span>
+    </nav>
+
+    <button id="button" onclick="login()">test</button>
+    <section class="main-content">
+        <!-- <h1>添加文章</h1> -->
+        <!-- <a onclick="submit" href="javascript:void(0);" id="submit" class="weui-btn weui-btn_primary">添加</a> -->
+        <div class="form-group">
+            <label>文章标题</label>
+            <input placeholder="请输入文章标题" type="text" class="form-control" id="title">
+
+        </div>
+
+        <div class="row form-group">
+            <div class="col">
+                <label for="">文章板块</label>
+                <input type="text" id="selectCategory" placeholder="请选择文章板块" class="form-control">
+                <small id="emailHelp" class="form-text text-muted">每个文章只属于一个板块</small>
+
+            </div>
+            <div class="col">
+                <label>文章标签</label>
+                <input type="text" class="form-control" id="selectPage" placeholder="请选择文章标签">
+                <small id="emailHelp" class="form-text text-muted">最多选择3个标签</small>
+            </div>
+        </div>
+
+
+        <!-- <input id="name" type="text" class="weui-input" placeholder="请输入标题" required autofocus> -->
+        <!-- <br /><br /> -->
+        <textarea id="detail"></textarea>
+    </section>
+
+
+    <script src="/templates/resources/js/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="/templates/resources/js/selectpage.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+ 
+        var simplemde = new SimpleMDE({
+            autosave: {
+                enabled: true,
+                uniqueId: "MyUniqueID",
+                delay: 1000
+            },
+            // status: ["autosave", "lines", "words"],
+            status: ["lines", "words"],
+            spellChecker: false,
+            element: document.getElementById("detail"),
+            promptURLs: true,
+            toolbar: [
+                "bold", "italic", "strikethrough", "heading", "code", "quote", "unordered-list",
+                "ordered-list", "clean-block", "link", "image", "table", "horizontal-rule", "preview", "side-by-side", "fullscreen", "guide",
+                {
+                    name: "uploadImage",//自定义按钮
+                    action: function customFunction(editor) {
+                        console.log(editor);
+                    },
+                    className: "fa fa-star",
+                    title: "Upload Image"
+                }
+            ]
+        });
+
+
+        // // 定义数组，在服务端返回的数据也以该格式返回：Array[{Object},{...}]
+        // var tag_data = [
+        //     { id: 1, name: 'Chicago Bulls', desc: '芝加哥公牛' },
+        //     { id: 2, name: 'Cleveland Cavaliers', desc: '克里夫兰骑士' },
+        //     { id: 3, name: 'Detroit Pistons', desc: '底特律活塞' },
+        //     { id: 4, name: 'Indiana Pacers', desc: '印第安纳步行者' }
+        // ];
+
+
+        $('#submit').click(function () {
+            $(".selected_tag").each((key, value) => {
+                console.log("标签" + $(value).attr('itemvalue'))
+
+            })
+            console.log("标题" + $('#title').val())
+            console.log("分类" + $('#selectCategory').val())
+            console.log(simplemde.value())
+        });
+        //初始化插件
+
+        // axios.defaults.withCredentials = true
+        let service = axios.create({
+            baseURL: 'http://localhost:8080/',
+            timeout: 10000,
+            withCredentials: true,
+        })
+
+        function login() {
+            service({
+                url: '/login',
+                method: 'post',
+                params: {
+                    username: 'wangyang',
+                    password: '123456'
+                },
+            });
+        }
+
+        service({
+            url: '/api/category',
+            method: 'get',
+        }).then(resp => {
+            console.log(resp.data.data)
+            $('#selectCategory').selectPage({
+                showField: 'name',
+                keyField: 'id',
+                data: resp.data.data,
+                pagination: false
+            });
+        })
+        service({
+            url: '/api/tags',
+            method: 'get',
+        }).then(resp => {
+            console.log(resp.data.data)
+            $('#selectPage').selectPage({
+                showField: 'name',
+                keyField: 'id',
+                data: resp.data.data,
+                pagination: false,
+                //启用多选模式
+                multiple: true,
+                //限制最多选中三个项目
+                maxSelectLimit: 3,
+                //设置选中项目后不关闭列表
+                selectToCloseList: false,
+
+            });
+        })
+
+    </script>
+</body>
+
+</html>

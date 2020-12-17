@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-light mb-3 fixed-top shadow-sm app" id="header">
+  <div class="nav-title mr-3 " id="mobile-nav-logo">
+    <div>
+      <a class="nav-link" href="/"><img src="/logo.png" alt="" srcset="" /></a>
+
+    </div>
+    <div class="mobile-search" id="mobile-search">
+      <img src="/templates/resources/img/search.svg" alt="" srcset="">
+    </div>
+  </div>
+
+
+
+  <div class=" navbar-collapse" id="mobile-nav1">
+    <ul class="nav navbar-nav mr-auto">
+      <li class="nav-item" th:each="item : ${view}">
+        <a th:class="'nav-link '+'css-'+${item.name}" th:href="${item.urlName}" th:text="${item.name}"></a>
+      </li>
+
+    </ul>
+  </div>
+  <div id="search-panel" class="bd-search align-items-center">
+    <form action="/articleList" method="GET">
+      <div class="search-panel-flex">
+        <input id="global-search" class="form-control mr-sm-2" type="search" placeholder="Search" name="keyword">
+        <button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+
+
+  <div id="mobile-nav2"></div>
+</nav>

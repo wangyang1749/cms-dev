@@ -1,0 +1,9 @@
+<div class="list-group list-group-flush mb-3" id="channel">
+        <div class="list-group-item list-group-item-light">
+                <span>所有栏目</span> 
+            </div>
+    <a th:each="item : ${view}" th:href="'/'+${item.path}+'/'+${item.name}+'/'+${item.firstArticle}+'.html'"
+        class="list-group-item list-group-item-action" th:text="${item.name}">Dapibus ac facilisis in</a>
+</div>
+
+
