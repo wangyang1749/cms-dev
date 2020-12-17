@@ -1,9 +1,7 @@
 package com.wangyang.web.controller;
 
 import com.wangyang.common.CmsConst;
-import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.MarkdownUtils;
-import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.service.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/preview")
@@ -64,8 +64,7 @@ public class PreviewController {
     }
 
     @GetMapping("/sheet/{id}")
-    @ResponseBody
-    public String previewSheet(@PathVariable("id") Integer id){
+    public String previewSheet(@PathVariable("id") Integer id,Model model){
         Sheet sheet = sheetService.findById(id);
         if(sheet.getStatus()!= ArticleStatus.PUBLISHED){
             sheet = sheetService.createOrUpdate(sheet);
@@ -76,9 +75,10 @@ public class PreviewController {
 //
 //        modelAndView.addObject("view", sheet);
 //        modelAndView.setViewName(template.getTemplateValue());
-        String html = TemplateUtil.convertHtmlAndPreview(sheet, template);
-        String convertHtml = FileUtils.convertByString(html);
-        return convertHtml;
+        model.addAttribute("view",sheet);
+//        String html = TemplateUtil.convertHtmlAndPreview(sheet, template);
+//        String convertHtml = FileUtils.convertByString(html);
+        return template.getTemplateValue();
     }
 
     @GetMapping("/save/{articleId}")
@@ -100,19 +100,18 @@ public class PreviewController {
     }
 
     @GetMapping("/category/{id}")
-    @ResponseBody
-    public String previewCategory(@PathVariable("id") Integer id){
-        ModelAndView modelAndView = new ModelAndView();
+//    @ResponseBody
+    public String previewCategory(@PathVariable("id") Integer id,Model model){
         Category category = categoryService.findById(id);
         //预览
         CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,0);
 
         Template template = templateService.findByEnName(category.getTemplateName());
-        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
-        String convertHtml = FileUtils.convertByString(html);
-//        modelAndView.addObject("view", articleListVo);
+//        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
+//        String convertHtml = FileUtils.convertByString(html);
+        model.addAttribute("view", articleListVo);
 //        modelAndView.setViewName(template.getTemplateValue());
-        return convertHtml;
+        return template.getTemplateValue();
     }
 //    @GetMapping("/sheet/{id}")
 //    public ModelAndView previewSheet(@PathVariable("id") Integer id){
@@ -128,22 +127,22 @@ public class PreviewController {
 //    }
 
     @GetMapping("/component/{id}")
-    @ResponseBody
-    public String previewComponent(@PathVariable("id") Integer id){
+    public String previewComponent(@PathVariable("id") Integer id,Model model){
         Components components = componentsService.findById(id);
-        Object o = componentsService.getModel(components);
-        String html = TemplateUtil.convertHtmlAndPreview(o, components);
-        String convertHtml = FileUtils.convertByString(html);
-        return  convertHtml;
+        Map<String,Object> o = componentsService.getModel(components);
+//        String html = TemplateUtil.convertHtmlAndPreview(o, components);
+////        String convertHtml = FileUtils.convertByString(html);
+        model.addAllAttributes(o);
+        return  components.getTemplateValue();
     }
 
     @GetMapping("/pdf/{articleId}")
-    @ResponseBody
-    public String previewPdf(@PathVariable("articleId")Integer articleId){
+    public String previewPdf(@PathVariable("articleId")Integer articleId,Model model){
         Article article = articleService.findArticleById(articleId);
         article.setFormatContent(MarkdownUtils.renderHtmlOutput(article.getOriginalContent()));
         Template template = templateService.findByEnName(CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE);
-        return TemplateUtil.convertHtmlAndPreview(article,template);
+        model.addAttribute("view",article);
+        return template.getTemplateValue();
     }
 
 

@@ -2,12 +2,10 @@ package com.wangyang.web.jms;
 
 import com.wangyang.web.core.jms.producer.IProducerService;
 
-import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.jms.Destination;
 
 @SpringBootTest
 public class ActivemqApplicationTests {
@@ -18,7 +16,7 @@ public class ActivemqApplicationTests {
 
     @Test
     public void contextLoads() {
-        Destination queueDestination = new ActiveMQQueue("test_html");
+//        Destination queueDestination = new ActiveMQQueue("test_html");
 //        Destination topicDestination1 =new ActiveMQTopic("mytest.topic");
 //        for(int i=0; i<10; i++){
 //            producer.sendMessage(queueDestination, "myname is queue!!!");

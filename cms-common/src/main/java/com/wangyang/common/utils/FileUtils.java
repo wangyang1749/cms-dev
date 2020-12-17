@@ -207,26 +207,38 @@ public class FileUtils {
         return  convert(file,request);
     }
 
-    public  static boolean removeCategoryPageTemp(Category category) {
-        File file = new File(CmsConst.WORK_DIR+"/html/"+category.getPath()+"/"+category.getViewName());
-        return remove(file);
-    }
+
     public  static boolean remove(String path) {
         File file = new File(path);
         return remove(file);
     }
-    public  static boolean remove(File file) {
+//    public  static boolean remove(File file) {
+//
+//        if (!file.exists()) {
+//            return false;
+//        }
+//        if (file.isFile()) {
+//            return file.delete();
+//        }
+//
+//        Arrays.asList(file.listFiles()).forEach(f->{
+//            f.delete();
+//        });
+//        return file.delete();
+//    }
 
-        if (!file.exists()) {
+    public static boolean remove(File dirFile) {
+        // 如果dir对应的文件不存在，则退出
+        if (!dirFile.exists()) {
             return false;
         }
-        if (file.isFile()) {
-            return file.delete();
+        if (dirFile.isFile()) {
+            return dirFile.delete();
+        } else {
+            for (File file : dirFile.listFiles()) {
+                remove(file);
+            }
         }
-
-        Arrays.asList(file.listFiles()).forEach(f->{
-            f.delete();
-        });
-        return file.delete();
+        return dirFile.delete();
     }
 }

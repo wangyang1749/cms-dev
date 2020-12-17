@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -63,7 +64,6 @@ public class CategoryController {
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
-        TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.addOrUpdate(category);
         //更新Category列表
@@ -107,7 +107,7 @@ public class CategoryController {
                 if(category.getArticleListSize()==null){
                     category.setArticleListSize(10);
                 }
-                category.setPath(CmsConst.CATEGORY_LIST_PATH);
+                category.setPath(CMSUtils.getCategoryPath());
                 categoryService.save(category);
             }
             htmlService.convertArticleListBy(category);

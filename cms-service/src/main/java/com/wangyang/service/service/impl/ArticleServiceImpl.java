@@ -15,6 +15,7 @@ import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.common.CmsConst;
 import com.wangyang.service.repository.*;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,69 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Autowired
     IUserService userService;
 
+    /**
+     *
+     * @param categoryId
+     * @return
+     */
+    private Specification<Article> queryByCategory(int categoryId){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
+                );
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                return  criteriaQuery.getRestriction();
+            }
+        };
+        return specification;
+    }
+
+    /**
+     * 除去置顶文章查询条件
+     * @param categoryId
+     * @return
+     */
+    private Specification<Article> queryArticleDtoNoTopByCategory(int categoryId){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+                        ,criteriaBuilder.isTrue(root.get("haveHtml")),
+                        criteriaBuilder.isFalse(root.get("top"))
+                );
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                return  criteriaQuery.getRestriction();
+            }
+        };
+        return specification;
+    }
+
+    /**
+     * 置顶文章查询条件
+     * @param categoryId
+     * @return
+     */
+    private Specification<Article> queryListByCategory(int categoryId){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+                        ,criteriaBuilder.isTrue(root.get("haveHtml")),
+                        criteriaBuilder.isTrue(root.get("top"))
+                );
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                return  criteriaQuery.getRestriction();
+            }
+        };
+        return specification;
+    }
+
+
 
     /**
      * create article
@@ -84,6 +149,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
         article.setStatus(ArticleStatus.PUBLISHED);
         article.setHaveHtml(true);
+        article.setTop(false);
         ArticleDetailVO articleDetailVO = createOrUpdateArticle(article, tagsIds);
         return articleDetailVO;
     }
@@ -220,7 +286,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             article.setCommentTemplateName(CmsConst.DEFAULT_COMMENT_TEMPLATE);
         }
         Category category = categoryService.findById(article.getCategoryId());
-        article.setPath(CmsConst.ARTICLE_DETAIL_PATH);
+        article.setPath(CMSUtils.getArticlePath());
 
         //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
         article.setTemplateName(category.getArticleTemplateName());
@@ -235,7 +301,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //        保存文章
         Article saveArticle = articleRepository.save(article);
         articleDetailVO.setCategory(category);
-        articleDetailVO.setUpdateChannelFirstName(true);
+//        articleDetailVO.setUpdateChannelFirstName(true);
         BeanUtils.copyProperties(saveArticle,articleDetailVO);
         // 添加标签
         if (!CollectionUtils.isEmpty(tagsIds)) {
@@ -340,7 +406,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
 
     @Override
-    public  List<Article>  updateAllArticleHtml(Boolean more){
+    public  List<Article>  listHaveHtml(){
         Specification<Article> specification = new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -393,13 +459,16 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
 
         return  articlePage.map(article -> {
-            ArticleDto articleVO = new ArticleDto();
-            articleVO.setUser(userMap.get(article.getUserId()));
-            BeanUtils.copyProperties(article,articleVO);
-            return articleVO;
+            ArticleDto articleDto = new ArticleDto();
+            articleDto.setUser(userMap.get(article.getUserId()));
+            BeanUtils.copyProperties(article,articleDto);
+            articleDto.setLinkPath(FormatUtil.articleListFormat(article));
+            return articleDto;
         });
 
     }
+
+
 
 
     /**
@@ -486,11 +555,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable){
         Page<Article> articles = articleRepository.findAll(specification, pageable);
-        return articles.map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article, articleDto);
-            return articleDto;
-        });
+        return convertArticle2ArticleDto(articles);
     }
 //    @Override
 //    public List<ArticleDto> articleShow(Specification<Article> specification,Sort sort){
@@ -501,25 +566,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //            return articleDto;
 //        }).collect(Collectors.toList());
 //    }
-
-
-    /**
-     * 生成最新文章
-     * @return
-     */
-    @Override
-//    @TemplateOptionMethod(name = "New Article",templateValue = "templates/components/@newArticleIndex",viewName="newArticleIndex",path = "components")
-    public Page<ArticleDto> articleShowLatest(){
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-//                return criteriaQuery.where(criteriaBuilder.equal(root.get("templateName"),CmsConst.DEFAULT_ARTICLE_TEMPLATE)).getRestriction();
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("status"),ArticleStatus.PUBLISHED)).getRestriction();
-            }
-        };
-        Page<Article> articlePage = articleRepository.findAll(specification,PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createDate"))));
-        return convertToSimple(articlePage);
-    }
 
     @Override
     public int increaseLikes(int id) {
@@ -602,16 +648,17 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
     @Override
     public void generateSummary(Article article){
-        if(article.getSummary()==null||"".equals(article.getSummary())){
-            String text = MarkdownUtils.getText(article.getFormatContent());
-            String summary ;
-            if(text.length()>100){
-                summary = text.substring(0,100);
-            }else {
-                summary = text;
-            }
-            article.setSummary(summary+"....");
+//        if(article.getSummary()==null||"".equals(article.getSummary())){
+//
+//        }
+        String text = MarkdownUtils.getText(article.getFormatContent());
+        String summary ;
+        if(text.length()>100){
+            summary = text.substring(0,100);
+        }else {
+            summary = text;
         }
+        article.setSummary(summary+"....");
     }
 
     /**
@@ -663,10 +710,15 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public CategoryArticleListDao findCategoryArticleBy(Category category, int page){
         CategoryArticleListDao articleListVo = new CategoryArticleListDao();
-        Page<ArticleDto> articleDtoPage = pageDtoBy(category,page);
+        Page<ArticleDto> articleDtoPage = pageArticleDtoNoTopByCategoryAndPage(category,page);
         articleListVo.setPage(articleDtoPage);
         articleListVo.setCategory(category);
         articleListVo.setViewName(category.getViewName());
+        articleListVo.setPath(category.getPath());
+        /**
+         * 分页路径的格式生成
+         */
+        articleListVo.setLinkPath(FormatUtil.categoryList2Format(category));
         return articleListVo;
     }
 
@@ -686,17 +738,27 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     }
 
 
-
-
+    private List<ArticleDto> convertArticle2ArticleDto(List<Article> articles){
+        return articles.stream().map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article,articleDto);
+            articleDto.setLinkPath(FormatUtil.articleListFormat(article));
+            return articleDto;
+        }).collect(Collectors.toList());
+    }
+    private Page<ArticleDto> convertArticle2ArticleDto(Page<Article> articles){
+        return articles.map(article -> {
+            ArticleDto articleDto = new ArticleDto();
+            BeanUtils.copyProperties(article, articleDto);
+            articleDto.setLinkPath(FormatUtil.articleListFormat(article));
+            return articleDto;
+        });
+    }
 
 
     @Override
-    public List<ArticleDto> listBy(int categoryId){
-        return  articleRepository.findAll(queryByCategory(categoryId)).stream().map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article,articleDto);
-            return articleDto;
-        }).collect(Collectors.toList());
+    public List<ArticleDto> listArticleDtoBy(int categoryId){
+        return convertArticle2ArticleDto(listArticleBy(categoryId));
     }
 
     @Override
@@ -709,6 +771,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  pageDtoBy(category.getId(), PageRequest.of(page,category.getArticleListSize()));
     }
 
+    @Override
+    public Page<ArticleDto> pageArticleDtoNoTopByCategoryAndPage(Category category, int page) {
+        Page<Article> articles = articleRepository.findAll(queryArticleDtoNoTopByCategory(category.getId()), PageRequest.of(page,category.getArticleListSize()));
+        return  convertToSimple(articles);
+    }
 
     /**
      * 查找分类第一页的文章,用于该分类下文章的静态化
@@ -718,14 +785,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
      */
     @Override
     public Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable) {
-//        Specification<Article> specification = new Specification<Article>() {
-//            @Override
-//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-//                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
-//                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
-//                ).getRestriction();
-//            }
-//        };
         Page<Article> articles = articleRepository.findAll(queryByCategory(categoryId), pageable);
         return  convertToSimple(articles);
     }
@@ -741,20 +800,10 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         articleRepository.updateCommentNum(id,num);
     }
 
-    private Specification<Article> queryByCategory(int categoryId){
-        Specification<Article> specification = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
-                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
-                );
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
-                return  criteriaQuery.getRestriction();
-            }
-        };
-        return specification;
-    }
+
+
+
 
     @Override
     public Article updateOrder(int articleId, int order){
@@ -768,23 +817,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
 
 
-    @Override
-//    @TemplateOptionMethod(name = "Carousel",templateValue = "templates/components/@carousel",viewName="carousel",path = "components")
-    public List<Article> carousel(){
-        Specification<Article> specification  = new Specification<Article>() {
-            @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(
-                        criteriaBuilder.isNotNull(root.get("picPath"))
-                ).getRestriction();
-            }
-        };
-        List<Article> articles = articleRepository.findAll(specification,Sort.by(Sort.Order.desc("updateDate")));
-        if(articles.size()<=3){
-            return articles;
-        }
-        return articles.subList(0,3);
-    }
 
     @Override
     public Page<ArticleDto> pageByTagId(int tagId, int size){
@@ -805,11 +837,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             }
         };
         Page<Article> articles = articleRepository.findAll(specification, pageable);
-        return   articles.map(article -> {
-            ArticleDto articleVO = new ArticleDto();
-            BeanUtils.copyProperties(article,articleVO);
-            return articleVO;
-        });
+        return   convertArticle2ArticleDto(articles);
     }
 
 
@@ -921,11 +949,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         List<ComponentsArticle> componentsArticles = componentsArticleRepository.findByComponentId(componentsId);
         Set<Integer> articleIds = ServiceUtil.fetchProperty(componentsArticles, ComponentsArticle::getArticleId);
         List<Article> articles = articleRepository.findAllById(articleIds);
-        return articles.stream().map(article -> {
-            ArticleDto articleDto = new ArticleDto();
-            BeanUtils.copyProperties(article,articleDto);
-            return articleDto;
-        }).collect(Collectors.toList());
+        return convertArticle2ArticleDto(articles);
     }
 
     @Override
@@ -952,6 +976,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
         articleAndCategoryMindDto.setCategory(category);
         articleAndCategoryMindDto.setList(articleMindDtoList);
+        articleAndCategoryMindDto.setLinkPath(FormatUtil.categoryList2Format(category));
         return  articleAndCategoryMindDto;
     }
 
@@ -979,5 +1004,25 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 //        articleMindDtoList.add(new ArticleMindDto(0,category.getName(),category.getViewName(),
 //                category.getPath(),-1));
         return  root.toString();
+    }
+
+    @Override
+    public List<ArticleDto> listTopByCategoryId(int id) {
+        List<Article> articles = articleRepository.findAll(queryListByCategory(id));
+        return convertArticle2ArticleDto(articles);
+    }
+
+    @Override
+    public Article sendOrCancelTop(int id) {
+        Article article = findArticleById(id);
+//        if(article.getTop()==null){
+//            article.setTop(true);
+//        }
+        if(article.getTop()){
+            article.setTop(false);
+        }else {
+            article.setTop(true);
+        }
+        return  article;
     }
 }

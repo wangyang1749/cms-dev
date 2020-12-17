@@ -11,7 +11,7 @@ public @interface TemplateOptionMethod {
     String templateValue();
     String viewName();
     String event() default "";
-    String path() default  "";
+    String path() default "null";
     boolean status() default true;
 
 }

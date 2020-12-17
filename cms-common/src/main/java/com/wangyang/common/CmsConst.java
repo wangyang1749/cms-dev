@@ -4,6 +4,8 @@ package com.wangyang.common;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Component
 public class CmsConst {
 
@@ -26,10 +28,12 @@ public class CmsConst {
     public static final String CONFIGURATION="application.properties";
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
-    public final static String COMPONENTS_PATH = "components";
+    public final static String COMPONENTS_PATH = "html"+ File.separator+"components";
     public final static String CATEGORY_MENU = "CategoryMenu";
-    public final static String CATEGORY_LIST_PATH = "articleList";
-    public final static String ARTICLE_DETAIL_PATH = "article";
+
+    public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
+    public final static String ARTICLE_DETAIL_PATH = "html"+File.separator+"article";
+    public final static String SHEET_PATH = "html"+File.separator+"sheet";
 
 
     public final static String DEFAULT_ARTICLE_PDF_TEMPLATE = "DEFAULT_ARTICLE_PDF_TEMPLATE";
@@ -55,6 +59,8 @@ public class CmsConst {
 
 
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
+    public final static String ARTICLE_RECOMMEND_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
+    public final static String ARTICLE_TOP_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
     public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
 
 

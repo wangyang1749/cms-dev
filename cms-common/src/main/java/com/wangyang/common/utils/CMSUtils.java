@@ -1,5 +1,7 @@
 package com.wangyang.common.utils;
 
+import com.wangyang.common.CmsConst;
+
 import java.util.Calendar;
 
 public class CMSUtils {
@@ -15,6 +17,22 @@ public class CMSUtils {
 //        return UUID.randomUUID().toString();
         return viewName;
     }
+
+    public static String getArticlePath(){
+        return CmsConst.ARTICLE_DETAIL_PATH;
+    }
+
+    public static String getCategoryPath(){
+        return CmsConst.CATEGORY_LIST_PATH;
+    }
+    public static String getComponentsPath(){
+        return CmsConst.COMPONENTS_PATH;
+    }
+
+    public static String getSheetPath(){
+        return CmsConst.SHEET_PATH;
+    }
+
 
 
     public static String randomTime(){

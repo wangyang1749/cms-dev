@@ -42,7 +42,7 @@ public class AndroidArticleController {
 
 
     private String convert(String viewPath){
-        String path = CmsConst.WORK_DIR+"/html/"+viewPath;
+        String path = CmsConst.WORK_DIR+ "/html/" +viewPath;
         File file = new File(path);
         if(file.exists()){
             FileInputStream fileInputStream=null;

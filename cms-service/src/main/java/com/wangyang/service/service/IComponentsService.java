@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IComponentsService {
 
@@ -13,6 +14,11 @@ public interface IComponentsService {
 
     List<Components> listNeedArticle();
 
+    /**
+     * 查找所有组件
+     * @return
+     */
+    List<Components> listAll();
     Components add(ComponentsParam componentsParam);
 
 
@@ -27,7 +33,7 @@ public interface IComponentsService {
     void deleteAll();
 
 
-    Object getModel(Components components);
+    Map<String ,Object> getModel(Components components);
 
     Components findByDataName(String dataName);
 

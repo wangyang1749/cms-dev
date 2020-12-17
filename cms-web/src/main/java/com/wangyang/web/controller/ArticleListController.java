@@ -23,6 +23,7 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,7 +37,6 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 
 @Controller
-//@RequestMapping("/articleList")
 public class ArticleListController {
     @Autowired
     IArticleService articleService;
@@ -49,116 +49,85 @@ public class ArticleListController {
 
     @Autowired
     IHtmlService htmlService;
-
-    @ResponseBody
-    @RequestMapping(value = "/{categoryPath}/{categoryViewName}/page-{page}.html",produces = "text/html")
-    public String articleListBy(HttpServletRequest request, @PathVariable("categoryPath") String categoryPath, @PathVariable("categoryViewName") String categoryViewName, @PathVariable("page") Integer page){
-        File file = new File(CmsConst.WORK_DIR+"/html/"+categoryPath+"/"+categoryViewName+"/"+page+".html");
-        String result = null;
-        if(file.exists()){
-            result = FileUtils.convert(file,request);
-        }else {
-
-            Category category = categoryService.findByViewName(categoryViewName);
-            if (category!=null){
-                String resultHtml = htmlService.convertArticleListBy(category,page);
-               result =  FileUtils.convertByString(resultHtml,request);
-            }
-        }
-        if (request!=null){
-            return result;
-        }
-        return  "Page is not found!";
-    }
-
-    @GetMapping("/mind/{categoryId}.html")
-    @ResponseBody
-    public String listArticleMindDto(@PathVariable("categoryId") int categoryId){
-
-//        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
-//        return FileUtils.convertByString(TemplateUtil.convertHtmlAndPreview(mindFormat,template));
-
-        return  HtmlFileRenderHandler.render(new HtmlFileRenderMap() {
-//            @Override
-//            public boolean isDebug() {
-//                return true;
+//
+//    @ResponseBody
+//    @RequestMapping(value = "/{categoryPath}/{categoryViewName}/page-{page}.html",produces = "text/html")
+//    public String articleListBy(HttpServletRequest request, @PathVariable("categoryPath") String categoryPath, @PathVariable("categoryViewName") String categoryViewName, @PathVariable("page") Integer page){
+//        File file = new File(CmsConst.WORK_DIR+"/html/"+categoryPath+"/"+categoryViewName+"/"+page+".html");
+//        String result = null;
+//        if(file.exists()){
+//            result = FileUtils.convert(file,request);
+//        }else {
+//
+//            Category category = categoryService.findByViewName(categoryViewName);
+//            if (category!=null){
+//                String resultHtml = htmlService.convertArticleListBy(category,page);
+//               result =  FileUtils.convertByString(resultHtml,request);
 //            }
+//        }
+//        if (request!=null){
+//            return result;
+//        }
+//        return  "Page is not found!";
+//    }
 
-            @Override
-            public String path() {
-                return "mind";
-            }
-
-            @Override
-            public String viewName() {
-                return String.valueOf(categoryId);
-            }
-
-            @Override
-            public Map<String, Object> data() {
-                ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
-                Category category = articleAndCategoryMindDto.getCategory();
-                String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
-                Map<String,Object> map = new HashMap<>();
-                map.put("mind",mindFormat);
-                map.put("category",category);
-                return map;
-            }
-
-            @Override
-            public Template template() {
-                Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
-                return template;
-            }
-        });
-    }
+//    @GetMapping("/mind/{categoryId}.html")
+//    @ResponseBody
+//    public String listArticleMindDto(@PathVariable("categoryId") int categoryId, Model model){
+//        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
+//        Category category = articleAndCategoryMindDto.getCategory();
+//        String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
+//        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
+//        model.addAttribute("mind",mindFormat);
+//        model.addAttribute("category",category);
+//        return template.getTemplateValue();
+//    }
 
     /**
      * 根据条件查询文章并且缓存，直到增删改文章
-     * @param request
      * @param articleQuery
      * @param pageable
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "/articleList",produces = "text/html")
-    public String articleListBySort(HttpServletRequest request,  ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
-
-        StringBuffer sb = new StringBuffer();
-        sb.append("index");
-        Map<String, String[]> params = request.getParameterMap();
-        Set<String> keys = params.keySet();
-        if(params!=null){
-            params.forEach((k,v)->{
-                sb.append("-"+k+"-"+v[0]);
-            });
-        }
-        File file = new File(CmsConst.WORK_DIR+"/html/articleList/queryTemp/"+sb.toString()+".html");
-        String result = null;
-        if(file.exists()){
-            result = FileUtils.convert(file,request);
-        }else {
-//            ArticleQuery articleQuery = new ArticleQuery();
-//            Pageable pageable = PageRequest.of(0,1);
-            Page<Article> articlePage = articleService.pageBy(pageable,articleQuery);
-            Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
-            String resultHtml;
-            if(keys.contains("keyword")){
-                resultHtml = htmlService.previewArticlePageBy(request,articleDtoPage);
-            }else {
-                resultHtml = htmlService.convertArticlePageBy(request,articleDtoPage, sb.toString());
-            }
-
-            result =  FileUtils.convertByString(resultHtml,request);
-        }
-        if (request!=null){
-            return result;
-        }
-
-        return  "Page is not found!";
-
+//    @ResponseBody
+//    @RequestMapping(value = "/articleList",produces = "text/html")
+//    public String articleListBySort( ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,Model model){
+//        Page<Article> articlePage = articleService.pageBy(pageable,articleQuery);
+//        Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
+//        StringBuffer sb = new StringBuffer();
+//        sb.append("index");
+//        Map<String, String[]> params = request.getParameterMap();
+//        Set<String> keys = params.keySet();
+//        if(params!=null){
+//            params.forEach((k,v)->{
+//                sb.append("-"+k+"-"+v[0]);
+//            });
+//        }
+////        File file = new File(CmsConst.WORK_DIR+"/html/articleList/queryTemp/"+sb.toString()+".html");
+//        String result = null;
+//        if(file.exists()){
+//            result = FileUtils.convert(file,request);
+//        }else {
+////            ArticleQuery articleQuery = new ArticleQuery();
+////            Pageable pageable = PageRequest.of(0,1);
+//
+//            String resultHtml;
+//            if(keys.contains("keyword")){
+//                resultHtml = htmlService.previewArticlePageBy(request,articleDtoPage);
+//            }else {
+//                resultHtml = htmlService.convertArticlePageBy(request,articleDtoPage, sb.toString());
+//            }
+//
+//            result =  FileUtils.convertByString(resultHtml,request);
+//        }
+//        if (request!=null){
+//            return result;
+//        }
+//
+//        return  "Page is not found!";
+//
 //        return "1111"+categoryViewName+page;
-    }
+//    }
 
 
     @ExceptionHandler

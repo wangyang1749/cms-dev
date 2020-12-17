@@ -1,13 +1,11 @@
 package com.wangyang.common.utils;
 
-import com.wangyang.common.thymeleaf.CmsDialect;
-import org.thymeleaf.ITemplateEngine;
+import com.wangyang.common.thymeleaf.CmsFileDialect;
+import com.wangyang.common.thymeleaf.CmsWebDialect;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 
 /**
@@ -27,7 +25,7 @@ public class HtmlTemplateEngine {
     public static TemplateEngine getFileInstance(String prefix, String suffix){
         if(templateEngineFile==null){
             templateEngineFile = new TemplateEngine();
-//            templateEngine.addDialect(new CmsDialect());
+            templateEngineFile.addDialect(new CmsFileDialect());
             StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
 //            templateEngineFile.addDialect(new CmsDialect(null));
@@ -49,10 +47,11 @@ public class HtmlTemplateEngine {
     public static TemplateEngine getWebInstance(String prefix, String suffix){
         if(templateWebEngine==null){
             templateWebEngine = new TemplateEngine();
-            templateWebEngine.addDialect(new CmsDialect(prefix));
+//            templateWebEngine.addDialect(new CmsDialect(prefix));
+//            templateWebEngine.setDialect(new CmsWebDialect());
             StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
-            templateWebEngine.addDialect(new CmsDialect(prefix));
+            templateWebEngine.addDialect(new CmsWebDialect());
             fileTemplateResolver.setOrder(Integer.valueOf(2));
             fileTemplateResolver.setCacheable(false);
             fileTemplateResolver.setPrefix(prefix+ File.separator);

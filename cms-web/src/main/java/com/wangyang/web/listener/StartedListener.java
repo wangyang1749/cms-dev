@@ -1,5 +1,7 @@
 package com.wangyang.web.listener;
 
+import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.service.service.IComponentsService;
 import com.wangyang.service.service.IOptionService;
 import com.wangyang.service.service.ISheetService;
 import com.wangyang.service.service.ITagsService;
@@ -51,6 +53,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     ComponentsRepository componentsRepository;
 
     @Autowired
+    IComponentsService componentsService;
+    @Autowired
     TemplateRepository templateRepository;
 
     @Autowired
@@ -72,12 +76,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         initCms();
         initDatabase(applicationStartedEvent);
+        initRun();
 
-        log.info("加载用户权限！！");
-        List<PermissionDto> permissionDtos = permissionService.listAll();
-        permissionDtos.forEach(permissionDto -> {
-            log.info(permissionDto.getUrl()+"需要权限"+permissionDto.getEnName());
-        });
 //        if(!isInit()){
 //            log.info("### init database!!!");
 //            initDatabase(applicationStartedEvent);
@@ -86,7 +86,20 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 //        }
 
     }
-
+    private  void initRun(){
+        // 生成首页
+//        List<Components> components = componentsRepository.findAll();
+//        components.forEach(component -> {
+//            Object o = componentsService.getModel(component);
+//            TemplateUtil.convertHtmlAndSave(o, component);
+//        });
+        log.info("加载用户权限！！");
+        List<PermissionDto> permissionDtos = permissionService.listAll();
+        permissionDtos.forEach(permissionDto -> {
+            log.info(permissionDto.getUrl()+"需要权限"+permissionDto.getEnName());
+        });
+    }
+    @Deprecated
     private boolean isInit() {
         String value = Optional.ofNullable(optionService.getValue(CmsConst.INIT_STATUS))
                 .orElse("false");
@@ -125,8 +138,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "templates/@categoryList", TemplateType.CATEGORY_LIST,7),
 
-                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET,8),
-                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "templates/sheet/@customSheet", TemplateType.SHEET,8),
+                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "sheet/@sheet", TemplateType.SHEET,8),
+                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "sheet/@customSheet", TemplateType.SHEET,8),
 
 
                 new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
@@ -135,7 +148,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("文章幻灯片模板","REVEAL","templates/@articleReveal", TemplateType.ARTICLE,11),
 
                 new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"templates/@articleList", TemplateType.ARTICLE_LIST,12),
-                new Template("文章列表分页",CmsConst.ARTICLE_PAGE,"templates/@articlePage", TemplateType.ARTICLE_LIST,12),
+                new Template("文章推荐列表",CmsConst.ARTICLE_RECOMMEND_LIST,"templates/@articleRecommendList", TemplateType.ARTICLE_LIST,12),
+                new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"templates/@articleTopList", TemplateType.ARTICLE_LIST,12),
+                new Template("更多文章和文章搜索",CmsConst.ARTICLE_PAGE,"templates/@articleMore", TemplateType.ARTICLE_LIST,12),
                 new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"templates/@jsMind", TemplateType.ARTICLE_MIND,12)
 
         );
@@ -161,14 +176,14 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
 
         List<Components> componentsList = new ArrayList<>();
-        componentsList.add( new Components("Carousel","components","templates/components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("myArticle","components","templates/components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("点赞最多","components","templates/components/@articleListAndLike","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
-        componentsList.add( new Components("热门文章","components","templates/components/@articleListAndVisit","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
-        componentsList.add( new Components("当下流行","components","templates/components/@articleListAndVisit","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
-        componentsList.add( new Components("最新文章","components","templates/components/@articleListAndVisit","newArticleIndex",CmsConst.ARTICLE_DATA_SORT+"createDate,DESC","",true));
-        componentsList.add( new Components("推荐标签","components","templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
-        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
+        componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
+        componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "components/@articleList","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
+        componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
+        componentsList.add( new Components("最新文章", CMSUtils.getComponentsPath(), "components/@articleList","newArticleIndex",CmsConst.ARTICLE_DATA_SORT+"createDate,DESC","",true));
+//        componentsList.add( new Components("推荐标签", CMSUtils.getComponentsPath(),"templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
+//        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
 
         Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(TemplateOption.class);
         beans.forEach((k,v)->{
@@ -181,7 +196,13 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                         if(annotation instanceof TemplateOptionMethod){
                             TemplateOptionMethod tm = (TemplateOptionMethod) annotation;
                             String dataName = k+"."+method.getName();
-                            Components components = new Components(tm.name(), tm.path(),tm.templateValue(), tm.viewName(), dataName, tm.event(), tm.status());
+                            String path;
+                            if(tm.path().equals("null")){
+                                path = CMSUtils.getComponentsPath();
+                            }else {
+                                path = tm.path();
+                            }
+                            Components components = new Components(tm.name(), path,tm.templateValue(), tm.viewName(), dataName, tm.event(), tm.status());
                             componentsList.add(components);
 //                            componentsService.add(components);
                         }
@@ -198,10 +219,13 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         componentsName.removeAll(findName);
         if(!CollectionUtils.isEmpty(componentsName)){
             componentsName.forEach(name->{
-                componentsRepository.save(componentsMap.get(name));
+                Components components = componentsMap.get(name);
+                componentsRepository.save(components);
                 log.info("添加 Components ["+name+"] ");
+
             });
         }
+
 
         List<Option> findOption = optionService.list();
         findOption.forEach(option -> {
@@ -239,18 +263,19 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         log.info("### Static Resource Locations"+staticResourceLocations);
         log.info("### Template Resource Locations"+workDir+"/"+CmsConst.SYSTEM_TEMPLATE_PATH+"/");
         try {
-
+            // 拷贝配置文件
             Path cmsDir = Paths.get(workDir);
             if(Files.notExists(cmsDir)){
                 Files.createDirectories(cmsDir);
                 log.info(">>> Not exist work directory, Create template directory "+cmsDir.toString());
-                Path propertiesFile = new File(workDir+"/cms.properties").toPath();
+                Path propertiesFile = new File(workDir+ "/application.properties").toPath();
 
                 Path source = FileUtils.getJarResources(CmsConst.CONFIGURATION);
                 Files.copy(source,propertiesFile);
                 log.info(">>> copy configuration file ["+source.toString()+"] to ["+cmsDir.toString()+"]");
             }
 
+            // 拷贝templates目录
             Path templatePath = Paths.get(workDir + "/" + CmsConst.TEMPLATE_PATH);
             if(Files.notExists(templatePath)){
                 Files.createDirectories(templatePath);

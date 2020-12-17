@@ -53,7 +53,7 @@ public class ControllerExceptionHandler {
         return baseResponse;
     }
 
-
+    // TODO 针对动态页面错误的处理；
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse handleGlobalException(Exception e) {

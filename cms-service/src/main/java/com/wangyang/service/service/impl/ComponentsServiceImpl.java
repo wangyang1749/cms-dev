@@ -66,6 +66,10 @@ public class ComponentsServiceImpl implements IComponentsService {
         return componentsRepository.findAll(specification);
     }
 
+    @Override
+    public List<Components> listAll() {
+        return componentsRepository.findAll();
+    }
 
     @Override
     public Components add(ComponentsParam componentsParam){
@@ -151,11 +155,12 @@ public class ComponentsServiceImpl implements IComponentsService {
 
 
     @Override
-    public Object getModel(Components components) {
+    public Map<String ,Object> getModel(Components components) {
         try {
             if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA)){
-
-                return  articleService.listByComponentsId(components.getId());
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",articleService.listByComponentsId(components.getId()));
+                return  map;
 
 
 //                Set<Integer> ids = Arrays.asList(args).stream().map(a -> Integer.parseInt(a)).collect(Collectors.toSet());
@@ -173,7 +178,8 @@ public class ComponentsServiceImpl implements IComponentsService {
                 Object bean = ApplicationBean.getBean(className);
                 Method method = bean.getClass().getMethod(methodName);
                 Object o = method.invoke(bean);
-                return o;
+                Map<String,Object> map = (Map<String,Object>)o;
+                return map;
 
             }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
                 Specification<Article> specification = new Specification<Article>() {

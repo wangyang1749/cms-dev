@@ -1,5 +1,6 @@
 package com.wangyang.web.service;
 
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.web.controller.api.ArticleController;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.*;
@@ -98,7 +99,7 @@ public abstract class AbstractServiceTest {
         User user = userService.add(addUser());
         Article articleParams = new Article();
         articleParams.setTitle("Title");
-        articleParams.setPath("article");
+        articleParams.setPath(CMSUtils.getArticlePath());
         //类别不能为空
         articleParams.setCategoryId(category.getId());
         //用户不能为空

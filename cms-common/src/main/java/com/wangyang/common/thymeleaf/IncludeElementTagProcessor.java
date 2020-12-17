@@ -2,6 +2,7 @@ package com.wangyang.common.thymeleaf;
 
 import com.google.common.base.Joiner;
 import com.wangyang.common.utils.FileUtils;
+import org.springframework.util.StringUtils;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IModelFactory;
@@ -26,8 +27,7 @@ import java.util.stream.Collectors;
 public class IncludeElementTagProcessor extends AbstractElementTagProcessor {
     private static final String TAG_NAME  = "include";//标签名 select 这个玩意就是 自定义标签的 ： select， 应该是可以定义多个标签
     private static final int PRECEDENCE = 1000;//优先级
-    private String workDir;
-    public IncludeElementTagProcessor(String dialectPrefix,String workDir) {
+    public IncludeElementTagProcessor(String dialectPrefix) {
         super(TemplateMode.HTML, // 此处理器将仅应用于HTML模式
                 dialectPrefix, // 要应用于名称的匹配前缀
                 TAG_NAME, // 标签名称：匹配此名称的特定标签
@@ -36,12 +36,23 @@ public class IncludeElementTagProcessor extends AbstractElementTagProcessor {
                 false, // 没有要应用于属性名称的前缀
                 PRECEDENCE// 优先(内部方言自己的优先
         );
-        this.workDir = workDir;
     }
 
     @Override
     protected void doProcess(ITemplateContext context, IProcessableElementTag tag, IElementTagStructureHandler structureHandler) {
         String filePath = tag.getAttributeValue("href");
+        String  href = tag.getAttributeValue("th:href");
+        String value = tag.getAttributeValue("value");
+//        Object executeExpression = null;
+        if (!StringUtils.isEmpty(href)) {
+            filePath  = executeExpression(href, context).toString();// 执行表达式
+        }
+
+
+
+
+
+
         IModelFactory modelFactory = context.getModelFactory();
         IModel model = modelFactory.createModel();
 //        model.add(modelFactory.createText("\n\t"));
@@ -55,23 +66,29 @@ public class IncludeElementTagProcessor extends AbstractElementTagProcessor {
         //6、替换前面的标签
 
 
-        if(workDir!=null){
+//        if(workDir!=null){
             model.add(modelFactory.createText("\n\t"));
-            File file = new File(workDir+filePath);
+            File file = new File(filePath);
             // Joiner.on("\n").join(Files.lines(file.toPath()).collect(Collectors.toList()));
             String html;
             if(file.exists()){
                 html = FileUtils.convert(file);
             }else {
-                html ="include file is not exist!";
+                if (!StringUtils.isEmpty(value)) {
+                    html  = "";
+                }else {
+                    html =filePath+"include file is not exist!";
+                }
+
+
             }
             model.add(modelFactory.createText(html));
             structureHandler.replaceWith(model, false);
-        }else {
-            model.add(modelFactory.createText("\n\t"));
-            model.add(modelFactory.createText("<!--#include file='"+filePath+"'-->"));
-            structureHandler.insertImmediatelyAfter(model, false);
-        }
+//        }else {
+//            model.add(modelFactory.createText("\n\t"));
+//            model.add(modelFactory.createText("<!--#include file='"+filePath+"'-->"));
+//            structureHandler.insertImmediatelyAfter(model, false);
+//        }
     }
 
     /**

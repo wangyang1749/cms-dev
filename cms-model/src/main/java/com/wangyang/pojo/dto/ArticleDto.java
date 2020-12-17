@@ -2,10 +2,13 @@ package com.wangyang.pojo.dto;
 
 import com.wangyang.pojo.entity.User;
 import com.wangyang.pojo.enums.ArticleStatus;
+import lombok.Data;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class ArticleDto  implements Serializable {
 
 
@@ -36,196 +39,8 @@ public class ArticleDto  implements Serializable {
     private Integer articleListSize;
     private Boolean isDesc;
     private Integer order;
+    // 路径格式
+    private String linkPath ;
+    private Boolean top;
 
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
-    public Integer getArticleListSize() {
-        return articleListSize;
-    }
-
-    public void setArticleListSize(Integer articleListSize) {
-        this.articleListSize = articleListSize;
-    }
-
-    public Boolean getDesc() {
-        return isDesc;
-    }
-
-    public void setDesc(Boolean desc) {
-        isDesc = desc;
-    }
-
-    public String getCommentTemplateName() {
-        return commentTemplateName;
-    }
-
-    public void setCommentTemplateName(String commentTemplateName) {
-        this.commentTemplateName = commentTemplateName;
-    }
-
-    public Boolean getOpenComment() {
-        return openComment;
-    }
-
-    public void setOpenComment(Boolean openComment) {
-        this.openComment = openComment;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    public ArticleStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ArticleStatus status) {
-        this.status = status;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-    public Integer getVisits() {
-        return visits;
-    }
-
-    public void setVisits(Integer visits) {
-        this.visits = visits;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(Integer commentNum) {
-        this.commentNum = commentNum;
-    }
-
-    public Boolean getHaveHtml() {
-        return haveHtml;
-    }
-
-    public void setHaveHtml(Boolean haveHtml) {
-        this.haveHtml = haveHtml;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getViewName() {
-        return viewName;
-    }
-
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getPicPath() {
-        return picPath;
-    }
-
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
-    }
-
-    public String getPdfPath() {
-        return pdfPath;
-    }
-
-    public void setPdfPath(String pdfPath) {
-        this.pdfPath = pdfPath;
-    }
-
-    public String getToc() {
-        return toc;
-    }
-
-    public void setToc(String toc) {
-        this.toc = toc;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
 }

@@ -1,8 +1,11 @@
 package com.wangyang.web.controller.user;
 
 
+import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.FileUtils;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ICategoryService;
+import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.IUserService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -11,6 +14,7 @@ import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
+import com.wangyang.service.util.FormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.File;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -38,15 +43,49 @@ public class UserArticleController {
     @Autowired
     ICategoryService categoryService;
 
+    @Autowired
+    IHtmlService htmlService;
 
 
     @GetMapping("/write")
     public String writeArticle(HttpServletRequest request, Model model, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         int userId = (Integer)request.getAttribute("userId");
+
 //        Page<Article> articlePage = articleService.pageByUserId(userId, pageable);
 //        model.addAttribute("view",articlePage);
 //        System.out.println(userId);
         return "templates/user/write";
+    }
+
+    /**
+     * 快速创建类别的文章
+     * @param request
+     * @return
+     */
+    @GetMapping("/write/{categoryId}")
+    public String fastWriteArticle(@RequestParam(required = true) String title,HttpServletRequest request,@PathVariable("categoryId") Integer categoryId,Model model){
+        if(title==null||title.equals("")){
+            return "templates/error";
+        }
+        int userId = (Integer)request.getAttribute("userId");
+        ArticleDetailVO articleDetailVO = fastWriteArticleHtml(categoryId, title, userId);
+
+//        model.addAttribute("view",articleDetailVO);
+        return "redirect:"+ FormatUtil.categoryListFormat(articleDetailVO.getCategory());
+    }
+
+    public ArticleDetailVO fastWriteArticleHtml(int categoryId,String title,int userId){
+        Article article = new Article();
+        article.setCategoryId(categoryId);
+        article.setTitle(title);
+        article.setOriginalContent("# 开始你的创作:"+title);
+        article.setUserId(userId);
+        ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article,null);
+        if(article.getHaveHtml()){
+            htmlService.conventHtml(articleDetailVO);
+            FileUtils.remove(CmsConst.WORK_DIR+ File.separator+articleDetailVO.getCategory().getPath()+File.separator+articleDetailVO.getCategory().getViewName());
+        }
+        return articleDetailVO;
     }
 
 

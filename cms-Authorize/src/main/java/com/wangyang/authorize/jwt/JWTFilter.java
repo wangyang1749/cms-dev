@@ -66,6 +66,9 @@ public class JWTFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
+    /**
+     * 不同的请求类型text/html，获取token
+     * */
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String requestURI = request.getRequestURI();

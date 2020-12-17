@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class ArticleAndCategoryMindDto {
 
-    List<ArticleMindDto> list;
-    Category category;
+    public List<ArticleMindDto> list;
+    public Category category;
+    public String linkPath;
 }

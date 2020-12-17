@@ -14,7 +14,7 @@ public class HtmlFileRenderHandler {
             String html = FileUtils.convertByString(TemplateUtil.convertHtmlAndPreview(t,htmlFileRender.template(t)));
             return DocumentUtil.addDebugLabel(html);
         }
-        File file= new File(CmsConst.WORK_DIR+"/html/"+htmlFileRender.path()+"/"+htmlFileRender.viewName()+".html");
+        File file= new File(CmsConst.WORK_DIR+ "/html/" +htmlFileRender.path()+"/"+htmlFileRender.viewName()+".html");
         String result;
         if(file.exists()){
             result = FileUtils.convert(file);
@@ -31,7 +31,7 @@ public class HtmlFileRenderHandler {
              String html = FileUtils.convertByString(TemplateUtil.convertHtmlAndPreview(htmlFileRender.data(),htmlFileRender.template()));
              return DocumentUtil.addDebugLabel(html);
         }
-        File file= new File(CmsConst.WORK_DIR+"/html/"+htmlFileRender.path()+"/"+htmlFileRender.viewName()+".html");
+        File file= new File(CmsConst.WORK_DIR+ "/html/" +htmlFileRender.path()+"/"+htmlFileRender.viewName()+".html");
         String result;
         if(file.exists()){
             result = FileUtils.convert(file);

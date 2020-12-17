@@ -61,9 +61,9 @@ public class ComponentsController {
         Components components = componentsService.findById(id);
         Object o = componentsService.getModel(components);
         return BaseResponse.ok(TemplateUtil.convertHtmlAndSave(o, components));
-
-
     }
+
+
 
 
     @GetMapping("/listNeedArticle")

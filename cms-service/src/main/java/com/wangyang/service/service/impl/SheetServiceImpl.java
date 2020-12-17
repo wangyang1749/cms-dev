@@ -12,6 +12,7 @@ import com.wangyang.service.repository.MenuRepository;
 import com.wangyang.service.repository.SheetRepository;
 import com.wangyang.pojo.entity.Menu;
 import com.wangyang.common.CmsConst;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,7 +46,7 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
         //如何Channel中没有存储文章路径
 
         sheet = super.createOrUpdate(sheet);
-        sheet.setPath("sheet");
+        sheet.setPath(CMSUtils.getSheetPath());
 //        sheet.setPath(channel.getPath()+"/"+channel.getName());
         if(sheet.getViewName()==null||"".equals(sheet.getViewName())){
             sheet.setViewName(CMSUtils.randomViewName());
@@ -68,8 +70,11 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
         return  sheetRepository.save(sheet);
     }
 
-
-//    @Override
+    @Override
+    public List<Sheet> listAll() {
+        return sheetRepository.findAll();
+    }
+    //    @Override
 //    public List<SheetDto> findListByChannelId(int channelId){
 //        return  sheetRepository.findByChannelId(channelId).stream().map(sheet -> {
 //            SheetDto sheetDto = new SheetDto();
@@ -159,7 +164,7 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 
             menu.setName(sheet.getTitle());
             menu.setSheetId(sheet.getId());
-            menu.setUrlName(sheet.getPath()+"/"+sheet.getViewName()+".html");
+            menu.setUrlName(FormatUtil.sheetListFormat(sheet));
             menuRepository.save(menu);
 
         }

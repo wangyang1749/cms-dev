@@ -47,6 +47,7 @@ public class CustomLabel extends AbstractAttributeTagProcessor {
                 true);             // Remove the matched attribute afterwards
     }
 
+//    <div score:text="''" style="display: inline">
     @Override
     protected void doProcess(ITemplateContext context, IProcessableElementTag tag, AttributeName attributeName,
                              String attributeValue, IElementTagStructureHandler structureHandler) {

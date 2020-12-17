@@ -12,6 +12,7 @@ import com.wangyang.service.repository.MenuRepository;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.common.CmsConst;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class CategoryServiceImpl implements ICategoryService {
         }
 
 
-        category.setPath(CmsConst.CATEGORY_LIST_PATH);
+        category.setPath(CMSUtils.getCategoryPath());
 
         Category saveCategory = categoryRepository.save(category);
         return saveCategory;
@@ -154,7 +155,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Category deleteById(int id) {
         Category category = findById(id);
-        List<ArticleDto> articleDtos = articleService.listBy(category.getId());
+        List<ArticleDto> articleDtos = articleService.listArticleDtoBy(category.getId());
         if(articleDtos.size()!=0){
             throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
         }
@@ -252,6 +253,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return categories.stream().map(category -> {
                 CategoryVO categoryVO = new CategoryVO();
                 BeanUtils.copyProperties(category,categoryVO);
+                categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
                 return categoryVO;
         }).collect(Collectors.toList());
     }
@@ -322,7 +324,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
             menu.setName(category.getName());
             menu.setCategoryId(category.getId());
-            menu.setUrlName(category.getPath()+"/"+category.getViewName()+".html");
+            menu.setUrlName(FormatUtil.categoryListFormat(category));
             menuRepository.save(menu);
 
         }

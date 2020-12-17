@@ -10,9 +10,9 @@ public class CommentParam {
     @NotNull(message = "文章Id不能为空!")
     private Integer articleId;
 //    private CommentType commentType;
-    @NotBlank(message = "用户昵称不能为空")
+//    @NotBlank(message = "用户昵称不能为空")
     private String username;
-    @NotBlank(message = "用户电子邮件不能为空")
+//    @NotBlank(message = "用户电子邮件不能为空")
     private String email;
     @NotBlank(message = "评论内容不能为空!")
     private String content;

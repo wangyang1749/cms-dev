@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+<head >
+<!--    th:replace="templates/base :: common_header(~{::title},~{::link})"-->
+    <title>Awesome - Main</title>
+
+    <link rel="stylesheet" th:href="@{~/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{~/themes/smoothness/jquery-ui.css}">
+
 </head>
 <body>
-$END$
+<div cms:fragment="frag">
+    15316352163
+    <p th:text="${onevar} + ' - ' + ${twovar}">...</p>
+</div>
+
+<div cms:replace="::frag"></div>
+
+
 </body>
 </html>

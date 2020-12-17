@@ -3,13 +3,11 @@ package com.wangyang.common.utils;
 
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.TemplateException;
-import com.wangyang.common.thymeleaf.CmsDialect;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.base.BaseTemplate;
 import com.wangyang.common.CmsConst;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -18,11 +16,8 @@ import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 
 import java.io.File;
@@ -35,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Component
 @Slf4j
@@ -53,11 +47,11 @@ public class TemplateUtil {
         if(StringUtils.isEmpty(oldName)){
             return;
         }
-        String filePath=workDir+"/"+ CmsConst.STATIC_HTML_PATH;
+        String filePath=workDir;
         if(path!=null){
-            filePath=filePath+"/"+path;
+            filePath=filePath+File.separator+path;
         }
-        File file = new File(filePath+"/"+oldName+".html");
+        File file = new File(filePath+File.separator+oldName+".html");
         if(file.exists()){
             file.delete();
             log.info("### delete html file"+file.getPath());
@@ -215,12 +209,8 @@ public class TemplateUtil {
     }
 
     public static String saveFile(String path,String viewName,String html) {
-        if(path==null||"".equals(path)){
-            path = workDir+"/"+ CmsConst.STATIC_HTML_PATH;
-        }else{
-            path = workDir+"/"+ CmsConst.STATIC_HTML_PATH+"/"+path;
-        }
-
+        // 路径 + 视图名称
+        path = workDir+File.separator+path;
         if(viewName==null||"".equals(viewName)){
             throw new TemplateException("Template  view name can't null in template page!!");
         }
@@ -243,7 +233,7 @@ public class TemplateUtil {
     }
 
     public static boolean componentsExist(String viewName){
-        String path = CmsConst.WORK_DIR+"/html/"+CmsConst.COMPONENTS_PATH+"/"+viewName+".html";
+        String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getComponentsPath()+File.separator+viewName+".html";
         File file = new File(path);
         return file.exists();
     }

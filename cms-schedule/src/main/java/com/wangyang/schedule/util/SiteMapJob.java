@@ -6,6 +6,7 @@ import com.wangyang.service.repository.ArticleRepository;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.support.ScheduleOption;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,7 +38,7 @@ public class SiteMapJob {
         List<Article> articles = articleRepository.findAll(specification);
         StringBuffer sb = new StringBuffer();
         articles.forEach(article -> {
-            sb.append( "http://www.bioinfo.online/"+article.getPath()+"/"+article.getViewName()+".html\n");
+            sb.append( "http://www.bioinfo.online"+ FormatUtil.articleListFormat(article)+"\n");
         });
 //        System.out.println(sb);
         File file = new File(CmsConst.WORK_DIR+"/html/siteMap.txt");

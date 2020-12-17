@@ -33,6 +33,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             out.write(new ObjectMapper().writeValueAsString(baseResponse));
             out.flush();
             out.close();
+
 //            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
         }else {
             response.sendRedirect("/login?redirect="+requestURI);

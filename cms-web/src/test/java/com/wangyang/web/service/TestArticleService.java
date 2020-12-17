@@ -164,9 +164,5 @@ public class TestArticleService extends AbstractServiceTest{
     }
 
 
-    @Test
-    public void testCarousel(){
-        List<Article> articles = articleService.carousel();
-        System.out.println(articles.size());
-    }
+
 }

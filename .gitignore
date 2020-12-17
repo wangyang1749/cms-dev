@@ -12,7 +12,7 @@ temp/
 .settings
 .springBeans
 .sts4-cache
-
+.jython_cache
 ### IntelliJ IDEA ###
 .idea
 *.iws

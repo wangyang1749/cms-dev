@@ -26,18 +26,18 @@
 <!--            <artifactId>ognl</artifactId>-->
 <!--            <version>3.1.12</version>-->
 <!--        </dependency>-->
-<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
-<!--            <groupId>org.thymeleaf</groupId>-->
-<!--            <artifactId>thymeleaf</artifactId>-->
-<!--        </dependency>-->
-
-<!--        https://www.cnblogs.com/jiangchao226/p/5937458.html-->
-<!--        没有引入spring-thymeleaf不能使用SpringEL-->
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
-<!--            <version>3.0.9.RELEASE</version>-->
         </dependency>
+
+<!--        https://www.cnblogs.com/jiangchao226/p/5937458.html-->
+<!--        没有引入spring-thymeleaf不能使用SpringEL-->
+<!--        <dependency>-->
+<!--            <groupId>org.thymeleaf</groupId>-->
+<!--            <artifactId>thymeleaf</artifactId>-->
+<!--&lt;!&ndash;            <version>3.0.9.RELEASE</version>&ndash;&gt;-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>ognl</groupId>-->
 <!--            <artifactId>ognl</artifactId>-->

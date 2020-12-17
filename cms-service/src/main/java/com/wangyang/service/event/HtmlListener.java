@@ -14,7 +14,7 @@ public class HtmlListener {
     public void createArticle(EntityCreatedEvent<Category> event){
         Category category = (Category) event.getSource();
         //创建/更新 文章-删除文章分页的缓存文件
-        FileUtils.removeCategoryPageTemp(category);
+//        FileUtils.removeCategoryPageTemp(category);
         //移除临时文章分类
         FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
         FileUtils.remove(CmsConst.WORK_DIR+"/html/mind/"+category.getId()+".html");

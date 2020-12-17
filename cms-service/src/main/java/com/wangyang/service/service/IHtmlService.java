@@ -37,13 +37,13 @@ public interface IHtmlService {
 
 //    void updateCategoryPage(Integer oldCategoryId);
 
-    void deleteTempFileByCategory(Category category);
+//    void deleteTempFileByCategory(Category category);
 
     @Async
         //异步执行
     void conventHtmlNoCategoryList(ArticleDetailVO articleVO);
 
-    void addOrRemoveArticleToCategoryListByCategoryId(int baseCategoryId);
+//    void addOrRemoveArticleToCategoryListByCategoryId(int baseCategoryId);
 
 //    void generateCategoryArticleListByCategory(Integer id);
 
@@ -64,7 +64,12 @@ public interface IHtmlService {
 
     String convertArticleListBy(Category category, int page);
 
-    String convertArticlePageBy(HttpServletRequest request,Page<ArticleDto> articleDtoPage, String viewName);
+    /**
+     * 生成最新文章
+     */
+    void newArticleListHtml();
+
+    String convertArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage, String viewName);
 
 
     String previewArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage);
@@ -78,4 +83,9 @@ public interface IHtmlService {
 
 
     void generateCommentHtmlByArticleId(int articleId);
+
+
+
+
+    void articleTopListByCategoryId(int id);
 }

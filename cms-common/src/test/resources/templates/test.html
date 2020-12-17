@@ -19,9 +19,13 @@
 <include href="/templates/header.html" isSaveFile="true"/>
 <!--#include file='/templates/header.html'-->
 <h1>after</h1>
-[[${#execInfo.templateName}]]
-[[${#objects.nullSafe(bj,default)}]]
-111
+<!--[[${#execInfo.templateName}]]-->
+${#objects.nullSafe(bj,default)}
+
+<no>
+
+<!--    [[${#execInfo.templateName}]]-->
+</no>
 <!--<textarea style="display:none;" id="textInput" th:value="#objects.nullSafe(${view.originalContent},'default')">-->
 </textarea>
 </body>
