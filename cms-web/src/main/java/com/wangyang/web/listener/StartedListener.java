@@ -280,7 +280,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             if(Files.notExists(templatePath)){
                 Files.createDirectories(templatePath);
                 log.info(">>> Not exist template directory, Create template directory "+templatePath.toString());
-                Path source = FileUtils.getJarResources(CmsConst.SYSTEM_TEMPLATE_PATH);
+                Path source = FileUtils.getJarResources("template");
                 FileUtils.copyFolder(source, templatePath);
                 log.info(">>> copy ["+source.toString()+"] to ["+templatePath.toString()+"]");
             }
