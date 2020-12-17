@@ -1,0 +1,248 @@
+<!-- 基于页码的分页 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="${view.category.name}">分类页面</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/templates/resources/themes/github.css">
+
+    <link rel="stylesheet" href="/templates/resources/css/index.css?v=1.05">
+
+    <style>
+        .breadcrumb {
+            background: #f6f6f6;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .jumbotron {
+            overflow: auto;
+        }
+
+        .showloading {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div cms:replace="/html/components/header"></div>
+
+    <div class="container" id="app">
+
+        <div class="row">
+            <div class="col-lg-9 ">
+
+                <div id="main-content">
+
+                    <div class="catrgory-header">
+                        <div class="img mr-3">
+                            <img th:if="${view.category.picPath==''||view.category.picPath==null}" class="mb-1"
+                                src="/templates/resources/img/logo_category.png">
+                            <img th:if="${view.category.picPath!=null||view.category.picPath!=''}"
+                                th:src="${view.category.picPath}" class="mb-1">
+                            <div class="d-flex title">
+                                <a class="text-secondary"
+                                    th:href="@{'~'+${view.linkPath}+'_'+${view.category.id}+'_mind.html'}">
+                                    <span th:text="${view.category.name}"></span>
+                                </a>
+
+                                <!-- 
+                                <a class="text-secondary" th:href="@{'~/user/mindJs/'+${view.category.id}}">
+                                    &nbsp; [编辑]
+                                </a> -->
+
+                                <!-- <a class="text-secondary" href="#">
+                                    &nbsp; [新建文章]
+                                </a> -->
+                            </div>
+                        </div>
+
+                        <p th:text="${view.category.description}"></p>
+                    </div>
+
+
+
+                    <!-- 文章列表 -->
+                    <ul class="list-group list-group-flush mb-3">
+                        <div class="list-group-item list-group-item-light">
+                            <strong th:text="${view.category.name}"></strong> 一共收录文章<em
+                                th:text="${view.page.totalElements}"></em>篇，
+                            一共有<span th:text="${view.page.totalPages}"> </span>页，
+                            每页显示<span th:text="${view.page.size}"> </span>篇
+
+                            <!-- <a class="text-secondary" th:href="@{'~/user/write/'+${view.category.id}}">
+                                
+                            </a> -->
+                        </div>
+                        <!-- <div cms:replace="'/'+${view.category.path}+'/top/'+${view.category.viewName} ?: _" parser null></div> -->
+                        <div cms:replace="~{'/'+${view.category.path}+'/top/'+${view.category.viewName}} ?:_" parser ></div>
+                    
+                        <div id="components">
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" th:each="item : ${view.page.getContent()}">
+                                    <!-- th:href="'/'+${item.path}+'/'+${item.viewName}+'.html'" -->
+                                    <a th:href="${item.linkPath}" class="text-secondary text-decoration-none ">
+
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1 title" th:text="${item.title}"></h5>
+                                        </div>
+                                        <div class="d-flex mobile-summary">
+                                            <div class="mr-3 mobile-img" th:if="${item.picPath!=null}">
+                                                <div class="img-summary">
+                                                    <img class=" lazy" th:data-original="${item.picPath}" alt="">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1" th:text="${item.summary}"></p>
+                                            </div>
+                                        </div>
+
+                                    </a>
+                                    <small>
+                                        <div class="d-flex flex-row bd-highlight ">
+                                            <div class="p-2 bd-highlight" style="width: 2.3rem;">
+                                                <img th:src="${item.user.avatar}" alt=""
+                                                    class="img-avatar rounded-circle">
+                                            </div>
+                                            <div class="p-2 bd-highlight">
+                                                <!-- <span th:text="${item.user.username}"></span>&nbsp;&nbsp; -->
+                                                <span>发布于: </span>
+                                                <span th:text="${#dates.format( item.updateDate, 'yyyy-MM-dd HH:mm:ss')}">3 days ago</span>
+                                            </div>
+                                            <div class="p-2 bd-highlight">
+                                                    <a href="javascript:;"
+                                                    th:onclick="previewArticleHTML([[${item.path}]],[[${item.viewName}]])"
+                                                    class="text-secondary preview ">阅读全文</a>
+                                            </div>
+                                        </div>
+                                            
+                                    </small>
+                                    <div th:id="${item.viewName}" class="bg-white markdown">
+                                    </div>
+                                </li>
+                               
+                            </ul>
+
+
+                            <!-- <div th:each="item : ${view.page.getContent()}" class="bg-white">
+                              
+                            </div> -->
+
+                        </div>
+
+                    </ul>
+
+                    <div th:if="${view.page.totalPages} gt '1'" class="mb-3">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+
+                                <li class="page-item">
+                                    <a class="page-link" th:href="${view.linkPath}+'.html'"
+                                        aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        th:href="'/'+${view.category.path}+'/'+${view.category.viewName}+'.html'">1</a>
+                                </li>
+
+                                <li class="page-item" th:each="item : ${#numbers.sequence(2, view.page.totalPages)}">
+                                    <a class="page-link"  th:href="${view.linkPath}+'_'+${item}+'_page.html'" th:text="${item}">1</a>
+                                </li>
+            
+                                <li class="page-item">
+                                    <a class="page-link"    th:href="${view.linkPath}+'_'+${view.page.totalPages}+'_page.html'"aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+               
+            </div>
+
+            <div  class="col-lg-3">
+                <div class="card">
+                    <div class="p-1">
+                            <form th:action="@{'~/user/write/'+${view.category.id}}" method="get" class="input-group">
+                                <input name="title" type="text" class="form-control" placeholder="input article name" >
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit" >创建文章</button>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    
+    </div>
+
+    <div cms:replace="/html/components/footer"></div>
+
+    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
+    <script src="/templates/resources/js/jquery.lazyload.min.js"></script>
+    <script src="/templates/resources/js/index.js?v=1.06"></script>
+
+
+    <script>
+        $(function () {
+            $("img.lazy").lazyload({ effect: "fadeIn" });
+        });
+
+
+        // 先进行一次检查
+        // lazyRender();
+        //为了不在滚轮滚动过程中就一直判定，设置个setTimeout,等停止滚动后再去判定是否出现在视野中。
+        // var clock; //这里的clock为timeID，
+        // $(window).on('scroll', function () {
+        //     //        lazyRender();
+        //     if (clock) { // 如果在300毫秒内进行scroll的话，都会被clearTimeout掉，setTimeout不会执行。
+        //         //如果有300毫秒外的操作，会得到一个新的timeID即clock，会执行一次setTimeout,然后保存这次setTimeout的ID，
+        //         //对于300毫秒内的scroll事件，不会生成新的timeID值，所以会一直被clearTimeout掉，不会执行setTimeout.
+        //         clearTimeout(clock);
+        //     }
+        //     clock = setTimeout(function () {
+        //         console.log('运行了一次');
+        //         lazyRender();
+        //     }, 300)
+        // })
+
+        // function lazyRender() {
+        //     $('.container img').each(function () {
+        //         if (checkShow($(this)) && !isLoaded($(this))) {
+        //             loadImg($(this));
+        //         }
+        //     })
+        // }
+        // function checkShow($img) { // 传入一个img的jq对象
+        //     var scrollTop = $(window).scrollTop();  //即页面向上滚动的距离
+        //     var windowHeight = $(window).height(); // 浏览器自身的高度
+        //     var offsetTop = $img.offset().top;  //目标标签img相对于document顶部的位置
+
+        //     if (offsetTop < (scrollTop + windowHeight) && offsetTop > scrollTop) { //在2个临界状态之间的就为出现在视野中的
+        //         return true;
+        //     }
+        //     return false;
+        // }
+        // function isLoaded($img) {
+        //     return $img.attr('data-src') === $img.attr('src'); //如果data-src和src相等那么就是已经加载过了
+        // }
+        // function loadImg($img) {
+        //     $img.attr('src', $img.attr('data-src')); // 加载就是把自定义属性中存放的真实的src地址赋给src属性
+        // }
+
+    </script>
+</body>
+
+</html>

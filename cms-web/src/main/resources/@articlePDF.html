@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/templates/resources/themes/github.css?v=1.02">
+
+    <title>PDF预览</title>
+</head>
+
+<body>
+    <div class="markdown container">
+        [(${view.formatContent})]
+    </div>
+    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
+
+    <script>
+        // 图片居中
+        $('.markdown p').find('> img').parent().css({ "display": 'flex', "justify-content": "center", "align-items": "center" });
+    </script>
+</body>
+
+</html>
