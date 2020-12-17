@@ -138,8 +138,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "templates/@categoryList", TemplateType.CATEGORY_LIST,7),
 
-                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "sheet/@sheet", TemplateType.SHEET,8),
-                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "sheet/@customSheet", TemplateType.SHEET,8),
+                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET,8),
+                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "templates/sheet/@customSheet", TemplateType.SHEET,8),
 
 
                 new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
@@ -176,12 +176,12 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
 
         List<Components> componentsList = new ArrayList<>();
-        componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
-        componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "components/@articleList","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
-        componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
-        componentsList.add( new Components("最新文章", CMSUtils.getComponentsPath(), "components/@articleList","newArticleIndex",CmsConst.ARTICLE_DATA_SORT+"createDate,DESC","",true));
+        componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "templates/components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "templates/components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "templates/components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
+        componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "templates/components/@articleList","hotArticle",CmsConst.ARTICLE_DATA_SORT+"visits,DESC","",true));
+        componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "templates/components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
+        componentsList.add( new Components("最新文章", CMSUtils.getComponentsPath(), "templates/components/@articleList","newArticleIndex",CmsConst.ARTICLE_DATA_SORT+"createDate,DESC","",true));
 //        componentsList.add( new Components("推荐标签", CMSUtils.getComponentsPath(),"templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
 //        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
 
