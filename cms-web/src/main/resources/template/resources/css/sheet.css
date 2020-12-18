@@ -1,0 +1,73 @@
+@media screen and (min-width: 1000px) {
+    .markdown {
+        /* width: 842px;
+        margin: 10px auto; */
+        /* padding: 2rem;
+        background: #fff; */
+    }
+}
+
+.wrap-bg {
+    width: 100%;
+    height: 100%;
+   # background: blue;
+    position: absolute;
+    z-index: -3;
+}
+
+
+.container-bg {
+color: #fff;
+background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+background-size: 400% 400%;
+animation: gradientBG 15s ease infinite;
+z-index: -2;
+opacity:0.95;
+
+# background: rgba(0, 0, 0, 0.5);
+
+}
+
+@keyframes gradientBG {
+0% {
+background-position: 0% 50%;
+}
+50% {
+background-position: 100% 50%;
+}
+100% {
+background-position: 0% 50%;
+}
+}
+
+.btn-audio {
+width: 30px;
+height: 30px;
+background-image: url(http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/imgSvg-1601557721691.svg);
+background-size: contain;
+
+position: absolute;
+
+margin:10px 10px;
+}
+
+.rotate {
+-webkit-animation: rotating 1.2s linear infinite;
+-moz-animation: rotating 1.2s linear infinite;
+-o-animation: rotating 1.2s linear infinite;
+animation: rotating 1.2s linear infinite
+}
+
+@-webkit-keyframes rotating {
+from { -webkit-transform: rotate(0) }
+to { -webkit-transform: rotate(360deg) }
+}
+
+@keyframes rotating {
+from { transform: rotate(0) }
+to { transform: rotate(360deg) }
+}
+@-moz-keyframes rotating {
+from { -moz-transform: rotate(0) }
+to { -moz-transform: rotate(360deg) }
+}

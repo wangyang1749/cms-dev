@@ -1,0 +1,21 @@
+<head th:fragment="common_header(title,links,meta)">
+    <meta name="baidu-site-verification" content="3GH8lzi4Xa" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <th:block th:replace="${meta}" />
+    <title th:replace="${title}">The awesome application</title>
+
+    <!-- Common styles and scripts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        crossorigin="anonymous">
+        
+    <!--/* Per-page placeholder for additional links */-->
+    <th:block th:replace="${links}" />
+    <link rel="stylesheet" href="/templates/resources/themes/github.css">
+
+    <link rel="stylesheet" href="/templates/resources/css/index.css?v=1.5">
+
+</head>

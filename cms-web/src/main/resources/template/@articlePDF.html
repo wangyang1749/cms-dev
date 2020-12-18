@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="/templates/resources/themes/github.css?v=1.02">
+<head  th:replace="templates/fragment/header :: common_header(~{::title},~{::link},~{})">
 
+    <link rel="stylesheet" href="/templates/resources/css/pdf.css">
+    <!-- markdown扩展 -->
+    <link rel="stylesheet" href="/templates/resources/css/admonition.css">
     <title>PDF预览</title>
 </head>
 
 <body cms:inline="none">
     <div class="markdown container" th:utext="${view.formatContent}">
     </div>
-    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
-
+    <div th:replace="templates/fragment/footer"></div>
     <script>
         // 图片居中
         $('.markdown p').find('> img').parent().css({ "display": 'flex', "justify-content": "center", "align-items": "center" });

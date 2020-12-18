@@ -127,13 +127,13 @@ public class ArticleJob {
     }
 
 
-    String a ="";
-    @TemplateOptionMethod(name = "Footer",templateValue = "templates/components/@footer",viewName="footer")
+
+    @TemplateOptionMethod(name = "底部导航",templateValue = "templates/components/@footer",viewName="footer")
     public Map<String, Object> footer() {
         return new HashMap<>();
     }
 
-    @TemplateOptionMethod(name = "Index",templateValue = "templates/components/@index",viewName="index",event = "ACAU" ,path="html")
+    @TemplateOptionMethod(name = "首页组件",templateValue = "templates/components/@index",viewName="index",event = "ACAU" ,path="html")
     public Map<String,Object> index() {
         Map<String,Object> map = new HashMap<>();
         List<CategoryDto> categoryDtos = categoryService.listRecommend();
@@ -141,14 +141,14 @@ public class ArticleJob {
         return map;
     }
 
-    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList")
+    @TemplateOptionMethod(name = "分类菜单", templateValue = "templates/components/@categoryList", viewName = "categoryMenu")
     public Map<String,Object> listCategory() {
         Map<String,Object> map = new HashMap<>();
-        map.put("view",categoryService.list());
+        map.put("view",categoryService.listCategoryVo());
         return map;
     }
 
-    @TemplateOptionMethod(name = "Menu",templateValue = "templates/components/@header",viewName="header")
+    @TemplateOptionMethod(name = "导航菜单",templateValue = "templates/components/@header",viewName="header")
     public Map<String,Object> listMenu(){
         Map<String,Object> map = new HashMap<>();
         map.put("view", menuService.list());

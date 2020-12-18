@@ -53,12 +53,12 @@ public class TemplateController {
         return templatePage;
     }
 
-    @GetMapping("/setStatus/{id}")
-    public Template setStatus(@PathVariable("id") int id){
-        Template template = templateService.setStatus(id);
-        htmlService.generateHome();
-        return template;
-    }
+//    @GetMapping("/setStatus/{id}")
+//    public Template setStatus(@PathVariable("id") int id){
+//        Template template = templateService.setStatus(id);
+//        htmlService.generateHome();
+//        return template;
+//    }
 
     @PostMapping
     public Template add(@RequestBody Template template){

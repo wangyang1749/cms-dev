@@ -29,7 +29,7 @@ public class CmsConst {
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
     public final static String COMPONENTS_PATH = "html"+ File.separator+"components";
-    public final static String CATEGORY_MENU = "CategoryMenu";
+    public final static String CATEGORY_MENU = "categoryMenu";
 
     public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
     public final static String ARTICLE_DETAIL_PATH = "html"+File.separator+"article";

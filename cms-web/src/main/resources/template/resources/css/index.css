@@ -364,4 +364,14 @@ a:focus {
     }
 }
 
+@media screen and (max-width: 991px) {
+    /* .index-article a {
+        width: 100% !important;
+    } */
+
+    .carousel-caption p {
+        display: none;
+    }
+}
+
 

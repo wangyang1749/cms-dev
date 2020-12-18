@@ -1,125 +1,39 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head th:replace="templates/fragment/header :: common_header(~{::title},~{::link},~{::meta})">
     <meta charset="UTF-8">
-    <meta name="baidu-site-verification" content="3GH8lzi4Xa" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="keywords" content="生物信息学,生物信息分析,微生物学,免疫学,分子生物学,生物化学,基因工程,细胞生物学,r语言,python">
     <meta name="description"
         content="学生物，是帮助喜欢生物的人学习最新、最热门生物知识,网站内容包括生物信息学,生物信息分析,微生物学,免疫学,分子生物学,生物化学,基因工程,细胞生物学方面文章,r语言,python">
-
     <title>学生物</title>
+    <link rel="stylesheet" href="/templates/resources/css/home.css">
 
-    <!-- <link rel="stylesheet" href="/templates/resources/css/markdown.css"> -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="/templates/resources/themes/github.css">
-
-    <link rel="stylesheet" href="/templates/resources/css/index.css?v=1.04">
-    <style>
-        @media screen and (max-width: 991px) {
-            /* .index-article a {
-                width: 100% !important;
-            } */
-
-            .carousel-caption p {
-                display: none;
-            }
-        }
-
-        @keyframes mymove {
-            50% {
-                text-shadow: 10px 20px 30px #000;
-            }
-        }
-
-        /*Safari 和 Chrome:*/
-        @-webkit-keyframes mymove {
-            50% {
-                text-shadow: 10px 20px 30px #000;
-            }
-        }
-
-
-        .card:hover {
-            /* -webkit-animation: mymove 3s;
-            animation: mymove 3s;
-            animation-fill-mode: forwards; */
-            /* background-color: #f8f9fa; */
-        }
-
-        .showloading {
-            display: none;
-        }
-
-        .css-首页 {
-            color: rgba(0, 0, 0, .7) !important;
-        }
-
-        .carousel-item {
-            max-height: 17rem;
-
-            text-shadow: 5px 2px 6px #000;
-        }
-
-        .carousel-item img {
-            height: 100%;
-        }
-
-        .carousel-caption h5 {
-            font-weight: bold;
-        }
-
-        .carousel-item p {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        a:link {
-            text-decoration: none;
-
-        }
-
-
-        /* .index-article .preview{
-            display: none;
-        } */
-        /* .index-article .components-item {
-            width: 50%;
-        }
-        .index-article .components-item:nth-child(odd) {
-            border-right: 1px solid rgba(0, 0, 0, .125);
-        } */
-    </style>
 </head>
 
-<body>
-    <div cms:replace="/html/components/header.html"></div>
+<body cms:inline="none">
+    <div cms:replace="/html/components/header :: #fragment"></div>
 
     <div class="container">
         <div class="row ">
             <div class="col-lg-9">
                 <div id="main-content">
-                    <div cms:replace="/html/components/carousel.html" ></div>
+                    <div cms:replace="/html/components/carousel :: #fragment" ></div>
                         
                     <div class="category-horizontal mb-3">
                         <div class="category-title"><span>所有文章分类</span></div>
-                        <div cms:replace="/html/components/CategoryMenu.html"></div>
+                        <div cms:replace="/html/components/categoryMenu :: #fragment"></div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm mb-3">
-                            <div cms:replace="/html/components/hotArticle.html"></div>
+                            <div cms:replace="/html/components/hotArticle :: #fragment"></div>
                         </div>
                         <!-- <div class="col-sm mb-3">
                             <div cms:replace="/html/components/likeArticle.html"></div>
                         </div> -->
                         <div class="col-sm  mb-3">
-                            <div cms:replace="/html/components/newArticleIndex.html"></div>
+                            <div cms:replace="/html/components/newArticleIndex :: #fragment"></div>
                         </div>
                         
                     </div>
@@ -175,7 +89,7 @@
                         <h5><strong id="timer">&nbsp;</strong></h5>
                     </div>
                     <div class="col-sm  mb-3">
-                            <div cms:replace="~{/html/components/myArticle.html} ?:_"></div>
+                            <div cms:replace="~{/html/components/myArticle :: #fragment} ?:_"></div>
                         </div>
                     <!-- <div class="mb-3">
                         <include href="/html/components/myArticle.html"/>
@@ -198,12 +112,12 @@
 
     </div>
 
-    <div cms:replace="/html/components/footer.html"></div>
-    <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
-    <script src="/templates/resources/js/jquery.lazyload.min.js"></script>
+    <div cms:replace="/html/components/footer :: #fragment"></div>
 
+    <div th:replace="templates/fragment/footer"></div>
+    <script src="/templates/resources/js/search_engine.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
-    <script src="/templates/resources/js/index.js?v=1.06"></script>
+
     <script>
         function leftTimer(year, month, day, hour, minute, second) {
             var leftTime = (new Date(year, month - 1, day, hour, minute, second)) - (new Date()); //计算剩余的毫秒数 
@@ -220,8 +134,8 @@
             document.getElementById("timer").innerHTML = days + "天" + hours + "小时" + minutes + "分" + seconds + "秒";
         }
 
-        leftTimer(2020, 12, 21, 0, 0, 0)
-        setInterval(function () { leftTimer(2020, 12, 21, 0, 0, 0) }, 1000);
+        leftTimer(2020, 12, 26, 0, 0, 0)
+        setInterval(function () { leftTimer(2020, 12, 26, 0, 0, 0) }, 1000);
 
 
         function checkTime(i) { //将0-9的数字前面加上0，例1变为01 

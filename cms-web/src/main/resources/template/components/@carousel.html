@@ -1,32 +1,47 @@
-<div id="carouselExampleCaptions" class="carousel slide  mb-3" data-ride="carousel">
-    <ol class="carousel-indicators">
-        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-    </ol>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div class="carousel-inner">
+<head th:replace="templates/fragment/header :: common_header(~{},~{},~{})">
+    <title>Document</title>
+</head>
 
-        <div th:if="${view != null}" class="carousel-item " th:each="item , userStat: ${view}"
-            th:class="${userStat.index == 0} ? ' carousel-item active' :'carousel-item'">
-            <a th:href="'/'+${item.path}+'/'+${item.viewName}+'.html'">
-                <img th:if="${item.picPath!=null}" th:src="${item.picPath}" class="d-block w-100" >
-                <img th:if="${item.picPath == null}" src="http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/1-7_1588484512433.png" class="d-block w-100" >
+<body>
+    <section id="fragment">
+        <div id="carouselExampleCaptions" class="carousel slide  mb-3" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+            </ol>
 
-                <div class="carousel-caption  d-md-block">
-                    <h5 th:text="${item.title}"></h5>
-                    <p th:text="${item.summary}"></p>
+            <div class="carousel-inner">
+
+                <div th:if="${view != null}" class="carousel-item " th:each="item , userStat: ${view}"
+                    th:class="${userStat.index == 0} ? ' carousel-item active' :'carousel-item'">
+                    <a th:href="'/'+${item.path}+'/'+${item.viewName}+'.html'">
+                        <img th:if="${item.picPath!=null}" th:src="${item.picPath}" class="d-block w-100">
+                        <img th:if="${item.picPath == null}"
+                            src="http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/1-7_1588484512433.png"
+                            class="d-block w-100">
+
+                        <div class="carousel-caption  d-md-block">
+                            <h5 th:text="${item.title}"></h5>
+                            <p th:text="${item.summary}"></p>
+                        </div>
+                    </a>
                 </div>
+
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
             </a>
         </div>
- 
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
+    </section>
+</body>
+
+</html>

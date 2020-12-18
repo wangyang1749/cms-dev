@@ -1,10 +1,24 @@
-<ul class="list-group list-group-flush ">
-  
-    <a th:href="${item.linkPath}" th:each="item : ${view}"
-        class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+<!DOCTYPE html>
+<html lang="en">
 
-        <span th:text="${item.title}"></span>
-        <span style="font-size: 0.6rem;" class="badge badge-secondary badge-pill" th:text="${item.visits}"></span>
+<head th:replace="templates/fragment/header :: common_header(~{},~{},~{})">
+    <title>å¤´éƒ¨ç»„ä»¶</title>
+</head>
 
-    </a>
-</ul>
+<body>
+    <section id="fragment">
+        <ul class="list-group list-group-flush ">
+
+            <a th:href="${item.linkPath}" th:each="item : ${view}"
+                class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+
+                <span th:text="${item.title}"></span>
+                <span style="font-size: 0.6rem;" class="badge badge-secondary badge-pill"
+                    th:text="${item.visits}"></span>
+
+            </a>
+        </ul>
+    </section>
+</body>
+
+</html>

@@ -190,12 +190,7 @@ public class HtmlServiceImpl implements IHtmlService {
         String viewName = "";
         return  TemplateUtil.convertHtmlAndSave(category.getPath(),viewName,map,template);
     }
-    @Override
-    public void newArticleListHtml(){
-        Components components = componentsService.findByViewName("newArticleIndex");
-        Object data = componentsService.getModel(components);
-        TemplateUtil.convertHtmlAndSave(data,components);
-    }
+
 
 
     /**
@@ -256,11 +251,17 @@ public class HtmlServiceImpl implements IHtmlService {
         Template template = templateService.findByEnName(sheet.getTemplateName());
         TemplateUtil.convertHtmlAndSave(sheet,template);
     }
-
+    @Override
+    public void newArticleListHtml(){
+        Components components = componentsService.findByViewName("newArticleIndex");
+        Object data = componentsService.getModel(components);
+        TemplateUtil.convertHtmlAndSave(data,components);
+    }
 
     @Override
     public Components generateHome(){
-        Components components = componentsService.findByDataName("articleJob.index");
+        Components components = componentsService.findByViewName("index");
+//        Components components = componentsService.findByDataName("articleJob.index");
         Object data = componentsService.getModel(components);
         TemplateUtil.convertHtmlAndSave(data,components);
         return components;
@@ -272,10 +273,14 @@ public class HtmlServiceImpl implements IHtmlService {
      */
     @Override
     public void generateCategoryListHtml() {
-        //获取该列表所在的组
-        List<CategoryVO> categoryVOS = categoryService.listCategoryVo();
-        Template template = templateService.findByEnName(CmsConst.DEFAULT_CATEGORY_LIST);
-        TemplateUtil.convertHtmlAndSave(CMSUtils.getComponentsPath(),CmsConst.CATEGORY_MENU,categoryVOS,template);
+        Components components = componentsService.findByViewName("categoryMenu");
+        Object data = componentsService.getModel(components);
+        TemplateUtil.convertHtmlAndSave(data,components);
+
+//        //获取该列表所在的组
+//        List<CategoryVO> categoryVOS = categoryService.listCategoryVo();
+//        Template template = templateService.findByEnName(CmsConst.DEFAULT_CATEGORY_LIST);
+//        TemplateUtil.convertHtmlAndSave(CMSUtils.getComponentsPath(),CmsConst.CATEGORY_MENU,categoryVOS,template);
     }
 
 

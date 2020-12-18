@@ -28,8 +28,8 @@
     </style>
 </head>
 
-<body>
-    <div cms:replace="/html/components/header"></div>
+<body cms:inline="none">
+    <div cms:replace="/html/components/header :: #fragment"></div>
 
     <div class="container" id="app">
         <nav aria-label="breadcrumb">
@@ -116,7 +116,7 @@
         </div>
 
 
-        <div cms:replace="/html/components/footer"></div>
+        <div cms:replace="/html/components/footer :: #fragment"></div>
 
     </div>
 

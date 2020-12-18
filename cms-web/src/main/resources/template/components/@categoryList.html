@@ -1,7 +1,17 @@
-<div class="list-group list-group-flush mb-3" id="category">
-    <div class="list-group-item list-group-item-light">
-        <span>所有分类得到</span> 
-    </div>
-    <a th:each="item : ${view}" th:href="'/'+${item.path}+'/'+${item.viewName}+'.html'"
-        class="list-group-item list-group-item-action" th:text="${item.name}">Dapibus ac facilisis in</a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="templates/fragment/header :: common_header(~{},~{},~{})">
+    <title>Document</title>
+</head>
+
+<body>
+    <section id="fragment">
+        <div class="category-list">
+            <a th:each="item : ${view}" th:href="${item.linkPath}" th:text="${item.name}"
+                th:class="'css-'+${item.viewName}">Dapibus ac facilisis in</a>
+        </div>
+    </section>
+</body>
+
+</html>
