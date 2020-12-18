@@ -25,7 +25,7 @@
     </style>
 </head>
 
-<body>
+<body cms:inline="none">
 <div cms:replace="/html/components/header"></div>
 
 <div class="container ">
@@ -44,8 +44,8 @@
                             <span class="mr-2">浏览量:<strong id="visits"></strong></span>
                         </div>
                     </div>
-                    <div class="markdown pt-2 pl-3 pr-3 pb-3">
-                        [(${view.formatContent})]
+                    <div class="markdown pt-2 pl-3 pr-3 pb-3" th:utext="${view.formatContent}">
+
                     </div>
                     <div class="  p-3  d-flex justify-content-around">
 

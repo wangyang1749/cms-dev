@@ -29,15 +29,15 @@ public class DownloadController {
         if(article.getStatus()!= ArticleStatus.PUBLISHED){
             throw new ArticleException("文章没有发布不能生成PDF!!");
         }
-        String pdfPath= article.getPath()+"/"+article.getViewName()+".pdf";
-        String absolutePath = CmsConst.WORK_DIR +"/html/"+pdfPath;
+        String pdfPath= article.getPath()+File.separator+article.getViewName()+".pdf";
+        String absolutePath = CmsConst.WORK_DIR +File.separator+pdfPath;
         File file = new File(absolutePath);
         String result;
         if(file.exists()&&article.getPdfPath()!=null){
             result =  article.getPdfPath();
         }else {
             String url = "http://localhost:8080/preview/pdf/"+articleId;
-            String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR + "/html/" + pdfPath);
+            String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR+File.separator+pdfPath);
             article.setPdfPath(pdfPath);
             Article saveArticle = articleService.save(article);
             result =  saveArticle.getPdfPath();

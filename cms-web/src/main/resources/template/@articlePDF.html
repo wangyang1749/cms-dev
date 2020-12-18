@@ -12,9 +12,8 @@
     <title>PDF预览</title>
 </head>
 
-<body>
-    <div class="markdown container">
-        [(${view.formatContent})]
+<body cms:inline="none">
+    <div class="markdown container" th:utext="${view.formatContent}">
     </div>
     <script src="/templates/resources/js/jquery-3.4.1.min.js"></script>
 

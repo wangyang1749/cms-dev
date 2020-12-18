@@ -50,7 +50,7 @@ public class TestTemplate {
         return Paths.get(this.getClass().getClassLoader().getResource("templates/test2.html").getPath()).getParent().getParent().toString();
     }
 
-//    @Test
+    @Test
     public  void testHtml() {
         Context context = new Context();
         context.setVariable("name","zs");
@@ -81,7 +81,7 @@ public class TestTemplate {
     private  String str2 = "~{'/'+${view.category.path}+'/top/'+${view.category.viewName}} ?:_";
     private static String varPattern2 = "\\~\\{(.*)}";
     private static Pattern rv2 = Pattern.compile(varPattern2);
-    @Test
+//    @Test
     public void test2(){
 
         Matcher matcher = rv2.matcher(str2);
