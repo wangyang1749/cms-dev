@@ -344,6 +344,7 @@ public class HtmlServiceImpl implements IHtmlService {
     public void articleTopListByCategoryId(int id) {
         Category category = categoryService.findById(id);
         List<ArticleDto> articleDtos = articleService.listTopByCategoryId(id);
+        if(articleDtos.size()==0)return;
         Template template = templateService.findByEnName(CmsConst.ARTICLE_TOP_LIST);
         Map<String,Object> map = new HashMap<>();
         map.put("view",articleDtos);
@@ -352,4 +353,5 @@ public class HtmlServiceImpl implements IHtmlService {
         TemplateUtil.convertHtmlAndSave(path,category.getViewName(),map,template);
         convertArticleListBy(category);
     }
+
 }

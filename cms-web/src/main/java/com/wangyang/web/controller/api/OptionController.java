@@ -71,6 +71,7 @@ public class OptionController {
                 category.setPath(CMSUtils.getCategoryPath());
                 categoryService.save(category);
             }
+            htmlService.articleTopListByCategoryId(category.getId());
             htmlService.convertArticleListBy(category);
         });
 

@@ -1006,6 +1006,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  root.toString();
     }
 
+
     @Override
     public List<ArticleDto> listTopByCategoryId(int id) {
         List<Article> articles = articleRepository.findAll(queryListByCategory(id));
