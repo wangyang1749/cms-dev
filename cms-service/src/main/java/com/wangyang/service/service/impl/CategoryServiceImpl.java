@@ -1,6 +1,8 @@
 package com.wangyang.service.service.impl;
 
+import com.wangyang.common.exception.CmsException;
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.service.service.*;
 import com.wangyang.pojo.dto.ArticleDto;
@@ -44,7 +46,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Autowired
     IOptionService optionService;
     @Autowired
-    MenuRepository menuRepository;
+    IMenuService menuService;
 
 
     @Override
@@ -52,8 +54,28 @@ public class CategoryServiceImpl implements ICategoryService {
         return categoryRepository.save(category);
     }
     @Override
-    public Category addOrUpdate(Category category) {
+    public Category create(Category categoryParam) {
 
+        Category category = createOrUpdate(categoryParam);
+        return category;
+    }
+
+    @Override
+    public Category update(Category categoryParam) {
+        Category category = createOrUpdate(categoryParam);
+        return category;
+    }
+
+    public Category createOrUpdate(Category category){
+        if(category.getParentId()==null){
+            category.setParentId(0);
+        }
+        if(category.getOrder()==null){
+            category.setOrder(0);
+        }
+        if(category.getArticleListSize()==null){
+            category.setArticleListSize(10);
+        }
         if (StringUtils.isEmpty(category.getViewName())) {
             String viewName = CMSUtils.randomViewName();
             category.setViewName(viewName);
@@ -69,15 +91,15 @@ public class CategoryServiceImpl implements ICategoryService {
         if(category.getArticleTemplateName()==null||"".equals(category.getArticleTemplateName())){
             category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
         }
-
+        if(category.getDesc()==null){
+            category.setDesc(true);
+        }
 
         category.setPath(CMSUtils.getCategoryPath());
 
         Category saveCategory = categoryRepository.save(category);
         return saveCategory;
     }
-
-
 
     @Override
     public Page<Category> pageBy(String categoryEnName,Pageable pageable){
@@ -244,17 +266,93 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public List<Category> listAll(){
-        return categoryRepository.findAll(Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+        return categoryRepository.findAll(new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return  criteriaQuery.where(criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
+            }
+        });
     }
 
+    //TODO
     @Override
-    public List<CategoryVO> listCategoryVo() {
+    public List<CategoryVO> listUserCategoryVo() {
         List<Category> categories = listAll();
+        List<CategoryVO> categoryVOS = convertCategory2CategoryVO(categories);
+        return categoryVOS;
+    }
+    @Override
+    public List<CategoryVO> listAdminCategoryVo() {
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryVO> categoryVOS = convertCategory2CategoryVO(categories);
+        return categoryVOS;
+    }
+
+    public List<CategoryVO> findTree(List<CategoryVO> categoryVOS){
+        //根节点
+        List<CategoryVO> rootCategory = new ArrayList<CategoryVO>();
+        for (CategoryVO categoryVO : categoryVOS) {
+            if (categoryVO.getParentId().equals(0)){ //父节点是0的，为根节点。
+                rootCategory.add(categoryVO);
+            }
+        }
+        /* 根据Menu类的order排序 */
+        Collections.sort(rootCategory,categoryOrder() );
+        //为根菜单设置子菜单，getClild是递归调用的
+        for (CategoryVO categoryVO : rootCategory) {
+            /* 获取根节点下的所有子节点 使用getChild方法*/
+            List<CategoryVO> childList = getChild(categoryVO.getId(), categoryVOS);
+            categoryVO.setChildCategories(childList);//给根节点设置子节点
+        }
+        return rootCategory;
+    }
+    /**
+     * 获取子节点
+     * @param id 父节点id
+     * @param categoryVOS 所有菜单列表
+     * @return 每个根节点下，所有子菜单列表
+     */
+    public List<CategoryVO> getChild(int id,List<CategoryVO> categoryVOS){
+        //子菜单
+        List<CategoryVO> childList = new ArrayList<CategoryVO>();
+        for (CategoryVO categoryVO : categoryVOS) {
+            // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
+            //相等说明：为该根节点的子节点。
+            if (categoryVO.getParentId().equals(id)){
+                childList.add(categoryVO);
+            }
+        }
+        //递归
+        for (CategoryVO categoryVO : childList) {
+            categoryVO.setChildCategories(getChild(categoryVO.getId(), categoryVOS));
+        }
+        Collections.sort(childList,categoryOrder()); //排序
+        //如果节点下没有子节点，返回一个空List（递归退出）
+        if (childList.size() == 0 ){
+            return new ArrayList<CategoryVO>();
+        }
+        return childList;
+    }
+
+
+    public Comparator<CategoryVO> categoryOrder(){
+
+        return new Comparator<CategoryVO>() {
+            @Override
+            public int compare(CategoryVO o1, CategoryVO o2) {
+                return o1.getOrder()-o2.getOrder();
+            }
+        };
+    }
+
+
+
+    public List<CategoryVO> convertCategory2CategoryVO(List<Category> categories){
         return categories.stream().map(category -> {
-                CategoryVO categoryVO = new CategoryVO();
-                BeanUtils.copyProperties(category,categoryVO);
-                categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
-                return categoryVO;
+            CategoryVO categoryVO = new CategoryVO();
+            BeanUtils.copyProperties(category,categoryVO);
+            categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
+            return categoryVO;
         }).collect(Collectors.toList());
     }
 
@@ -271,13 +369,13 @@ public class CategoryServiceImpl implements ICategoryService {
      * 不显示没有生成Html的category
      * @return
      */
-    @Override
-//    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
-    public List<Category> list() {
-        CategoryQuery categoryQuery = new CategoryQuery();
-        categoryQuery.setHaveHtml(true);
-        return list(categoryQuery,Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
-    }
+//    @Override
+////    @TemplateOptionMethod(name = "Category List", templateValue = "templates/components/@categoryList", viewName = "categoryList", path = "components")
+//    public List<Category> list() {
+//        CategoryQuery categoryQuery = new CategoryQuery();
+//        categoryQuery.setHaveHtml(true);
+//        return list(categoryQuery,Sort.by(Sort.Order.desc("order")).and(Sort.by(Sort.Order.desc("id"))));
+//    }
 
 
     /**
@@ -291,6 +389,9 @@ public class CategoryServiceImpl implements ICategoryService {
         if(category.getRecommend()){
             category.setRecommend(false);
         }else{
+            if(!category.getHaveHtml()){
+                throw new OptionException("在没有html关闭下，不能推荐到主页！");
+            }
             category.setRecommend(true);
         }
         return categoryRepository.save(category);
@@ -300,7 +401,10 @@ public class CategoryServiceImpl implements ICategoryService {
     public Category haveHtml(int id){
         Category category = findById(id);
         if(category.getHaveHtml()){
+            category.setExistNav(false);
+            category.setRecommend(false);
             category.setHaveHtml(false);
+            menuService.removeCategoryToMenu(category.getId());
         }else{
             category.setHaveHtml(true);
         }
@@ -308,28 +412,22 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public Category addOrRemoveToMenu(int id){
+    public Category addOrRemoveToMenu(int id) {
         Category category = findById(id);
-        Menu menu = menuRepository.findByCategoryId(category.getId());
         if(category.getExistNav()){
             category.setExistNav(false);
-            if(menu!=null){
-                menuRepository.deleteById(menu.getId());
+            menuService.removeCategoryToMenu(category.getId());
+        }else {
+            if(!category.getHaveHtml()){
+                throw new OptionException("在没有html关闭下，不能添加到导航！");
             }
-        }else{
             category.setExistNav(true);
-            if(menu==null){
-                menu = new Menu();
-            }
-
-            menu.setName(category.getName());
-            menu.setCategoryId(category.getId());
-            menu.setUrlName(FormatUtil.categoryListFormat(category));
-            menuRepository.save(menu);
-
+            menuService.addCategoryToMenu(category);
         }
-        return  categoryRepository.save(category);
+        return categoryRepository.save(category);
     }
+
+
 
     @Override
     public Category findByViewName(String viewName){

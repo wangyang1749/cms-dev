@@ -321,7 +321,7 @@ public class ArticleController {
     public Page<ArticleDto> pageDtoBy(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
         if(page<=0) page=1;
         page = page-1;
-        Page<ArticleDto> articleDtoPage = articleService.pageDtoBy(categoryId, page);
+        Page<ArticleDto> articleDtoPage = articleService.pageArticleDtoHaveTopByCategoryAndPage(categoryId, page);
 
         return articleDtoPage;
     }

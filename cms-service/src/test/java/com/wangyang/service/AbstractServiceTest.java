@@ -1,5 +1,6 @@
 package com.wangyang.service;
 
+import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.IVocabularyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ public abstract class AbstractServiceTest {
 
     @Autowired
     IVocabularyService vocabularyService;
+
+
+    @Autowired
+    ICategoryService categoryService;
 
     @Autowired
     IHtmlService htmlService;

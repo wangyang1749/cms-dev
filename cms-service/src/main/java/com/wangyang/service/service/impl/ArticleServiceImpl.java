@@ -63,7 +63,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     IUserService userService;
 
     /**
-     *
      * @param categoryId
      * @return
      */
@@ -81,22 +80,53 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         };
         return specification;
     }
-
     /**
-     * 除去置顶文章查询条件
-     * @param categoryId
+     * @param category
      * @return
      */
-    private Specification<Article> queryArticleDtoNoTopByCategory(int categoryId){
+    private Specification<Article> queryByCategory(Category category){
         Specification<Article> specification = new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),categoryId)
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),category.getId())
+                        ,criteriaBuilder.isTrue(root.get("haveHtml"))
+                );
+                if(category.getDesc()){
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                }else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+
+                }
+                return  criteriaQuery.getRestriction();
+            }
+        };
+        return specification;
+    }
+
+
+
+    /**
+     * 除去置顶文章查询条件
+     * @param category
+     * @return
+     */
+    private Specification<Article> queryArticleDtoNoTopByCategory(Category category ){
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),category.getId())
                         ,criteriaBuilder.isTrue(root.get("haveHtml")),
                         criteriaBuilder.isFalse(root.get("top"))
                 );
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                if(category.getDesc()){
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+                }else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+
+                }
+
                 return  criteriaQuery.getRestriction();
             }
         };
@@ -724,18 +754,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
 
 
-    /**
-     * 分类页文章展示设置,可以通过Option动态设置分页大小, 排序
-     * @param categoryId
-     * @param page
-     * @return
-     */
-    @Override
-    public Page<ArticleDto> pageDtoBy(int categoryId, int page) {
-        Category category = categoryService.findById(categoryId);
-//        Integer pageSize = optionService.getPropertyIntegerValue(PropertyEnum.CATEGORY_PAGE_SIZE);
-        return pageDtoBy(category,page);
-    }
 
 
     private List<ArticleDto> convertArticle2ArticleDto(List<Article> articles){
@@ -766,26 +784,39 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         return  articleRepository.findAll(queryByCategory(categoryId));
     }
 
+
+    /**
+     * 分类页文章展示设置,可以通过Option动态设置分页大小, 排序
+     * @param categoryId
+     * @param page
+     * @return
+     */
     @Override
-    public Page<ArticleDto> pageDtoBy(Category category, int page){
-        return  pageDtoBy(category.getId(), PageRequest.of(page,category.getArticleListSize()));
+    public Page<ArticleDto> pageArticleDtoHaveTopByCategoryAndPage(int categoryId, int page) {
+        Category category = categoryService.findById(categoryId);
+        return pageDtoBy(category, PageRequest.of(page,category.getArticleListSize()));
     }
+
+//    @Override
+//    public Page<ArticleDto> pageDtoBy(Category category, int page){
+//        return
+//    }
 
     @Override
     public Page<ArticleDto> pageArticleDtoNoTopByCategoryAndPage(Category category, int page) {
-        Page<Article> articles = articleRepository.findAll(queryArticleDtoNoTopByCategory(category.getId()), PageRequest.of(page,category.getArticleListSize()));
+        Page<Article> articles = articleRepository.findAll(queryArticleDtoNoTopByCategory(category), PageRequest.of(page,category.getArticleListSize()));
         return  convertToSimple(articles);
     }
 
     /**
      * 查找分类第一页的文章,用于该分类下文章的静态化
-     * @param categoryId
+     * @param category
      * @param pageable
      * @return
      */
     @Override
-    public Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable) {
-        Page<Article> articles = articleRepository.findAll(queryByCategory(categoryId), pageable);
+    public Page<ArticleDto> pageDtoBy(Category category, Pageable pageable) {
+        Page<Article> articles = articleRepository.findAll(queryByCategory(category), pageable);
         return  convertToSimple(articles);
     }
 

@@ -19,8 +19,13 @@ public interface ICategoryService{
      * @param category
      * @return
      */
-    Category addOrUpdate(Category category);
-
+    Category create(Category category);
+    /**
+     * add category
+     * @param category
+     * @return
+     */
+    Category update(Category category);
 
 //    Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
 
@@ -61,19 +66,27 @@ public interface ICategoryService{
     List<Category> listAll();
 
     /**
+     * 不显示haveHtml=false的Category
      * 生成菜单树
      * @return
      */
-    List<CategoryVO> listCategoryVo();
+    List<CategoryVO> listUserCategoryVo();
 
+    /**
+     * 显示haveHtml=false的Category
+     * @return
+     */
+    List<CategoryVO> listAdminCategoryVo();
 
-    List<Category> list();
+//    List<Category> list();
 
     Category recommendOrCancelHome(int id);
 
     Category haveHtml(int id);
 
     Category addOrRemoveToMenu(int id);
+
+
 
     Category findByViewName(String viewName);
 }

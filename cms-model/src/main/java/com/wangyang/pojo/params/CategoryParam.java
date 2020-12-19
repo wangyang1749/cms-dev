@@ -7,6 +7,7 @@ public class CategoryParam {
     private String description;
     @NotBlank(message = "Category name can't empty!!")
     private String name;
+//    @NotBlank(message = "parentId  can't empty!!")
     private Integer parentId;
     private String templateName;
     private String viewName;

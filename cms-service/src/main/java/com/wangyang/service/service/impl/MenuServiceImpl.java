@@ -2,10 +2,12 @@ package com.wangyang.service.service.impl;
 
 
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.pojo.entity.Category;
 import com.wangyang.service.service.IComponentsService;
 import com.wangyang.service.service.IMenuService;
 import com.wangyang.service.repository.MenuRepository;
 import com.wangyang.pojo.entity.Menu;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,30 @@ public class MenuServiceImpl implements IMenuService {
 
 
 
+    @Override
+    public Menu removeCategoryToMenu(int id){
 
+        Menu menu = menuRepository.findByCategoryId(id);
+        if(menu!=null){
+            menuRepository.deleteById(menu.getId());
+        }
+        return menu;
+    }
+
+    @Override
+    public Menu addCategoryToMenu(Category category){
+        Menu menu = menuRepository.findByCategoryId(category.getId());
+        if(menu==null){
+            menu = new Menu();
+        }
+
+        menu.setName(category.getName());
+        menu.setCategoryId(category.getId());
+        menu.setUrlName(FormatUtil.categoryListFormat(category));
+        menuRepository.save(menu);
+
+        return  menu;
+    }
 
 
     @Override

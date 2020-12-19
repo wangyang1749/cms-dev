@@ -113,6 +113,7 @@ public interface IArticleService extends IBaseArticleService<Article> {
 
     /**
      * 根据category查找article
+     * 不涉及
      * @param categoryId
      * @return
      */
@@ -127,9 +128,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
     Page<ArticleVO> convertToAddCategory(Page<Article> articlePage);
     Page<ArticleVO> convertToListVo(Page<Article> articlePage);
     Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable);
-    Page<ArticleDto> pageDtoBy(int categoryId, int page);
-    Page<ArticleDto> pageDtoBy(Category category, int page);
-
+    Page<ArticleDto> pageArticleDtoHaveTopByCategoryAndPage(int categoryId, int page);
+//    Page<ArticleDto> pageDtoBy(Category category, int page);
     /**
      * 分页查找ArticleDto去掉top的article
      * @param category
@@ -137,7 +137,8 @@ public interface IArticleService extends IBaseArticleService<Article> {
      * @return
      */
     Page<ArticleDto> pageArticleDtoNoTopByCategoryAndPage(Category category, int page);
-    Page<ArticleDto> pageDtoBy(int categoryId, Pageable pageable);
+    Page<ArticleDto> pageDtoBy(Category category, Pageable pageable);
+
     Page<ArticleDto> pageByTagId(int tagId, int size);
     Page<ArticleDto> pageByTagId(int tagId, Pageable pageable);
     Page<ArticleDto> pageDtoBy(Pageable pageable, ArticleQuery articleQuery);

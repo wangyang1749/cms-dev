@@ -12,5 +12,6 @@ public class CategoryDto {
     private String viewName;
     private String path;
     private String linkPath;
+    private Integer order;
 
 }

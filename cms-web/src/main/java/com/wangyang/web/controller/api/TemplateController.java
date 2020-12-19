@@ -29,6 +29,12 @@ public class TemplateController {
         return null;
     }
 
+
+    /**
+     * 根据template类型获取Template
+     * @param type
+     * @return
+     */
     @GetMapping("/find/{type}")
     public List<Template> findByType(@PathVariable("type") TemplateType type){
 

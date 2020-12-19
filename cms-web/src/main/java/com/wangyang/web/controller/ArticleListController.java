@@ -85,8 +85,7 @@ public class ArticleListController {
 
     /**
      * 根据条件查询文章并且缓存，直到增删改文章
-     * @param articleQuery
-     * @param pageable
+
      * @return
      */
 //    @ResponseBody
@@ -170,7 +169,7 @@ public class ArticleListController {
     public Page<ArticleDto> articleListByCategoryAjax(@PathVariable("categoryId") Integer categoryId, Integer page){
         ArticleQuery articleQuery = new ArticleQuery();
         articleQuery.setCategoryId(categoryId);
-        Page<ArticleDto> articles = articleService.pageDtoBy(categoryId,page);
+        Page<ArticleDto> articles = articleService.pageArticleDtoHaveTopByCategoryAndPage(categoryId,page);
         return articles;
     }
 

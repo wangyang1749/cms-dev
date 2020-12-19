@@ -134,10 +134,10 @@ public class HtmlServiceImpl implements IHtmlService {
      */
     @Override
     public CategoryArticleListDao convertArticleListBy(Category category) {
-        //生成分类列表,用于首页文章列表右侧展示
-        if(!TemplateUtil.componentsExist(category.getTemplateName())){
-                generateCategoryListHtml();
-        }
+//        //生成分类列表,用于首页文章列表右侧展示
+//        if(!TemplateUtil.componentsExist(category.getTemplateName())){
+//                generateCategoryListHtml();
+//        }
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
         CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
 

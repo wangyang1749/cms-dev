@@ -1,6 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.pojo.entity.Menu;
 import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -10,6 +11,7 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.service.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,6 @@ public class CategoryController {
     ICategoryService categoryService;
 
 
-
     @Autowired
     IHtmlService htmlService;
 
@@ -43,10 +44,8 @@ public class CategoryController {
     @PostMapping
     public Category add(@Valid @RequestBody CategoryParam categoryParam){
         Category category = new Category();
-        category.setParentId(0);
-
         BeanUtils.copyProperties(categoryParam,category);
-        Category saveCategory = categoryService.addOrUpdate(category);
+        Category saveCategory = categoryService.create(category);
         //生成category列表Html
         htmlService.generateCategoryListHtml();
         if(saveCategory.getHaveHtml()){
@@ -56,6 +55,12 @@ public class CategoryController {
         return saveCategory;
     }
 
+    /**
+     * 根据模板英文名查找category
+     * @param categoryEnName
+     * @param pageable
+     * @return
+     */
     @GetMapping("/template/{categoryEnName}")
     public Page<Category> pageBy(@PathVariable("categoryEnName") String categoryEnName,@PageableDefault(size = 50)  Pageable pageable){
         return categoryService.pageBy(categoryEnName,pageable);
@@ -65,7 +70,7 @@ public class CategoryController {
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
         BeanUtils.copyProperties(categoryParam, category);
-        Category updateCategory = categoryService.addOrUpdate(category);
+        Category updateCategory = categoryService.update(category);
         //更新Category列表
         htmlService.generateCategoryListHtml();
         if(updateCategory.getHaveHtml()){
@@ -129,9 +134,6 @@ public class CategoryController {
     @GetMapping("/recommendOrCancel/{id}")
     public Category recommendOrCancelHome(@PathVariable("id") Integer id){
         Category category = categoryService.recommendOrCancelHome(id);
-//        htmlService.generateHome();
-//        htmlService.convertArticleListBy(category);
-        //只需要在推荐时刷新主页
         htmlService.generateHome();
         return category;
     }
@@ -146,16 +148,14 @@ public class CategoryController {
         Category category = categoryService.haveHtml(id);
         if(category.getHaveHtml()){
             htmlService.convertArticleListBy(category);
-            htmlService.generateCategoryListHtml();
         }else{
+
             TemplateUtil.deleteTemplateHtml(category.getViewName(),category.getPath());
-            htmlService.generateCategoryListHtml();
         }
-//        if(category.getRecommend()){
-//            //有可能更改首页排序
-//            htmlService.generateHome();
-//
-//        }
+
+        htmlService.generateCategoryListHtml();
+        htmlService.generateMenuListHtml();
+        htmlService.generateHome();
         return category;
     }
 
@@ -180,7 +180,7 @@ public class CategoryController {
 
     @GetMapping("/listCategoryVo")
     public List<CategoryVO> listCategoryVo(){
-        return categoryService.listCategoryVo();
+        return categoryService.listAdminCategoryVo();
     }
 
 

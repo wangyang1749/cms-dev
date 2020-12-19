@@ -113,10 +113,10 @@ public class ArticleJob {
      */
     @ArticleJobAnnotation(jobName = "categoryArticleRecommend",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void categoryArticleRecommend(){
-        List<Category> categories = categoryService.list();
+        List<Category> categories = categoryService.listAll();
         categories.forEach(category -> {
             PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits")));
-            Page<ArticleDto> articleDtos = articleService.pageDtoBy(category.getId(),pageRequest );
+            Page<ArticleDto> articleDtos = articleService.pageDtoBy(category,pageRequest );
             Map<String,Object> map = new HashMap<>();
             map.put("view",articleDtos);
             map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
@@ -144,7 +144,7 @@ public class ArticleJob {
     @TemplateOptionMethod(name = "分类菜单", templateValue = "templates/components/@categoryList", viewName = "categoryMenu")
     public Map<String,Object> listCategory() {
         Map<String,Object> map = new HashMap<>();
-        map.put("view",categoryService.listCategoryVo());
+        map.put("view",categoryService.listUserCategoryVo());
         return map;
     }
 

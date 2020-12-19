@@ -63,6 +63,31 @@ public class ArticleAspectJ {
 
 
 
+    /**
+     * 需要执行删除
+     */
+    @Around("execution(* com.wangyang.web.controller.api.CategoryController.update(..)) or " +
+            "execution(* com.wangyang.web.controller.api.CategoryController.deleteById(..)) or" +
+            "execution(* com.wangyang.web.controller.api.CategoryController.haveHtml(..)) ")
+    public Category categoryAop(ProceedingJoinPoint joinPoint) throws Throwable {
+        try {
+            Object o = joinPoint.proceed();
+            Category category = (Category)o;
+            deleteTemp(category);
+
+            return category;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
+
 
     @Async
     public void deleteTemp(Category category){
