@@ -941,8 +941,6 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
 
     @Override
     public List<Article> listArticleBy(int categoryId){
-        ArticleQuery articleQuery = new ArticleQuery();
-        articleQuery.setCategoryId(categoryId);
         return  articleRepository.findAll(articleSpecification(categoryId,ArticleList.ALL_PUBLISH_MODIFY_ARTICLE));
     }
 
@@ -1110,7 +1108,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     public ArticleAndCategoryMindDto listArticleMindDto(int categoryId){
 
         ArticleAndCategoryMindDto articleAndCategoryMindDto = new ArticleAndCategoryMindDto();
-        List<ArticleMindDto> articleMindDtoList = listHaveHtml().stream().map(article -> {
+        List<ArticleMindDto> articleMindDtoList = listArticleBy(categoryId).stream().map(article -> {
             ArticleMindDto articleMindDto = new ArticleMindDto();
             BeanUtils.copyProperties(article, articleMindDto);
             return articleMindDto;
