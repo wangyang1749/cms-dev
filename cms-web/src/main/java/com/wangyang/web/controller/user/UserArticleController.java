@@ -74,6 +74,8 @@ public class UserArticleController {
         return "redirect:"+ FormatUtil.categoryListFormat(articleDetailVO.getCategory());
     }
 
+
+
     public ArticleDetailVO fastWriteArticleHtml(int categoryId,String title,int userId){
         Article article = new Article();
         article.setCategoryId(categoryId);
@@ -81,12 +83,37 @@ public class UserArticleController {
         article.setOriginalContent("# 开始你的创作:"+title);
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article,null);
-        if(article.getHaveHtml()){
-            htmlService.conventHtml(articleDetailVO);
-            FileUtils.remove(CmsConst.WORK_DIR+ File.separator+articleDetailVO.getCategory().getPath()+File.separator+articleDetailVO.getCategory().getViewName());
-        }
+
+        htmlService.conventHtml(articleDetailVO);
+        FileUtils.remove(CmsConst.WORK_DIR+ File.separator+articleDetailVO.getCategory().getPath()+File.separator+articleDetailVO.getCategory().getViewName());
+
         return articleDetailVO;
     }
+
+    @GetMapping("/writeDraft/{categoryId}")
+    public String fastWriteDraftArticleHtml(@RequestParam(required = true) String title,HttpServletRequest request,@PathVariable("categoryId") Integer categoryId,Model model){
+        if(title==null||title.equals("")){
+            return "templates/error";
+        }
+        int userId = (Integer)request.getAttribute("userId");
+        Article article= fastWriteDraftArticleHtml(categoryId, title, userId);
+
+//        model.addAttribute("view",articleDetailVO);
+        return "redirect:/user/articleList?categoryId="+categoryId;
+    }
+    public Article fastWriteDraftArticleHtml(int categoryId,String title,int userId){
+        Article article = new Article();
+        article.setCategoryId(categoryId);
+        article.setTitle(title);
+        article.setOriginalContent("# 开始你的创作:"+title);
+        article.setUserId(userId);
+        Article saveArticle = articleService.saveArticleDraft(article);
+
+
+        return saveArticle;
+    }
+
+
 
 
     @GetMapping("/edit/{id}")
@@ -125,6 +152,14 @@ public class UserArticleController {
         return "redirect:/user/articleList";
     }
 
+    /**
+     * 显示用户文章，包含草稿
+     * @param request
+     * @param model
+     * @param articleQuery
+     * @param pageable
+     * @return
+     */
     @GetMapping("/articleList")
     public String articleList(HttpServletRequest request, Model model, ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         int userId = (Integer)request.getAttribute("userId");
@@ -134,6 +169,9 @@ public class UserArticleController {
         model.addAttribute("view",articlePage);
         List<CategoryDto> categories = categoryService.listAllDto();
         model.addAttribute("categories",categories);
+        if(articleQuery.getCategoryId()!=null){
+            model.addAttribute("categoryId",articleQuery.getCategoryId());
+        }
 
 
 //        System.out.println(userId);

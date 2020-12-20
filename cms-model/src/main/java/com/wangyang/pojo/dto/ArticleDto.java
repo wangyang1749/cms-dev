@@ -22,7 +22,7 @@ public class ArticleDto  implements Serializable {
     private Integer visits;
     private Integer userId;
     private Integer commentNum;
-    private Boolean haveHtml=false;
+//    private Boolean haveHtml=false;
     private String summary;
     private String title;
     private String viewName;

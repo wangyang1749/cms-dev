@@ -1,4 +1,4 @@
-package com.wangyang.web.controller;
+package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.MarkdownUtils;

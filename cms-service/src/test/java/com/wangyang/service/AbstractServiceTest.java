@@ -1,5 +1,6 @@
 package com.wangyang.service;
 
+import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.IVocabularyService;
@@ -21,4 +22,7 @@ public abstract class AbstractServiceTest {
 
     @Autowired
     IHtmlService htmlService;
+
+    @Autowired
+    IArticleService articleService;
 }

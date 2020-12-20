@@ -91,6 +91,7 @@ public class ArticleAspectJ {
 
     @Async
     public void deleteTemp(Category category){
+        log.info("####删除分类分页文件-"+category.getName());
         FileUtils.remove(CmsConst.WORK_DIR+File.separator+category.getPath()+File.separator+category.getViewName());
         //移除临时文章分类
 //        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");

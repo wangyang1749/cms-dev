@@ -2,6 +2,8 @@ package com.wangyang.authorize.controller.api;
 
 import com.wangyang.authorize.config.service.UserDetailServiceImpl;
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
+import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.service.service.IUserService;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.entity.User;
@@ -50,6 +52,13 @@ public class UserApiController {
     @GetMapping("/find/{id}")
     public UserDto findById(@PathVariable("id") Integer id){
         return userDetailService.findById(id);
+    }
+
+    @Deprecated
+    public UserDto generateHtml(@PathVariable("id") Integer id){
+        UserDto userDto = userDetailService.findById(id);
+//        TemplateUtil.convertHtmlAndSave("","","", Template);
+        return userDto;
     }
 
     @GetMapping("/getCurrent")

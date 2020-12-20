@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestMarkDown {
 
-    @Test
+//    @Test
     public void test() throws Exception{
 //        InputStream stream = this.getClass().getClassLoader().getResourceAsStream("test.md");
 //        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
@@ -14,4 +14,22 @@ public class TestMarkDown {
 //        String[] html = MarkdownUtils.renderHtml(content);
 //        System.out.println(html[1]);
     }
+
+    class A{
+
+        private Integer age;
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+    }
+    @Test
+    public void test2(){
+        System.out.println(new A().getAge()!=null);
+    }
+
 }

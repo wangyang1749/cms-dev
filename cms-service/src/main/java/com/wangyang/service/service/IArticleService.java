@@ -60,8 +60,11 @@ public interface IArticleService extends IBaseArticleService<Article> {
      */
     Article updateArticleDraft(Article article);
     Article saveArticleDraft(Article article);
+
+    Article recycle(int id);
+
     Article deleteByArticleId(int id);
-    Article haveHtml(int id);
+//    Article haveHtml(int id);
     Article openComment(int id);
     Article updateOrder(int articleId, int order);
     Article findByViewName(String viewName);
@@ -78,7 +81,7 @@ public interface IArticleService extends IBaseArticleService<Article> {
      * @param id
      * @return
      */
-    List<ArticleDto> listTopByCategoryId(int id);
+    List<ArticleDto> listTopByCategoryId(Category category);
     /**
      * 同过标题查找
      * @param title
@@ -100,12 +103,15 @@ public interface IArticleService extends IBaseArticleService<Article> {
      * @return
      */
     List<Article>listByUserId(int userId);
+
+    Page<ArticleDto> convertArticle2ArticleDto(Page<Article> articles);
+
     /**
      *
      * @param categoryId
      * @return
      */
-    List<ArticleDto> listArticleDtoBy(int categoryId);
+    List<Article> listArticleDtoBy(int categoryId);
     /**
      * 更新本地所有文章html
      */
@@ -120,30 +126,46 @@ public interface IArticleService extends IBaseArticleService<Article> {
     List<Article> listArticleBy(int categoryId);
 
 
+    Page<Article>  pagePublishBy(Pageable pageable);
 
-
-
-    Page<Article> articleList(ArticleQuery articleQuery, Pageable pageable);
-    Page<ArticleDto> convertToSimple(Page<Article> articlePage);
-    Page<ArticleVO> convertToAddCategory(Page<Article> articlePage);
-    Page<ArticleVO> convertToListVo(Page<Article> articlePage);
-    Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable);
-    Page<ArticleDto> pageArticleDtoHaveTopByCategoryAndPage(int categoryId, int page);
-//    Page<ArticleDto> pageDtoBy(Category category, int page);
+    //    Page<ArticleDto> pageHtmlDtoByCategory(Category category, int page);
+    Page<ArticleDto> pageDtoByCategory(Category category, Pageable pageable);
+    Page<ArticleDto> pageDtoByCategoryId(int categoryId, int page);
     /**
-     * 分页查找ArticleDto去掉top的article
-     * @param category
-     * @param page
+     * 不包含DRAFT,RECYCLE
+     * @param pageable
+     * @param articleQuery
      * @return
      */
-    Page<ArticleDto> pageArticleDtoNoTopByCategoryAndPage(Category category, int page);
-    Page<ArticleDto> pageDtoBy(Category category, Pageable pageable);
+    Page<Article>  pagePublishBy(Pageable pageable, ArticleQuery articleQuery);
+    /**
+     * 包含DRAFT,RECYCLE
+     * @param pageable
+     * @param articleQuery
+     * @return
+     */
+    Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery);
+    /**
+     * 包含DRAFT,RECYCLE
+     * @param pageable
+     * @param articleQuery
+     * @return
+     */
+    Page<Article>  pageAllBy(Pageable pageable, ArticleQuery articleQuery);
+//    Page<ArticleDto> pageDtoBy(Pageable pageable, ArticleQuery articleQuery);
+//    Page<Article> articleList(ArticleQuery articleQuery, Pageable pageable);
+
+    Page<ArticleDto> convertToSimple(Page<Article> articlePage);
+//    Page<ArticleVO> convertToAddCategory(Page<Article> articlePage);
+    Page<ArticleVO> convertToListVo(Page<Article> articlePage);
+//    Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable);
+//    Page<ArticleDto> pageDtoBy(Category category, int page);
+
 
     Page<ArticleDto> pageByTagId(int tagId, int size);
     Page<ArticleDto> pageByTagId(int tagId, Pageable pageable);
-    Page<ArticleDto> pageDtoBy(Pageable pageable, ArticleQuery articleQuery);
-    Page<Article>  pageByUserId(int userId, Pageable pageable,ArticleQuery articleQuery);
-    Page<Article>  pageBy(Pageable pageable, ArticleQuery articleQuery);
+
+
 
 
 

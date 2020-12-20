@@ -4,6 +4,7 @@ import com.wangyang.common.exception.CmsException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.service.service.*;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -177,7 +178,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Category deleteById(int id) {
         Category category = findById(id);
-        List<ArticleDto> articleDtos = articleService.listArticleDtoBy(category.getId());
+        List<Article> articleDtos = articleService.listArticleDtoBy(category.getId());
         if(articleDtos.size()!=0){
             throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
         }

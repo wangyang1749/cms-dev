@@ -26,7 +26,7 @@ public class ArticleParams  implements InputConverter<Article> {
     private Integer categoryId;
 //    @NotNull(message = "文章用户不能为空!!")
 //    private Integer userId;
-    private String  path="article";
+//    private String  path;
     private String picPath;
 
 

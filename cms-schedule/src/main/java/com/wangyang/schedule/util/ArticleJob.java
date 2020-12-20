@@ -116,7 +116,7 @@ public class ArticleJob {
         List<Category> categories = categoryService.listAll();
         categories.forEach(category -> {
             PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits")));
-            Page<ArticleDto> articleDtos = articleService.pageDtoBy(category,pageRequest );
+            Page<ArticleDto> articleDtos = articleService.pageDtoByCategory(category,pageRequest );
             Map<String,Object> map = new HashMap<>();
             map.put("view",articleDtos);
             map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");

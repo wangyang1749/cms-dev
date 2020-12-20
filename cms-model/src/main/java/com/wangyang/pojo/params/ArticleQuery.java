@@ -1,5 +1,6 @@
 package com.wangyang.pojo.params;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.wangyang.pojo.enums.ArticleStatus;
 import lombok.Data;
 
@@ -25,7 +26,9 @@ public class ArticleQuery {
     public ArticleStatus articleStatus;
 
     public Integer tagsId;
+    public Boolean desc;
+    public Boolean top;
 
-    private Boolean haveHtml;
+//    private Boolean haveHtml;
 
 }

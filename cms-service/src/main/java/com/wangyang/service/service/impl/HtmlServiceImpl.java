@@ -1,5 +1,6 @@
 package com.wangyang.service.service.impl;
 
+import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.DocumentUtil;
 import com.wangyang.common.utils.FileUtils;
@@ -65,7 +66,7 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     @Async //异步执行
     public void conventHtml(ArticleDetailVO articleVO){
-        if(articleVO.getStatus()== ArticleStatus.PUBLISHED){
+        if(articleVO.getStatus().equals(ArticleStatus.PUBLISHED)||articleVO.getStatus().equals(ArticleStatus.MODIFY)){
             Category category = articleVO.getCategory();
 //            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);
 //            publisher.publishEvent(createArticle);
@@ -81,6 +82,8 @@ public class HtmlServiceImpl implements IHtmlService {
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
             // 生成首页文章最新文章
 //            generateNewArticle();
+        }else {
+            throw new ArticleException("文章状态不是PUBLISH或者MODIFY");
         }
     }
 
@@ -348,7 +351,7 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public void articleTopListByCategoryId(int id) {
         Category category = categoryService.findById(id);
-        List<ArticleDto> articleDtos = articleService.listTopByCategoryId(id);
+        List<ArticleDto> articleDtos = articleService.listTopByCategoryId(category);
         if(articleDtos.size()==0)return;
         Template template = templateService.findByEnName(CmsConst.ARTICLE_TOP_LIST);
         Map<String,Object> map = new HashMap<>();

@@ -17,7 +17,7 @@ public class Article extends BaseArticle {
     private Integer visits=0;
     @Column(name = "comment_num", columnDefinition = "int default 0")
     private Integer commentNum=0;
-    private Boolean haveHtml=true;
+//    private Boolean haveHtml=true;
     private String summary;
     private String picPath;
     private String pdfPath;
@@ -29,8 +29,4 @@ public class Article extends BaseArticle {
     private Integer parentId; // 父亲id 0是只没有父亲 此时指向category
     private Boolean expanded; // 节点是否展开
     private String direction; //节点的方向
-//    @Column( columnDefinition = "int default 0")
-//    private Integer templateId;
-
-
 }

@@ -1,4 +1,4 @@
-package com.wangyang.web.controller;
+package com.wangyang.web.controller.anndroid;
 
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.pojo.dto.ArticleDto;
@@ -36,7 +36,7 @@ public class AndroidArticleController {
     public Page<? extends ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
                                                   @RequestParam(value = "more", defaultValue = "true") Boolean more,
                                                   ArticleQuery articleQuery){
-        Page<Article> articles = articleService.articleList(articleQuery, pageable);
+        Page<Article> articles = articleService.pagePublishBy(pageable,articleQuery);
         return articleService.convertToSimple(articles);
     }
 

@@ -182,12 +182,6 @@ public class ComponentsServiceImpl implements IComponentsService {
                 return map;
 
             }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
-                Specification<Article> specification = new Specification<Article>() {
-                    @Override
-                    public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                        return criteriaQuery.where(criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
-                    }
-                };
                 String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT.length());
                 Sort sort;
                 if(args!=null||!"".equals(args)){
@@ -202,8 +196,10 @@ public class ComponentsServiceImpl implements IComponentsService {
                 }else {
                     sort = Sort.by(Sort.Order.desc("id"));
                 }
+                Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, sort));
 
-                Page<ArticleDto> articleDtos = articleService.articleShow(specification, PageRequest.of(0, 5,sort ));
+
+                Page<ArticleDto> articleDtos = articleService.convertArticle2ArticleDto(articles);
 
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",articleDtos);
@@ -217,8 +213,9 @@ public class ComponentsServiceImpl implements IComponentsService {
                 String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_KEYWORD.length());
                 ArticleQuery articleQuery = new ArticleQuery();
                 articleQuery.setKeyword(args);
-                articleQuery.setHaveHtml(true);
-                Page<ArticleDto> pageDto = articleService.pageDtoBy(PageRequest.of(0, 5, Sort.by(Sort.Order.desc("updateDate"))), articleQuery);
+//                articleQuery.setHaveHtml(true);
+                Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, Sort.by(Sort.Order.desc("updateDate"))), articleQuery);
+                Page<ArticleDto> pageDto = articleService.convertArticle2ArticleDto(articles);
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",pageDto);
                 map.put("showUrl","/articleList?keyword="+args); //

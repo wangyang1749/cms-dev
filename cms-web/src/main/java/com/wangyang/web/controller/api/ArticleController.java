@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.*;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ICategoryService;
@@ -48,23 +49,7 @@ public class ArticleController {
     @Autowired
     ICategoryService categoryService;
 
-    @GetMapping
-    public Page<? extends ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
-                                                  @RequestParam(value = "more", defaultValue = "true") Boolean more,
-                                                  ArticleQuery articleQuery){
-        Page<Article> articles = articleService.articleList(articleQuery, pageable);
-        if(more){
-            return articleService.convertToListVo(articles);
-        }
-        return articleService.convertToSimple(articles);
-    }
 
-
-    @GetMapping("/findArticleDetail/{id}")
-    public ArticleDetailVO findDetailArticleById(@PathVariable("id") Integer id){
-        ArticleDetailVO articleDetailVO = articleService.findArticleAOById(id);
-        return articleDetailVO;
-    }
 
 
     @PostMapping
@@ -74,12 +59,24 @@ public class ArticleController {
         BeanUtils.copyProperties(articleParams,article);
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article, articleParams.getTagIds());
-        if(article.getHaveHtml()){
-            htmlService.conventHtml(articleDetailVO);
-        }
+        htmlService.conventHtml(articleDetailVO);
         return articleDetailVO;
     }
 
+    /**
+     * 只保存文章内容, 不为文章添加分类标签生成HTML
+     * @param articleParams
+     * @return
+     */
+    @PostMapping("/save")
+    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams, HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
+        Article article = new Article();
+        BeanUtils.copyProperties(articleParams,article);
+        article.setUserId(userId);
+//        article.setStatus(ArticleStatus.DRAFT);
+        return  articleService.saveArticleDraft(article);
+    }
 
     @GetMapping("/simpleCreate/{categoryId}")
     public ArticleDetailVO createArticleDetailVO(@PathVariable("categoryId") Integer categoryId,
@@ -91,16 +88,49 @@ public class ArticleController {
         article.setOriginalContent("# 开始写文章["+title+"]...");
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article,null);
-        if(article.getHaveHtml()){
-            htmlService.conventHtml(articleDetailVO);
-        }
+
+        htmlService.conventHtml(articleDetailVO);
         return articleDetailVO;
     }
 
+
+/******************************************/
+    /**
+     *
+     * @param id
+     * @param articleParams
+     * @param request
+     * @return
+     */
+    @PostMapping("/save/{id}")
+    public Article updateArticle(@PathVariable("id") Integer id,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
+        Article article = articleService.findArticleById(id);
+        checkUser(userId,article);
+
+        if(article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
+            return article;
+        }
+
+        BeanUtils.copyProperties(articleParams,article,"picPath");
+    //        Boolean haveHtml = Optional.ofNullable(article.getHaveHtml()).orElse(false);
+        if(article.getStatus().equals(ArticleStatus.PUBLISHED)||article.getStatus().equals(ArticleStatus.MODIFY)){
+            article.setStatus(ArticleStatus.MODIFY);
+        }else if(article.getStatus().equals(ArticleStatus.INTIMATE)){
+            article.setStatus(ArticleStatus.INTIMATE);
+        }else {
+            article.setStatus(ArticleStatus.DRAFT);
+        }
+        return  articleService.updateArticleDraft(article);
+    }
+
+
     @PostMapping("/update/{articleId}")
     public ArticleDetailVO updateArticleDetailVO(@Valid @RequestBody ArticleParams articleParams,
-                                         @PathVariable("articleId") Integer articleId){
+                                         @PathVariable("articleId") Integer articleId,HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
         Article article = articleService.findArticleById(articleId);
+        checkUser(userId,article);
 
         Integer  oldCategoryId = article.getCategoryId();
         BeanUtils.copyProperties(articleParams,article);
@@ -113,12 +143,12 @@ public class ArticleController {
             Category oldCategory = categoryService.findById(oldCategoryId);
             articleDetailVO.setOldCategory(oldCategory);
             htmlService.convertArticleListBy(oldCategory);
-//            htmlService.addOrRemoveArticleToCategoryListByCategoryId(oldCategory);
         }
-        if(articleDetailVO.getHaveHtml()){
-            htmlService.conventHtml(articleDetailVO);
-//            producerService.sendMessage(articleDetailVO);
-        }
+//        if(articleDetailVO.getHaveHtml()){
+//
+////            producerService.sendMessage(articleDetailVO);
+//        }
+        htmlService.conventHtml(articleDetailVO);
         log.info(article.getTitle()+"--->更新成功！");
         return articleDetailVO;
     }
@@ -129,10 +159,13 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/updateCategory/{articleId}")
-    public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId){
+    public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId,HttpServletRequest request){
+        int userId = (Integer)request.getAttribute("userId");
         Article article = articleService.findArticleById(articleId);
-        String  viewName = article.getViewName();
-        String path = article.getPath();
+        checkUser(userId,article);
+//        String  viewName = article.getViewName();
+//        String path = article.getPath();
+
         Integer categoryId=null;
         if(article.getCategoryId()!=null){
             categoryId = article.getCategoryId();
@@ -163,57 +196,45 @@ public class ArticleController {
      * @param id
      * @return
      */
-    @GetMapping("/haveHtml/{id}")
-    public Article haveHtml(@PathVariable("id") Integer id){
-        Article article = articleService.haveHtml(id);
+//    @GetMapping("/haveHtml/{id}")
+//    public Article haveHtml(@PathVariable("id") Integer id){
+//        Article article = articleService.haveHtml(id);
+//
+//        if(article.getHaveHtml()){
+//            ArticleDetailVO articleDetailVO = articleService.convert(article);
+//            htmlService.conventHtml(articleDetailVO);
+//        }else {
+//            if(article.getCategoryId()!=null){
+//                Category oldCategory = categoryService.findById(article.getCategoryId());
+//                htmlService.convertArticleListBy(oldCategory);
+////                htmlService.addOrRemoveArticleToCategoryListByCategoryId();
+//            }
+//            TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
+//        }
+//        return article;
+//    }
 
-        if(article.getHaveHtml()){
-            ArticleDetailVO articleDetailVO = articleService.convert(article);
-            htmlService.conventHtml(articleDetailVO);
-        }else {
-            if(article.getCategoryId()!=null){
-                Category oldCategory = categoryService.findById(article.getCategoryId());
-                htmlService.convertArticleListBy(oldCategory);
-//                htmlService.addOrRemoveArticleToCategoryListByCategoryId();
+
+    @RequestMapping("/recycle/{id}")
+    public ArticleDetailVO recycle(@PathVariable("id") Integer id){
+        Article article = articleService.recycle(id);
+        //删除文章
+        TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
+        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        if(article.getStatus().equals(ArticleStatus.PUBLISHED)||article.getStatus().equals(ArticleStatus.MODIFY)){
+            Category category = categoryService.findById(article.getCategoryId());
+            //重新生成文章列表
+            htmlService.convertArticleListBy(category);
+            if(article.getTop()){
+                htmlService.articleTopListByCategoryId(category.getId());
             }
-            TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
+            //删除的是最新文章
+            htmlService.newArticleListHtml();
         }
-        return article;
+        return  articleDetailVO;
     }
 
 
-
-    /**
-     * 只保存文章内容, 不为文章添加分类标签生成HTML
-     * @param articleParams
-     * @return
-     */
-    @PostMapping("/save")
-    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams, HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
-        Article article = new Article();
-        BeanUtils.copyProperties(articleParams,article);
-        article.setUserId(userId);
-        article.setStatus(ArticleStatus.DRAFT);
-        article.setHaveHtml(false);
-        return  articleService.saveArticleDraft(article);
-    }
-
-    @PostMapping("/save/{id}")
-    public Article updateArticle( @PathVariable("id") Integer id,@Valid @RequestBody ArticleParams articleParams){
-        Article article = articleService.findArticleById(id);
-        if(article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
-            return article;
-        }
-        BeanUtils.copyProperties(articleParams,article,"picPath");
-        Boolean haveHtml = Optional.ofNullable(article.getHaveHtml()).orElse(false);
-        if(haveHtml){
-            article.setStatus(ArticleStatus.MODIFY);
-        }else {
-            article.setStatus(ArticleStatus.DRAFT);
-        }
-        return  articleService.updateArticleDraft(article);
-    }
 
     @RequestMapping("/delete/{id}")
     public ArticleDetailVO delete(@PathVariable("id") Integer id){
@@ -221,14 +242,18 @@ public class ArticleController {
         //删除文章
         TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
         ArticleDetailVO articleDetailVO = articleService.convert(article);
-        if(article.getStatus().equals(ArticleStatus.PUBLISHED)){
+        if(article.getStatus().equals(ArticleStatus.PUBLISHED)||article.getStatus().equals(ArticleStatus.MODIFY)){
             Category category = categoryService.findById(article.getCategoryId());
             //重新生成文章列表
             htmlService.convertArticleListBy(category);
             // 删除分页的文章列表
 //            FileUtils.removeCategoryPageTemp(category);
 //            FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
+            if(article.getTop()){
+                htmlService.articleTopListByCategoryId(category.getId());
+            }
         }
+
         return  articleDetailVO;
     }
 
@@ -321,7 +346,7 @@ public class ArticleController {
     public Page<ArticleDto> pageDtoBy(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
         if(page<=0) page=1;
         page = page-1;
-        Page<ArticleDto> articleDtoPage = articleService.pageArticleDtoHaveTopByCategoryAndPage(categoryId, page);
+        Page<ArticleDto> articleDtoPage = articleService.pageDtoByCategoryId(categoryId, page);
 
         return articleDtoPage;
     }
@@ -405,7 +430,7 @@ public class ArticleController {
         if(articleMap.size()!=0){
             //删除的节点
             articleMap.forEach((k,v)->{
-                v.setHaveHtml(false);
+//                v.setHaveHtml(false);
                 v.setStatus(ArticleStatus.DRAFT);
                 articleService.save(v);
                 articles.removeIf(article -> article.getId()==v.getId());
@@ -490,9 +515,32 @@ public class ArticleController {
     @GetMapping("/sendOrCancelTop/{id}")
     public Article sendOrCancelTop(@PathVariable("id")int id){
         Article article = articleService.sendOrCancelTop(id);
+
         htmlService.articleTopListByCategoryId(article.getCategoryId());
         return article;
     }
 
+    public void checkUser(int userId,Article article){
+        if(article.getUserId()!=userId){
+            throw new ArticleException("您并非文章的发布者不能修改！");
+        }
+    }
+
+    @GetMapping
+    public Page<? extends ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
+                                                  @RequestParam(value = "more", defaultValue = "true") Boolean more,
+                                                  ArticleQuery articleQuery){
+        Page<Article> articles = articleService.pageAllBy(pageable,articleQuery);
+        if(more){
+            return articleService.convertToListVo(articles);
+        }
+        return articleService.convertToSimple(articles);
+    }
+
+    @GetMapping("/findArticleDetail/{id}")
+    public ArticleDetailVO findDetailArticleById(@PathVariable("id") Integer id){
+        ArticleDetailVO articleDetailVO = articleService.findArticleAOById(id);
+        return articleDetailVO;
+    }
 
 }
