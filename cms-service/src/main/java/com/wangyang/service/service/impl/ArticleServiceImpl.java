@@ -182,9 +182,13 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
             }
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
             if(category.getDesc()){
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
+//                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+
             }else {
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
+
+//                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
             }
             return criteriaQuery.getRestriction();
         };
