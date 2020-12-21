@@ -6,6 +6,7 @@ import lombok.Data;
 
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -22,7 +23,7 @@ public class ArticleParams  implements InputConverter<Article> {
     private String summary;
 //    private String viewName;
     private Set<Integer> tagIds;
-//    @NotNull(message = "文章类别不能为空!!")
+    @NotNull(message = "文章类别不能为空!!")
     private Integer categoryId;
 //    @NotNull(message = "文章用户不能为空!!")
 //    private Integer userId;

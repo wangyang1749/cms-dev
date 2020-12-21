@@ -388,7 +388,9 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Override
     public Article saveArticleDraft(Article article){
         article.setPath(CMSUtils.getArticlePath());
-
+        if(article.getCategoryId()==null){
+            throw new ArticleException("文章类别不能为空!!");
+        }
         if(article.getParentId()==null){
             article.setParentId(0);
         }
