@@ -8,7 +8,7 @@ import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
 import com.vladsch.flexmark.ext.emoji.EmojiShortcutType;
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
-import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
+import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -18,9 +18,9 @@ import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
-import com.wangyang.common.CmsConst;
-import com.wangyang.common.flexmark.attribute.AttributeExtension;
-import com.wangyang.common.flexmark.media.MediaTagsExtension;
+import com.wangyang.common.flexmark.gitlab.GitLabExtension;
+import com.wangyang.common.flexmark.imgattr.AttributeExtension;
+import com.wangyang.pojo.entity.base.BaseArticle;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -38,8 +38,7 @@ public class MarkdownUtils {
                     TocExtension.create(),
                     MediaTagsExtension.create(),
                     FootnoteExtension.create(),
-                    AdmonitionExtension.create(),
-                    AttributeExtension.create()
+                    AdmonitionExtension.create()
 
             )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
@@ -64,21 +63,28 @@ public class MarkdownUtils {
 
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
+
     private static final Parser PARSER_OUTPUT = Parser.builder(OPTIONS_OUTPUT).build();
     private static final HtmlRenderer RENDERER_OUTPUT = HtmlRenderer.builder(OPTIONS_OUTPUT).build();
 
-    public static String[] renderHtml(String markdown) {
-        if(StringUtils.isBlank(markdown)){
+    public static BaseArticle renderHtml(BaseArticle article) {
+        if(StringUtils.isBlank(article.getOriginalContent())){
             return null;
         }
-        Node document = PARSER.parse("[TOC]\n @@@ \n\n"+markdown);
+        Node document = PARSER.parse("[TOC]\n @@@ \n\n"+article.getOriginalContent());
 
         String render = RENDERER.render(document);
         String[] split = render.split("<p>@@@</p>");
-
-        return split;
+        article.setFormatContent(split[1]);
+        article.setToc(split[0]);
+        return article;
     }
 
+    /**
+     * 不使用图片懒加载
+     * @param markdown
+     * @return
+     */
     public static String renderHtmlOutput(String markdown) {
         if(StringUtils.isBlank(markdown)){
             return null;

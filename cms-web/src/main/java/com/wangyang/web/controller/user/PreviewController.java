@@ -86,7 +86,7 @@ public class PreviewController {
     //未使用
     public ModelAndView previewSaveArticle(@PathVariable("articleId")Integer articleId){
         Article article = articleService.findArticleById(articleId);
-        article = articleService.previewSave(article);
+        article = articleService.createOrUpdate(article);
         ArticleDetailVO articleDetailVo = articleService.convert(article);
 //        Optional<Template> templateOptional = templateRepository.findById(articleDetailVo.getTemplateId());
 //        if(!templateOptional.isPresent()){

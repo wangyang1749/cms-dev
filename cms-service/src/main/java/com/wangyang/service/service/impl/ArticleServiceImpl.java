@@ -481,7 +481,7 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         article = super.createOrUpdate(article);
         //图片展示
         if(article.getPicPath()==null|| "".equals(article.getPicPath())){
-            String imgSrc = ImageUtils.getImgSrc(article.getFormatContent());
+            String imgSrc = ImageUtils.getImgSrc(article.getOriginalContent());
             article.setPicPath(imgSrc);
         }
         generateSummary(article);

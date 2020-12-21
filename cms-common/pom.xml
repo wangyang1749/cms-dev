@@ -86,11 +86,14 @@
             <artifactId>flexmark</artifactId>
 
         </dependency>
-
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-gitlab</artifactId>
+            <artifactId>flexmark-ext-media-tags</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-gitlab</artifactId>-->
+<!--        </dependency>-->
 
         <!--        扩展的依赖-->
         <dependency>

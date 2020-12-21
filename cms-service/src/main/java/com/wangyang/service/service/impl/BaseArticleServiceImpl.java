@@ -1,6 +1,7 @@
 package com.wangyang.service.service.impl;
 
 import com.wangyang.common.utils.MarkdownUtils;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.service.repository.ArticleRepository;
 import com.wangyang.service.service.IBaseArticleService;
 import com.wangyang.service.service.IOptionService;
@@ -20,27 +21,22 @@ public abstract class BaseArticleServiceImpl<ARTICLE extends BaseArticle> implem
     @Override
     public ARTICLE createOrUpdate(ARTICLE article) {
 
-//        if(article.getStatus()== ArticleStatus.PUBLISHED){
-            String[] renderHtml = MarkdownUtils.renderHtml(article.getOriginalContent());
-            article.setFormatContent(renderHtml[1]);
-            article.setToc(renderHtml[0]);
-//        }
-
+        MarkdownUtils.renderHtml(article);
         return article;
     }
 
-    @Override
-    public ARTICLE previewSave(ARTICLE article) {
-
-
-            String[] renderHtml = MarkdownUtils.renderHtml(article.getOriginalContent());
-
-            article.setFormatContent(renderHtml[1]);
-
-            article.setToc(renderHtml[0]);
-
-        return article;
-    }
+//    @Override
+//    public ARTICLE previewSave(ARTICLE article) {
+//
+//
+//            String[] renderHtml = MarkdownUtils.renderHtml(article.getOriginalContent());
+//
+//            article.setFormatContent(renderHtml[1]);
+//
+//            article.setToc(renderHtml[0]);
+//
+//        return article;
+//    }
 
 
 }

@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 public class ImageUtils {
 
     public static final String EXTENSION_ICO = "ico";
-    public static final String pattern = "<img(\\s*?) src=\"(.*?)\"(.*?)>";
+//    public static final String pattern = "<img(\\s*?) src=\"(.*?)\"(.*?)>";
+    public static final String pattern = "!\\[(.*?)\\]\\((.*?)\\)";
     public static final Pattern r = Pattern.compile(pattern);
 
     public static BufferedImage getImageFromFile(InputStream is, String extension) throws IOException {
@@ -30,7 +31,9 @@ public class ImageUtils {
     public static  String getImgSrc(String html){
         Matcher m = r.matcher(html);
         if(m.find()){
-           return   m.group(2);
+            String str = m.group(2);
+            String[] split = str.split(" ");
+            return   split[0];
         }
         return null;
     }
