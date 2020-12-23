@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 public class GitLabInlineMathParser implements InlineParserExtension {
     Pattern MATH_PATTERN = Pattern.compile("\\$`((?:.|\n)*?)`\\$");
+    Pattern MATH_PATTERN_DOUBLE = Pattern.compile("\\$\\$((?:.|\n)*?)\\$\\$");
+    Pattern MATH_PATTERN_ONE = Pattern.compile("\\$((?:.|\n)*?)\\$");
 
     public GitLabInlineMathParser(LightInlineParser inlineParser) {
     }
@@ -31,14 +33,34 @@ public class GitLabInlineMathParser implements InlineParserExtension {
 
     @Override
     public boolean parse(@NotNull LightInlineParser inlineParser) {
-        if (inlineParser.peek(1) == '`') {
+//        if (inlineParser.peek(1) == '`') {
+
+        if (inlineParser.peek() =='$') {
             BasedSequence input = inlineParser.getInput();
             Matcher matcher = inlineParser.matcher(MATH_PATTERN);
+            Matcher matcherDouble = inlineParser.matcher(MATH_PATTERN_DOUBLE);
+            Matcher matcherOne = inlineParser.matcher(MATH_PATTERN_ONE);
             if (matcher != null) {
                 inlineParser.flushTextNode();
 
                 BasedSequence mathOpen = input.subSequence(matcher.start(), matcher.start(1));
                 BasedSequence mathClosed = input.subSequence(matcher.end(1), matcher.end());
+                GitLabInlineMath inlineMath = new GitLabInlineMath(mathOpen, mathOpen.baseSubSequence(mathOpen.getEndOffset(), mathClosed.getStartOffset()), mathClosed);
+                inlineParser.getBlock().appendChild(inlineMath);
+                return true;
+            }else if(matcherDouble!=null){
+                inlineParser.flushTextNode();
+
+                BasedSequence mathOpen = input.subSequence(matcherDouble.start(), matcherDouble.start(1));
+                BasedSequence mathClosed = input.subSequence(matcherDouble.end(1), matcherDouble.end());
+                GitLabInlineMath inlineMath = new GitLabInlineMath(mathOpen, mathOpen.baseSubSequence(mathOpen.getEndOffset(), mathClosed.getStartOffset()), mathClosed);
+                inlineParser.getBlock().appendChild(inlineMath);
+                return true;
+            }else if(matcherOne!=null){
+                inlineParser.flushTextNode();
+
+                BasedSequence mathOpen = input.subSequence(matcherOne.start(), matcherOne.start(1));
+                BasedSequence mathClosed = input.subSequence(matcherOne.end(1), matcherOne.end());
                 GitLabInlineMath inlineMath = new GitLabInlineMath(mathOpen, mathOpen.baseSubSequence(mathOpen.getEndOffset(), mathClosed.getStartOffset()), mathClosed);
                 inlineParser.getBlock().appendChild(inlineMath);
                 return true;

@@ -1,5 +1,7 @@
 package com.wangyang.web.controller.api;
 
+import com.alibaba.fastjson.JSONObject;
+import com.wangyang.pojo.params.UserParam;
 import com.wangyang.service.service.IAttachmentService;
 import com.wangyang.pojo.entity.Attachment;
 import com.wangyang.pojo.params.AttachmentParam;
@@ -28,8 +30,32 @@ public class AttachmentController {
     public Attachment upload(@RequestPart("file") MultipartFile file){
         return  attachmentService.upload(file);
     }
-
-
+//    {
+//        success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
+//                message : "提示的信息，上传成功或上传失败及错误信息等。",
+//            url     : "图片地址"        // 上传成功时才返回
+//    }
+    @PostMapping(value = "/editormd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String editormd(@RequestPart("editormd-image-file") MultipartFile file){
+        Attachment attachment = attachmentService.upload(file);
+        JSONObject object = new JSONObject();
+        object.put("success",1);
+//        object.put("message","success");
+        object.put("url",attachment.getPath());
+        return object.toJSONString();
+    }
+//    @PostMapping(value = "/testUpload")
+//    public Attachment testUpload(String name, @RequestPart(required = false)MultipartFile file2){
+//        if(file2!=null){
+//            return  attachmentService.upload(file2);
+//        }
+//        return new Attachment();
+//    }
+//    @PostMapping(value = "/testUpload2")
+////    @RequestPart("file")
+//    public Attachment testUpload2( String name,MultipartFile file2){
+//        return new Attachment();
+//    }
     /**
      * 上传文字内容到文件 SVG
      * @param attachmentParam
