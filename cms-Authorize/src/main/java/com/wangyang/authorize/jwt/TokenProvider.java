@@ -1,6 +1,7 @@
 package com.wangyang.authorize.jwt;
 
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
+import com.wangyang.authorize.pojo.dto.CmsToken;
 import com.wangyang.service.service.IOptionService;
 import com.wangyang.pojo.enums.PropertyEnum;
 import io.jsonwebtoken.*;
@@ -32,7 +33,8 @@ public class TokenProvider  implements InitializingBean {
     private final String base64Secret;
     private final long tokenValidityInMilliseconds;
     private final long tokenValidityInMillisecondsForRememberMe;
-
+    private final long tokenValidityRefreshInSeconds;
+    private final long tokenValidityInSecondsRefreshForRememberMe;
     @Autowired
     IOptionService optionService;
 
@@ -42,10 +44,14 @@ public class TokenProvider  implements InitializingBean {
     public TokenProvider(
             @Value("${jwt.base64-secret}") String base64Secret,
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
-            @Value("${jwt.token-validity-in-seconds-for-remember-me}") long tokenValidityInSecondsForRememberMe) {
+            @Value("${jwt.token-validity-in-seconds-for-remember-me}") long tokenValidityInSecondsForRememberMe,
+            @Value("${jwt.token-refresh-validity-in-seconds}")long tokenValidityRefreshInSeconds,
+            @Value("${jwt.token-refresh-validity-in-seconds-for-remember-me}")long tokenValidityInSecondsRefreshForRememberMe) {
         this.base64Secret = base64Secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
         this.tokenValidityInMillisecondsForRememberMe = tokenValidityInSecondsForRememberMe * 1000;
+        this.tokenValidityRefreshInSeconds = tokenValidityRefreshInSeconds * 1000;
+        this.tokenValidityInSecondsRefreshForRememberMe = tokenValidityInSecondsRefreshForRememberMe * 1000;
     }
 
     @Override
@@ -53,8 +59,15 @@ public class TokenProvider  implements InitializingBean {
         byte[] keyBytes = Decoders.BASE64.decode(base64Secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
+    public CmsToken refreshToken(Authentication authentication,boolean rememberMe) {
+        return generateToken(authentication,rememberMe,this.tokenValidityRefreshInSeconds,this.tokenValidityInSecondsRefreshForRememberMe);
 
-    public String createToken(Authentication authentication, boolean rememberMe) {
+    }
+    public CmsToken createToken(Authentication authentication, boolean rememberMe){
+        return generateToken(authentication,rememberMe,this.tokenValidityInMilliseconds,this.tokenValidityInMillisecondsForRememberMe);
+    }
+
+    public CmsToken generateToken(Authentication authentication, boolean rememberMe, long time, long rememberMeTime) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -62,21 +75,36 @@ public class TokenProvider  implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
-            validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+            validity = new Date(now + rememberMeTime);
         } else {
-            validity = new Date(now + this.tokenValidityInMilliseconds);
+            validity = new Date(now + time);
         }
 
         SpringUserDto springUserDto = (SpringUserDto) authentication.getPrincipal();
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("ID", springUserDto.getId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+        return new CmsToken(token,validity.getTime());
     }
 
+//    public boolean needRefresh(String token){
+//        Claims claims = Jwts.parser()
+//                .setSigningKey(key)
+//                .parseClaimsJws(token)
+//                .getBody();
+//        Date expDate = claims.getExpiration();
+//        long from = expDate.getTime()+1000*60;//1000*60 =1分钟
+//        long to = new Date().getTime();
+//        long diff = to - from;
+//        if(diff<0){
+//            return true;
+//        }
+//        return false;
+//    }
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(key)
@@ -93,6 +121,8 @@ public class TokenProvider  implements InitializingBean {
         springUserDto.setUsername(claims.getSubject());
         int id = (Integer)claims.get("ID");
         springUserDto.setId(id);
+        Date expDate = claims.getExpiration();
+        springUserDto.setExpDate(expDate);
         return new UsernamePasswordAuthenticationToken(springUserDto, token, authorities);
     }
     public Authentication getAuthenticationCustomize(String token) {
@@ -106,6 +136,8 @@ public class TokenProvider  implements InitializingBean {
         springUserDto.setUsername("API请求");
         return new UsernamePasswordAuthenticationToken(springUserDto, token, authorities);
     }
+
+
     public boolean validateTokenCustomize(String token) {
         String value = optionService.getPropertyStringValue(PropertyEnum.CMS_TOKEN);
         if(token!=null&&token.equals(value)){

@@ -1,5 +1,6 @@
 package com.wangyang.authorize.jwt;
 
+import com.wangyang.authorize.pojo.dto.CmsToken;
 import com.wangyang.authorize.pojo.dto.SpringUserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -26,6 +28,7 @@ public class JWTFilter extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(JWTFilter.class);
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_HEAD = "RefreshHead";
 
     private TokenProvider tokenProvider;
 
@@ -39,19 +42,38 @@ public class JWTFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
         String jwt = resolveToken(httpServletRequest);
+        String refreshToken = resolveRefreshToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
         String token = httpServletRequest.getHeader("Cms-Token");
         if(tokenProvider.validateTokenCustomize(token)){
             SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthenticationCustomize(token));
         } else  if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) { //验证jwt
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SpringUserDto springUserDto = (SpringUserDto)authentication.getPrincipal();
+                httpServletRequest.setAttribute("userId", springUserDto.getId());
+                httpServletRequest.setAttribute("username",authentication.getName());
+                LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), requestURI);
+        } else if(StringUtils.hasText(jwt) && tokenProvider.validateToken(refreshToken)){
+            // 更新token
+            Authentication authentication = tokenProvider.getAuthentication(refreshToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             SpringUserDto springUserDto = (SpringUserDto)authentication.getPrincipal();
             httpServletRequest.setAttribute("userId", springUserDto.getId());
             httpServletRequest.setAttribute("username",authentication.getName());
-            LOG.debug("set Authentication to security context for '{}', uri: {}", authentication.getName(), requestURI);
-        } else {
+            CmsToken updateToken = tokenProvider.createToken(authentication, true);
+            CmsToken updateRefreshToken = tokenProvider.refreshToken(authentication,true);
+            Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,updateToken.getToken());
+            cookie.setPath("/");
+            Cookie refreshCookie = new Cookie(JWTFilter.REFRESH_HEAD,updateRefreshToken.getToken());
+            refreshCookie.setPath("/");
+            response.addCookie(refreshCookie);
+            response.addCookie(cookie);
+            response.addHeader(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + updateToken.getToken());
+            response.addHeader(JWTFilter.REFRESH_HEAD, "Bearer " + updateRefreshToken.getToken());
+        }else {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_ANONYMOUS");
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             grantedAuthorities.add(grantedAuthority);
@@ -65,12 +87,17 @@ public class JWTFilter extends GenericFilterBean {
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
-
+    private String resolveToken(HttpServletRequest request) {
+            return getToken(request,AUTHORIZATION_HEADER);
+    }
+    private String resolveRefreshToken(HttpServletRequest request) {
+        return getToken(request,REFRESH_HEAD);
+    }
     /**
      * 不同的请求类型text/html，获取token
      * */
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+    private String getToken(HttpServletRequest request,String tokenName) {
+        String bearerToken = request.getHeader(tokenName);
         String requestURI = request.getRequestURI();
 
 
@@ -92,7 +119,7 @@ public class JWTFilter extends GenericFilterBean {
             if(cookies!=null){
                 for (int i = 0;i<cookies.length;i++){
                     Cookie cookie = cookies[i];
-                    if(cookie.getName().equals("Authorization")){
+                    if(cookie.getName().equals(tokenName)){
                         return cookie.getValue();
                     }
                 }

@@ -3,6 +3,7 @@ package com.wangyang.authorize.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wangyang.authorize.jwt.JWTFilter;
 import com.wangyang.authorize.jwt.TokenProvider;
+import com.wangyang.authorize.pojo.dto.CmsToken;
 import com.wangyang.pojo.entity.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,38 +51,34 @@ public class AuthenticationController {
 
             return "redirect:/user/login";
         }
-
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
 //        boolean rememberMe = (loginDto.isRememberMe() == null) ? false : loginDto.isRememberMe();
-        String jwt = tokenProvider.createToken(authentication, true);
+        CmsToken token = tokenProvider.createToken(authentication, true);
+        CmsToken refreshToken = tokenProvider.refreshToken(authentication,true);
 
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,jwt);
-//        cookie.setComment("auth purpose");
+        Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,token.getToken());
         cookie.setPath("/");
-        cookie.setMaxAge(3600*24);
+//        cookie.setMaxAge(3600*24);
+        Cookie refreshCookie = new Cookie(JWTFilter.REFRESH_HEAD,refreshToken.getToken());
+        refreshCookie.setPath("/");
+//        refreshCookie.setMaxAge(3600*24);
         response.addCookie(cookie);
+        response.addCookie(refreshCookie);
+//        response.addHeader(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + token);
+//        response.addHeader(JWTFilter.REFRESH_HEAD, "Bearer " + refreshToken);
+//        response.addHeader("expires_in", String.valueOf(token.getExp()));
+
 //        String redirect = request.getParameter("redirect");
-//        String resUrl = "redirect:";
 //        if(redirect!=null){
-//            resUrl = resUrl+"/user/loginSuccess?redirect="+redirect;
-//        }else {
-//            resUrl = resUrl+"/user/loginSuccess";
+//            return "redirect:"+redirect;
 //        }
-        String redirect = request.getParameter("redirect");
-        if(redirect!=null){
-            return "redirect:"+redirect;
-        }
         return "redirect:/user/info";
-//        return new ResponseEntity<>(new AuthenticationController.JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/user/authenticate")
     @ResponseBody
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody User loginDto) {
+    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody User loginDto,HttpServletResponse response) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
@@ -89,16 +86,23 @@ public class AuthenticationController {
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
 //        boolean rememberMe = (loginDto.isRememberMe() == null) ? false : loginDto.isRememberMe();
-        String jwt = tokenProvider.createToken(authentication, true);
+        CmsToken token = tokenProvider.createToken(authentication, true);
+        CmsToken refreshToken = tokenProvider.refreshToken(authentication,true);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-
-        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + token.getToken());
+        httpHeaders.add(JWTFilter.REFRESH_HEAD, "Bearer " + refreshToken.getToken());
+        httpHeaders.add("expires_in", String.valueOf(token.getExp()));
+        Cookie cookie = new Cookie(JWTFilter.AUTHORIZATION_HEADER,token.getToken());
+        cookie.setPath("/");
+        Cookie refreshCookie = new Cookie(JWTFilter.REFRESH_HEAD,refreshToken.getToken());
+        refreshCookie.setPath("/");
+        response.addCookie(cookie);
+        response.addCookie(refreshCookie);
+        return new ResponseEntity<>(new JWTToken(token.getToken(),refreshToken.getToken(),String.valueOf(token.getExp())), httpHeaders, HttpStatus.OK);
     }
 
     /**
@@ -107,9 +111,24 @@ public class AuthenticationController {
     static class JWTToken {
 
         private String idToken;
+        private String refreshToken;
+        private  String expires;
 
-        JWTToken(String idToken) {
+
+
+        public JWTToken(String idToken, String refreshToken, String expires) {
             this.idToken = idToken;
+            this.refreshToken = refreshToken;
+            this.expires = expires;
+        }
+
+        @JsonProperty("expires_in")
+        public String getExpires() {
+            return expires;
+        }
+
+        public void setExpires(String expires) {
+            this.expires = expires;
         }
 
         @JsonProperty("id_token")
@@ -119,6 +138,14 @@ public class AuthenticationController {
 
         void setIdToken(String idToken) {
             this.idToken = idToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
         }
     }
 }

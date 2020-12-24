@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +24,7 @@ public class SpringUserDto implements UserDetails {
     private String password;
     private String phone;
     private String email;
+    private Date expDate;
     //用户头像
     private String avatar;
 
@@ -116,4 +118,11 @@ public class SpringUserDto implements UserDetails {
         this.avatar = avatar;
     }
 
+    public Date getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
 }
