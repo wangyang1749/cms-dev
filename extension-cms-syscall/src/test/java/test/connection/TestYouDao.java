@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class TestYouDao {
 
-    @Test
+//    @Test
     public void testExplain(){
         JSONObject jsonObject = JSONObject.parseObject(FanyiV3Demo.getExplains("treatment"))
                 .getJSONObject("basic");
