@@ -1,3 +1,4 @@
+**本仓库不再维护, 迁移到:** <https://github.com/BioinfoFungi/cms-dev>
 
 ### 一、内容（文章）管理系统介绍
 本项目使用SpringBoot作为后端；使用thymeleaf作为模板引擎，实现全部页面静态化；
